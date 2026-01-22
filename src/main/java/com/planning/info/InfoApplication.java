@@ -5,10 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class InfoApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(InfoApplication.class, args);
         System.out.println("Application lancé..");
+        System.out.println("test");
     }
-
 }
