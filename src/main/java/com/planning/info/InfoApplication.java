@@ -10,6 +10,7 @@ public class InfoApplication {
         SpringApplication.run(
                 InfoApplication.class, args
         );
+        System.out.println("test");
     }
 
 }
