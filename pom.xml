@@ -8,11 +8,11 @@
         <version>4.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.planning</groupId>
-    <artifactId>info</artifactId>
+    <groupId>com.univtime</groupId>
+    <artifactId>informatique</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>info</name>
-    <description>info</description>
+    <name>informatique</name>
+    <description>informatique</description>
     <url/>
     <licenses>
         <license/>
@@ -68,5 +68,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
