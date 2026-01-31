@@ -1,12 +1,17 @@
 package com.univtime.informatique;
 
 import com.univtime.informatique.constants.TypeCours;
+import org.hibernate.query.spi.Limit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cglib.core.Local;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SpringBootApplication
@@ -16,29 +21,103 @@ public class UnivTime {
         System.out.println("Application lancé..");
         System.out.println("----------------- TEST ALGO -----------------");
 
-        int dureeSlot = 15;
-        List<Slot> slotsDisponible = new ArrayList<>();
+        int slotStep = 15;
+        List<Slot> slotsAvailable = new ArrayList<>();
         Semestre semestre = new Semestre(
                 LocalDate.of(2025, 9, 1),
                 LocalDate.of(2025, 9, 7)
         );
 
+        // On calcule les semaines du lundi au dimanche pas que 7 + 7 + 7...
+        // Donc si c'est pas par défaut setup comme ça, on corrige pour avoir un bon calcul du numSemaine
+        LocalDate firstWeek = semestre.debut().with(DayOfWeek.MONDAY);
+        LocalDate lastWeek = semestre.fin().with(DayOfWeek.MONDAY);
+
+        List<DayOfWeek> excludedDays = new ArrayList<>();
+        excludedDays.add(DayOfWeek.SATURDAY); // Samedi
+        excludedDays.add(DayOfWeek.SUNDAY); // Dimanche
+
+        List<PlanningPeriodMinutes> planningPossiblePeriod =  new ArrayList<PlanningPeriodMinutes>();
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(8 * 60, 10 * 60)); // 8h00 à 10h00
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(10 * 60 + 15, 12 * 60 + 15)); // 10h15 à 12h15
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(13 * 60 + 30, 15 * 60 + 30)); // 13h30 à 15h30
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(15 * 60 + 45, 17 * 60 + 45)); // 15h45 à 17h45
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(18 * 60, 20 * 60)); // 18h00 à 20h00
+
+        HashMap<Integer, HashMap<Integer, List<Slot>>> slotsPerDayPerWeek = new HashMap<>();
+
+
+        /**
+         * Boucle sur tout les jours du semestre
+         */
+        long nbSemaine = ChronoUnit.WEEKS.between(firstWeek, lastWeek) + 1;
+        for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++){
+            // Début et fin de la semaine du calendrier
+            LocalDate weekStart = firstWeek.plusWeeks(weekOffset);
+            LocalDate weekEnd = weekStart.plusDays(6);
+
+            // Ajuster pour la première semaine partielle
+            if (weekStart.isBefore(semestre.debut())){
+                weekStart = semestre.debut();
+            }
+
+            // Ajuster pour la dernière semaine partielle
+            if (weekEnd.isAfter(semestre.fin())){
+                weekEnd = semestre.fin();
+            }
+
+            for (int dayOffset = weekStart.getDayOfWeek().getValue() - 1; dayOffset < weekEnd.getDayOfWeek().getValue(); dayOffset++){
+                LocalDate actualDay = semestre.debut().plusWeeks(weekOffset).plusDays(dayOffset);
+                boolean isExclude = isExcludeDay(actualDay, excludedDays);
+
+                if (!isExclude){
+                    System.out.println(actualDay + " :");
+                    /**
+                     * Création des slots de la semaine
+                     */
+                    List<Slot> slotOfDay = new ArrayList<>();
+                    for(PlanningPeriodMinutes period : planningPossiblePeriod){
+                        for (int start = period.debut(); start < period.fin(); start = start + slotStep){
+                            boolean isBlocked = false;
+                            Slot slot = new Slot(start, start + slotStep, isBlocked)
+                            slotOfDay.add(slot);
+                        }
+                    }
+                    slotOfDay.forEach(slot -> {
+                        // AFFICHAGE A FAIRE
+                    });
+                }
+            }
+        }
 
 
     }
 
-    record MomentBanalise (
-            String nom,
-            LocalDateTime debut,
-            LocalDateTime fin
-    ) {}
+    static boolean isDateAvailable(
+            LocalDateTime jour,
+            List<MomentBanalise> momentBanalises){
+
+        return false;
+    }
+
+    static boolean isExcludeDay(
+            LocalDate actualDate,
+            List<DayOfWeek> excludeDays
+            ){
+        return excludeDays.contains(actualDate.getDayOfWeek());
+    }
 
     record Semestre(
             LocalDate debut,
-            LocalDate fin
-    ) {}
+            LocalDate fin,
+            long dureeJours
+    ) {
+        Semestre (LocalDate debut, LocalDate fin) {
+            this(debut, fin, ChronoUnit.DAYS.between(debut, fin) + 1);
+        }
+    }
 
-    record LimitePlanning(
+    record PlanningPeriodMinutes(
             /**
              * Minutes
              */
@@ -49,35 +128,13 @@ public class UnivTime {
             int fin
     ) {}
 
-    static final class SlotManager {
-        static List<Slot> blocked =  new ArrayList<Slot>();
+    record MomentBanalise (
+            String nom,
+            LocalDateTime debut,
+            LocalDateTime fin
+    ) {}
 
-        SlotManager() {}
-
-        static void addBlocked(Slot slotBloque) {
-            blocked.add(slotBloque);
-        }
-
-        static void addBlockedList(List<Slot> slotsBloques){
-            blocked.addAll(slotsBloques);
-        }
-    }
-
-    static final class MomentBanalises {
-        static List<MomentBanalise> pauses =  new ArrayList<MomentBanalise>();
-
-        MomentBanalises() {}
-
-        static void addMomentBanalise(MomentBanalise momentBanalise) {
-            pauses.add(momentBanalise);
-        }
-
-        static void addMomentBanaliseList(List<MomentBanalise> momentBanalises){
-            pauses.addAll(momentBanalises);
-        }
-    }
-
-    class Slot {
+    static class Slot {
         /**
          * Minutes
          */
@@ -89,10 +146,10 @@ public class UnivTime {
         List<Cours> usedBy = new ArrayList<Cours>();
         boolean isBlocked = false;
 
-        Slot (int debut, int fin) {
+        Slot (int debut, int fin, boolean isBlocked) {
             this.debut = debut;
             this.fin = fin;
-            isBlocked = SlotManager.blocked.contains(this);
+            this.isBlocked = isBlocked;
         }
 
         int getDebut(){
@@ -103,6 +160,10 @@ public class UnivTime {
             return fin;
         }
 
+        boolean isBlocked(){
+            return isBlocked;
+        }
+
         void add(Cours cours) {
             usedBy.add(cours);
         }
@@ -110,15 +171,27 @@ public class UnivTime {
         void addList(List<Cours> cours){
             usedBy.addAll(cours);
         }
+
+        void setIsBlocked(boolean isBlocked) {
+            this.isBlocked = isBlocked;
+        }
+
+        @Override
+        public String toString() {
+            // Re-écrire cette méthode
+            // Début de solution : System.out.println("Slot [" + (int) (slot.getDebut() / 60) + ":" + (int) (slot.getFin() % 60) + "]");
+            return super.toString();
+        }
     }
 
     // MIN -10, 0 MAX
     // Chaque placement part avec 100 pts
-    static final class WeightConfig {
+    class WeightConfig {
             int placementTrou = 0;
             int placementFinTard = 0;
             int placementMatin = 0;
             int placementDebutJour = 0;
+            int placementReference = 0;
             int repetitionCoursDansJournee = 0;
 
             int calcScore(Cours cours, List<Slot> jour){
@@ -147,6 +220,10 @@ public class UnivTime {
 
             void setRepetitionCoursDansJournee(int repetitionCoursDansJournee) {
                 this.repetitionCoursDansJournee = repetitionCoursDansJournee;
+            }
+
+            void setPlacementReference(int placementReference){
+                this.placementReference = placementReference;
             }
 
     }
