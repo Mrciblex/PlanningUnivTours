@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class GroupeRepository {
+import com.univtime.informatique.entities.ModuleEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface GroupeRepository extends JpaRepository<ModuleEntity, Integer> {
+
 }

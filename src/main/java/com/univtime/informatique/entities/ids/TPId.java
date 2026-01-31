@@ -1,4 +1,4 @@
 package com.univtime.informatique.entities.ids;
 
-public class ParticipeAIds {
+public class TPId {
 }

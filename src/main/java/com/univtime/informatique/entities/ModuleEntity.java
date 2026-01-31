@@ -2,6 +2,9 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "modules")
 public class ModuleEntity {
@@ -12,6 +15,9 @@ public class ModuleEntity {
 
     @Column(name = "nomModule", nullable = false, length = 150)
     private String nomModule;
+
+    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
+    private List<PromoEstComposeeEntity> promoEstComposeeEntities = new ArrayList<>();
 
     public ModuleEntity() {
 

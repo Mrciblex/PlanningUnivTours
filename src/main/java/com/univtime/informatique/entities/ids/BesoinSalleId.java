@@ -1,4 +1,4 @@
 package com.univtime.informatique.entities.ids;
 
-public class TDIds {
+public class BesoinSalleId {
 }
