@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class TDRepository {
+import com.univtime.informatique.entities.TDEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TDRepository extends JpaRepository<TDEntity, Integer> {
+
 }

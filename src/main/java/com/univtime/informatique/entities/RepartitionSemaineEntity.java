@@ -20,7 +20,10 @@ public class RepartitionSemaineEntity {
     private Integer qteTypeCours;
 
     @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
-    private List<RepartitionSemaineEntity> repartitionSemaineEntities = new ArrayList<>();
+    private List<CMEntity> cmEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
+    private List<TDEntity> tdEntities = new ArrayList<>();
 
     public RepartitionSemaineEntity() {
 

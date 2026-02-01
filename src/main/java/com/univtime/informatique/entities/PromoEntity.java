@@ -28,6 +28,9 @@ public class PromoEntity {
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
     private List<CMEntity> cmEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
+    private List<TDEntity> tdEntities = new ArrayList<>();
+
     public PromoEntity() {
 
     }

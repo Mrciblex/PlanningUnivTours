@@ -42,7 +42,10 @@ public class ComposanteEntity {
     private ModuleEntity idModule;
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<ComposanteEntity> composanteEntities = new ArrayList<>();
+    private List<CMEntity> cmEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
+    private List<TDEntity> tdEntities = new ArrayList<>();
 
     public ComposanteEntity() {
 

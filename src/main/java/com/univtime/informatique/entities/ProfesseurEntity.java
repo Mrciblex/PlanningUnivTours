@@ -23,7 +23,10 @@ public class ProfesseurEntity {
     private Boolean intervenantExterieur;
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<ProfesseurEntity> professeurEntities = new ArrayList<>();
+    private List<CMEntity> cmEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
+    private List<TDEntity> tdEntities = new ArrayList<>();
 
     public ProfesseurEntity() {
 

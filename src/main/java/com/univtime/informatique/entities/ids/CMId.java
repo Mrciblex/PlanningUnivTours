@@ -20,17 +20,17 @@ public class CMId implements Serializable {
     @Column(name = "idComposante", nullable = false)
     private Integer idComposante;
 
-    @Column(name = "idRepartionSemaine", nullable = false)
-    private Integer idRepartionSemaine;
+    @Column(name = "idRepartitionSemaine", nullable = false)
+    private Integer idRepartitionSemaine;
 
     public  CMId() {
 
     }
 
-    public CMId(Integer idProf, Integer idPromo, Integer idComposante, Integer idRepartionSemaine) {
+    public CMId(Integer idProf, Integer idPromo, Integer idComposante, Integer idRepartitionSemaine) {
         this.idProf = idProf;
         this.idPromo = idPromo;
         this.idComposante = idComposante;
-        this.idRepartionSemaine = idRepartionSemaine;
+        this.idRepartitionSemaine = idRepartitionSemaine;
     }
 }
