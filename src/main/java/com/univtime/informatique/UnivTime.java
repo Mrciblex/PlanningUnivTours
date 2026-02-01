@@ -17,7 +17,7 @@ import java.util.Map;
 
 @SpringBootApplication
 public class UnivTime {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         //SpringApplication.run(UnivTime.class, args);
         System.out.println("Application lancé..");
         System.out.println("----------------- TEST ALGO -----------------");
@@ -38,7 +38,7 @@ public class UnivTime {
         excludedDays.add(DayOfWeek.SATURDAY); // Samedi
         excludedDays.add(DayOfWeek.SUNDAY); // Dimanche
 
-        List<PlanningPeriodMinutes> planningPossiblePeriod =  new ArrayList<PlanningPeriodMinutes>();
+        List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<PlanningPeriodMinutes>();
         planningPossiblePeriod.add(new PlanningPeriodMinutes(8 * 60, 10 * 60)); // 8h00 à 10h00
         planningPossiblePeriod.add(new PlanningPeriodMinutes(10 * 60 + 15, 12 * 60 + 15)); // 10h15 à 12h15
         planningPossiblePeriod.add(new PlanningPeriodMinutes(13 * 60 + 30, 15 * 60 + 30)); // 13h30 à 15h30
@@ -47,38 +47,125 @@ public class UnivTime {
 
         HashMap<Integer, HashMap<Integer, List<Slot>>> slotsPerDayPerWeek = new HashMap<>();
 
+        List<Professeurs> profs = new ArrayList<>();
+        // DISPO QUE LE MATIN (8h-12h15)
+        profs.add(new Professeurs(
+                        "Brouard",
+                        "Thierry",
+                        false,
+                        List.of(
+                                new Jours(1, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
+                                new Jours(2, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
+                                new Jours(3, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
+                                new Jours(4, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
+                                new Jours(5, List.of(new Disponibilite(8 * 60, 12 * 60 + 15)))
+                        )
+                )
+        );
+        // DISPO TOUT LE TEMPS
+        profs.add(new Professeurs(
+                        "Brouard",
+                        "Helene",
+                        false,
+                        List.of(
+                                new Jours(1, List.of(new Disponibilite(8 * 60, 20 * 60))),
+                                new Jours(2, List.of(new Disponibilite(8 * 60, 20 * 60))),
+                                new Jours(3, List.of(new Disponibilite(8 * 60, 20 * 60))),
+                                new Jours(4, List.of(new Disponibilite(8 * 60, 20 * 60))),
+                                new Jours(5, List.of(new Disponibilite(8 * 60, 20 * 60)))
+                        )
+                )
+        );
+        // DISPO QUE LE MATIN (10h30-12h15) DONC MOINS DE 2H
+        profs.add(new Professeurs(
+                        "Desport",
+                        "Pierre",
+                        false,
+                        List.of(
+                                new Jours(1, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
+                                new Jours(2, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
+                                new Jours(3, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
+                                new Jours(4, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
+                                new Jours(5, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15)))
+                        )
+                )
+        );
+        // DISPO DECOUPER
+        profs.add(new Professeurs(
+                        "Cabet",
+                        "Aurore",
+                        false,
+                        List.of(
+                                new Jours(1, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
+                                new Jours(2, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
+                                new Jours(3, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
+                                new Jours(4, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
+                                new Jours(5, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45)))
+                        )
+                )
+        );
+
+        List<SousGroupe> promo = new ArrayList<>();
+        promo.add(new SousGroupe("G1A", 10));
+        promo.add(new SousGroupe("G1B", 10));
+        promo.add(new SousGroupe("G2A", 10));
+        promo.add(new SousGroupe("G2A", 10));
+
+        List<Composante> composantes = new ArrayList<>();
+        composantes.add(new Composante("Maths", 2 * 60, 2 * 60, 2 * 60));
+        composantes.add(new Composante("Admin BD", 2 * 60, 2 * 60, 2 * 60));
+        composantes.add(new Composante("Securite Logicielle", 2 * 60, 2 * 60, 2 * 60));
+
+        List<CM> cm = new ArrayList<>();
+        HashMap<Integer, Integer> repartitionSemaineCM = new HashMap<>();
+        repartitionSemaineCM.put(1, 2); // Première semaine contient 2 fois x composition(prof, composante, promo)
+        cm.add(new CM(profs.get(1), composantes.get(1), promo, repartitionSemaineCM)); // CM - HELENE BROUARD - ADMIN BD - G1A,G1B,G2A,G2B - S1 x2
+        cm.add(new CM(profs.get(3), composantes.get(1), promo, repartitionSemaineCM)); // CM - HELENE BROUARD - ADMIN BD - G1A,G1B,G2A,G2B - S1 x2
+
+        List<TP> tp = new ArrayList<>();
+        HashMap<Integer, Integer> repartitionSemaineTP = new HashMap<>();
+        repartitionSemaineTP.put(1, 1); // Première semaine contient 2 fois x composition(prof, composante, promo)
+        tp.add(new TP(profs.get(1), composantes.get(1), List.of(promo.get(0)), repartitionSemaineTP)); // TP - HELENE BROUARD - ADMIN BD - G1A - S1 x1
+        tp.add(new TP(profs.get(1), composantes.get(1), List.of(promo.get(2)), repartitionSemaineTP)); // TP - HELENE BROUARD - ADMIN BD - G2A - S1 x1
+
+        System.out.println(cm);
+        //System.out.println(td);
+        System.out.println(tp);
 
         /**
          * Boucle sur tout les jours du semestre
          */
         long nbSemaine = ChronoUnit.WEEKS.between(firstWeek, lastWeek) + 1;
         Map<Integer, Map<Integer, List<Slot>>> slotsStorage = new HashMap<>();
-        for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++){
+        for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++) {
             // Début et fin de la semaine du calendrier
             LocalDate weekStart = firstWeek.plusWeeks(weekOffset);
             LocalDate weekEnd = weekStart.plusDays(6);
 
             // Ajuster pour la première semaine partielle
-            if (weekStart.isBefore(semestre.debut())){
+            if (weekStart.isBefore(semestre.debut())) {
                 weekStart = semestre.debut();
             }
 
             // Ajuster pour la dernière semaine partielle
-            if (weekEnd.isAfter(semestre.fin())){
+            if (weekEnd.isAfter(semestre.fin())) {
                 weekEnd = semestre.fin();
             }
+
+            int currentWeek = weekOffset + 1;
+
             Map<Integer, List<Slot>> daySlots = new HashMap<>();
-            for (int dayOffset = weekStart.getDayOfWeek().getValue() - 1; dayOffset < weekEnd.getDayOfWeek().getValue(); dayOffset++){
+            for (int dayOffset = weekStart.getDayOfWeek().getValue() - 1; dayOffset < weekEnd.getDayOfWeek().getValue(); dayOffset++) {
                 LocalDate actualDay = semestre.debut().plusWeeks(weekOffset).plusDays(dayOffset);
                 boolean isExclude = isExcludeDay(actualDay, excludedDays);
 
-                if (!isExclude){
+                if (!isExclude) {
                     /**
                      * Création des slots de la semaine
                      */
                     List<Slot> slotOfDay = new ArrayList<>();
-                    for(PlanningPeriodMinutes period : planningPossiblePeriod){
-                        for (int start = period.debut(); start < period.fin(); start = start + slotStep){
+                    for (PlanningPeriodMinutes period : planningPossiblePeriod) {
+                        for (int start = period.debut(); start < period.fin(); start = start + slotStep) {
                             boolean isBlocked = false;
                             Slot slot = new Slot(start, start + slotStep, isBlocked);
                             slotOfDay.add(slot);
@@ -87,7 +174,7 @@ public class UnivTime {
                     daySlots.put(dayOffset + 1, slotOfDay);
                 }
             }
-            slotsStorage.put(weekOffset + 1, daySlots);
+            slotsStorage.put(currentWeek, daySlots);
 
             // ------------ Placement des cours dans les slots ------------
             // On a tous les slots de la semaine actuel qui viennent d'être créés
@@ -113,11 +200,28 @@ public class UnivTime {
             // Le calcul du Weight doit être optimisé car il sera souvent appelé pour tester l'amélioration du planning !
             // Les poids se calcul via la semaine
 
+            /**
+             * Professeurs ordered pour affiner les résultats.
+             * Ratio volumeHoraire pour la semaine / disponibilité
+             * Si le ratio est > 1 alors trop de cours pour pas assez de dispo (Que faire en cas d'impossibilité -> warning des placements impossible + différence d'heures voulu à heures réel par composante + ne pas placer le cours)
+             * Si le ratio est <= 1 alors placement possible mais plus c'est proche de 1, plus il y a une tension pour les placements
+             */
+            // Calcul de la tension (ratio volume/dispo) pour ordonner les professeurs
+
+            profs.sort((p1, p2) -> {
+                double ratio1 = getProfTension(currentWeek, p1, cm, List.of(), tp);
+                double ratio2 = getProfTension(currentWeek, p2, cm, List.of(), tp);
+                return Double.compare(ratio2, ratio1); // Plus le ratio est élevé, plus il est prioritaire
+            });
+
+            for (Professeurs prof : profs) {
+                System.out.println(prof);
+            }
         }
 
 
-
         // DEBUG
+        /*
         slotsStorage.forEach((week, daySlots) -> {
             System.out.print("Semaine " + week);
             daySlots.forEach((day, slot) -> {
@@ -125,18 +229,54 @@ public class UnivTime {
                 System.out.println(slot);
             });
         });
+        */
+    }
+
+    static int getDisponibiliteMinutes(Professeurs p) {
+        return p.jours().stream()
+                .flatMap(jour -> jour.disponibilites().stream())
+                .mapToInt(dispo -> dispo.heureFinDispo() - dispo.heureDebutDispo())
+                .sum();
+    }
+
+    static int getChargeTotaleMinutes(int weekOffset, Professeurs p, List<CM> cms, List<TD> tds, List<TP> tps) {
+        // Somme du nombre total de cours à placer pour un prof * la durée d'un bloc (en minutes), pour la semaine donnée
+        int chargeCM = cms.stream()
+                .filter(c -> c.prof().equals(p))
+                .mapToInt(c -> c.repartitionSemaine().getOrDefault(weekOffset, 0) * c.comp().blocCM())
+                .sum();
+
+        int chargeTD = tds.stream()
+                .filter(c -> c.prof().equals(p))
+                .mapToInt(c -> c.repartitionSemaine().getOrDefault(weekOffset, 0) * c.comp().blocTD())
+                .sum();
+
+        int chargeTP = tps.stream()
+                .filter(c -> c.prof().equals(p))
+                .mapToInt(c -> c.repartitionSemaine().getOrDefault(weekOffset, 0) * c.comp().blocTP())
+                .sum();
+
+        return chargeCM + chargeTD + chargeTP;
+    }
+
+    static double getProfTension(int weekOffset, Professeurs p, List<CM> cms, List<TD> tds, List<TP> tps){
+        int charge = getChargeTotaleMinutes(weekOffset, p, cms, tds, tps);
+        int dispo = getDisponibiliteMinutes(p);
+
+        if (dispo == 0) return Double.MAX_VALUE; // Si aucune disponibilité, priorité maximale (juste pour éviter les bugs, ça n'a pas d'impact)
+        return (double) charge / dispo;
     }
 
     static boolean isDateAvailable(
             LocalDateTime jour,
-            List<MomentBanalise> momentBanalises){
+            List<MomentBanalise> momentBanalises) {
         return false;
     }
 
     static boolean isExcludeDay(
             LocalDate actualDate,
             List<DayOfWeek> excludeDays
-            ){
+    ) {
         return excludeDays.contains(actualDate.getDayOfWeek());
     }
 
@@ -145,7 +285,7 @@ public class UnivTime {
             LocalDate fin,
             long dureeJours
     ) {
-        Semestre (LocalDate debut, LocalDate fin) {
+        Semestre(LocalDate debut, LocalDate fin) {
             this(debut, fin, ChronoUnit.DAYS.between(debut, fin) + 1);
         }
     }
@@ -159,13 +299,15 @@ public class UnivTime {
              * Minutes
              */
             int fin
-    ) {}
+    ) {
+    }
 
-    record MomentBanalise (
+    record MomentBanalise(
             String nom,
             LocalDateTime debut,
             LocalDateTime fin
-    ) {}
+    ) {
+    }
 
     static class Slot {
         /**
@@ -179,21 +321,21 @@ public class UnivTime {
         List<Cours> usedBy = new ArrayList<Cours>();
         boolean isBlocked = false;
 
-        Slot (int debut, int fin, boolean isBlocked) {
+        Slot(int debut, int fin, boolean isBlocked) {
             this.debut = debut;
             this.fin = fin;
             this.isBlocked = isBlocked;
         }
 
-        int getDebut(){
+        int getDebut() {
             return debut;
         }
 
-        int getFin(){
+        int getFin() {
             return fin;
         }
 
-        boolean isBlocked(){
+        boolean isBlocked() {
             return isBlocked;
         }
 
@@ -201,7 +343,7 @@ public class UnivTime {
             usedBy.add(cours);
         }
 
-        void addList(List<Cours> cours){
+        void addList(List<Cours> cours) {
             usedBy.addAll(cours);
         }
 
@@ -214,55 +356,88 @@ public class UnivTime {
             // Re-écrire cette méthode
             return String.format(
                     "Slot [%dh%02d - %dh%02d] isBlocked = " + isBlocked + " | \n" + "---Cours : " + usedBy + "\n",
-                    (int) (this.getDebut() / 60),
-                    (int) (this.getDebut() % 60),
-                    (int) (this.getFin() / 60),
-                    (int) (this.getFin() % 60)
+                    this.getDebut() / 60,
+                    this.getDebut() % 60,
+                    this.getFin() / 60,
+                    this.getFin() % 60
             );
         }
     }
 
     // MIN -10, 0 MAX
     // Chaque placement part avec 100 pts
-    class WeightConfig {
-            int placementTrou = 0;
-            int placementFinTard = 0;
-            int placementMatin = 0;
-            int placementDebutJour = 0;
-            int placementReference = 0;
-            int repetitionCoursDansJournee = 0;
+    static class WeightConfig {
+        /**
+         * Si le slot créer un trou
+         */
+        int placementTrou = 0;
 
-            int calcScore(Cours cours, List<Slot> jour){
-                int score = 100;
-                if (cours != null && !jour.isEmpty()){
-                    // Retirer ou pas des points pour chaque placement
-                }
-                return score;
-            }
+        /**
+         * Si le slot est utilisé et est tard (coef plus c'est tard = plus score fait mal)
+         */
+        int placementFinTard = 0;
 
-            void setPlacementTrou(int placementTrou) {
-                this.placementTrou = placementTrou;
-            }
+        /**
+         * Si le slot est utilisé et n'est le matin avant 12h15
+         */
+        int placementMatin = 0;
 
-            void setPlacementFinTard(int placementFinTard) {
-                this.placementFinTard = placementFinTard;
-            }
+        /**
+         * Si le slot est utilisé et n'est pas à 8h
+         */
+        int placementDebutJour = 0;
 
-            void setPlacementMatin(int placementMatin) {
-                this.placementMatin = placementMatin;
-            }
+        /**
+         * Si le slot est utilisé et ne correspond pas au cours de la semaine 1
+         * (attention, s'il y a 1 cours S1 puis 2 cours S2 dans le même slot, si le cours S1 est quand même là il ne faut pas de pénalité)
+         */
+        int placementReference = 0;
 
-            void setPlacementDebutJour(int placementDebutJour) {
-                this.placementDebutJour = placementDebutJour;
-            }
+        /**
+         * Si le slot est utilisé et le cours est à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
+         */
+        int placementArrondit = 0;
 
-            void setRepetitionCoursDansJournee(int repetitionCoursDansJournee) {
-                this.repetitionCoursDansJournee = repetitionCoursDansJournee;
-            }
+        /**
+         * Si les slots ont le même cours mais avec une séparation entre les slots (donc 2 fois le cours dans la journée)
+         */
+        int repetitionCoursDansJournee = 0;
 
-            void setPlacementReference(int placementReference){
-                this.placementReference = placementReference;
+        int calcScore(Cours cours, List<Slot> jour) {
+            int score = 100;
+            if (cours != null && !jour.isEmpty()) {
+                // Retirer ou pas des points pour chaque placement
             }
+            return score;
+        }
+
+        void setPlacementTrou(int placementTrou) {
+            this.placementTrou = placementTrou;
+        }
+
+        void setPlacementFinTard(int placementFinTard) {
+            this.placementFinTard = placementFinTard;
+        }
+
+        void setPlacementMatin(int placementMatin) {
+            this.placementMatin = placementMatin;
+        }
+
+        void setPlacementDebutJour(int placementDebutJour) {
+            this.placementDebutJour = placementDebutJour;
+        }
+
+        void setRepetitionCoursDansJournee(int repetitionCoursDansJournee) {
+            this.repetitionCoursDansJournee = repetitionCoursDansJournee;
+        }
+
+        void setPlacementReference(int placementReference) {
+            this.placementReference = placementReference;
+        }
+
+        void setPlacementArrondit(int placementArrondit) {
+            this.placementArrondit = placementArrondit;
+        }
 
     }
 
@@ -270,31 +445,64 @@ public class UnivTime {
             LocalDateTime heureDebutCours,
             LocalDateTime heureFinCours,
             TypeCours typeCours,
-            int idComposante,
-            int idProf,
+            Composante composante,
+            Professeurs prof,
             List<SousGroupe> participants
-    ){}
+    ) {
+    }
 
-    record SousGroupe (
+    record SousGroupe(
             String nomSousGroupe,
             int nbEtuSousGroupe
-    ){}
+    ) {
+    }
 
-    record Professeurs (
+    record Professeurs(
             String nomProf,
             String prenomProf,
             boolean intervenantExterieur,
             List<Jours> jours
-    ){}
+    ) {
+    }
 
-    record Jours (
-        int jourSemaine,
-        List<Disponibilite> disponibilites
-    ){}
+    record Jours(
+            int jourSemaine,
+            List<Disponibilite> disponibilites
+    ) {
+    }
 
-    record Disponibilite (
+    record Disponibilite(
             int heureDebutDispo,
             int heureFinDispo
+    ) {
+    }
+
+    record Composante(
+            String nom,
+            int blocCM,
+            int blocTD,
+            int blocTP
     ){}
+
+    record TD(
+            Professeurs prof,
+            Composante comp,
+            List<SousGroupe> participants,
+            HashMap<Integer, Integer> repartitionSemaine
+    ) {}
+
+    record TP(
+            Professeurs prof,
+            Composante comp,
+            List<SousGroupe> participants,
+            HashMap<Integer, Integer> repartitionSemaine
+    ) {}
+
+    record CM(
+            Professeurs prof,
+            Composante comp,
+            List<SousGroupe> participants,
+            HashMap<Integer, Integer> repartitionSemaine
+    ) {}
 
 }
