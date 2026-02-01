@@ -2,6 +2,9 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "composantes")
 public class ComposanteEntity {
@@ -37,6 +40,9 @@ public class ComposanteEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "idModule", nullable = false)
     private ModuleEntity idModule;
+
+    @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
+    private List<ComposanteEntity> composanteEntities = new ArrayList<>();
 
     public ComposanteEntity() {
 

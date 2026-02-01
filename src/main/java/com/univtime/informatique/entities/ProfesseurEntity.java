@@ -2,6 +2,9 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "professeurs")
 public class ProfesseurEntity {
@@ -18,6 +21,9 @@ public class ProfesseurEntity {
 
     @Column(name = "intervenantExterieur", nullable = false)
     private Boolean intervenantExterieur;
+
+    @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
+    private List<ProfesseurEntity> professeurEntities = new ArrayList<>();
 
     public ProfesseurEntity() {
 
