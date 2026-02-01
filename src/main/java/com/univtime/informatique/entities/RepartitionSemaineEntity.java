@@ -25,6 +25,9 @@ public class RepartitionSemaineEntity {
     @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
     private List<TDEntity> tdEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
+    private List<TPEntity> tpEntities = new ArrayList<>();
+
     public RepartitionSemaineEntity() {
 
     }

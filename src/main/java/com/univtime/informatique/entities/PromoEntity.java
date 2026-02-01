@@ -29,7 +29,7 @@ public class PromoEntity {
     private List<CMEntity> cmEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
-    private List<TDEntity> tdEntities = new ArrayList<>();
+    private List<GroupeEntity> groupeEntities = new ArrayList<>();
 
     public PromoEntity() {
 

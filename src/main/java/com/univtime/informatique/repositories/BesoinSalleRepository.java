@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class BesoinSalleRepository {
+import com.univtime.informatique.entities.BesoinSalleEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BesoinSalleRepository extends JpaRepository<BesoinSalleEntity, Long> {
+
 }

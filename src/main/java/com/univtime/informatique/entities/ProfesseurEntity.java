@@ -28,6 +28,15 @@ public class ProfesseurEntity {
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
     private List<TDEntity> tdEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
+    private List<TPEntity> tpEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
+    private List<CoursEntity> coursEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
+    private List<JourEntity> jourEntities = new ArrayList<>();
+
     public ProfesseurEntity() {
 
     }

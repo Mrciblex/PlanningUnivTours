@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class TPRepository {
+import com.univtime.informatique.entities.DisponibiliteEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TPRepository extends JpaRepository<DisponibiliteEntity, Long> {
+
 }

@@ -10,7 +10,7 @@ public class PromoEstComposeeEntity {
     private PromoEstComposeeId idPromoEstComposee;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("idModule")
+    @MapsId("idPromo")
     @JoinColumn(name = "idPromo", referencedColumnName = "idPromo", insertable = false, updatable = false)
     private PromoEntity promo;
 
@@ -21,5 +21,29 @@ public class PromoEstComposeeEntity {
 
     public PromoEstComposeeEntity() {
 
+    }
+
+    public PromoEstComposeeId getIdPromoEstComposee() {
+        return idPromoEstComposee;
+    }
+
+    public void setIdPromoEstComposee(PromoEstComposeeId idPromoEstComposee) {
+        this.idPromoEstComposee = idPromoEstComposee;
+    }
+
+    public PromoEntity getPromo() {
+        return promo;
+    }
+
+    public void setPromo(PromoEntity promo) {
+        this.promo = promo;
+    }
+
+    public ModuleEntity getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleEntity module) {
+        this.module = module;
     }
 }

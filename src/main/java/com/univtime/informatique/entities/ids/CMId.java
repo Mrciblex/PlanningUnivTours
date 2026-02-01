@@ -5,6 +5,7 @@ import jakarta.persistence.Embeddable;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class CMId implements Serializable {
@@ -32,5 +33,22 @@ public class CMId implements Serializable {
         this.idPromo = idPromo;
         this.idComposante = idComposante;
         this.idRepartitionSemaine = idRepartitionSemaine;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idProf, idPromo, idComposante, idRepartitionSemaine);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CMId other = (CMId) obj;
+        return Objects.equals(this.idProf, other.idProf)
+                && Objects.equals(this.idPromo, other.idPromo)
+                && Objects.equals(this.idComposante, other.idComposante)
+                && Objects.equals(this.idRepartitionSemaine, other.idRepartitionSemaine);
     }
 }

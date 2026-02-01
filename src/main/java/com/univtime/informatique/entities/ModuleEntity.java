@@ -19,6 +19,9 @@ public class ModuleEntity {
     @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
     private List<PromoEstComposeeEntity> promoEstComposeeEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
+    private List<ComposanteEntity> composanteEntities = new ArrayList<>();
+
     public ModuleEntity() {
 
     }

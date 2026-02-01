@@ -39,7 +39,7 @@ public class ComposanteEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "idModule", nullable = false)
-    private ModuleEntity idModule;
+    private ModuleEntity module;
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
     private List<CMEntity> cmEntities = new ArrayList<>();
@@ -47,23 +47,32 @@ public class ComposanteEntity {
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
     private List<TDEntity> tdEntities = new ArrayList<>();
 
+    @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
+    private List<TPEntity> tpEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
+    private List<CoursEntity> coursEntities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
+    private List<BesoinSalleEntity> besoinSalleEntities = new ArrayList<>();
+
     public ComposanteEntity() {
 
     }
 
-    public ComposanteEntity(Integer idComposante, String nomCoposante, Integer volumeHoraireTotal, ModuleEntity idModule) {
+    public ComposanteEntity(Integer idComposante, String nomCoposante, Integer volumeHoraireTotal, ModuleEntity module) {
         this.idComposante = idComposante;
         this.nomCoposante = nomCoposante;
         this.volumeHoraireTotal = volumeHoraireTotal;
-        this.idModule = idModule;
+        this.module = module;
     }
 
-    public ModuleEntity getIdModule() {
-        return idModule;
+    public ModuleEntity getModule() {
+        return module;
     }
 
-    public void setIdModule(ModuleEntity idModule) {
-        this.idModule = idModule;
+    public void setmodule(ModuleEntity module) {
+        this.module = module;
     }
 
     public String getNomCoposante() {
