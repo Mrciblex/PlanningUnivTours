@@ -231,6 +231,9 @@ public class UnivTime {
                                 }
                             }
                             System.out.println("CM " + cmGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+
+                            // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
+                            // Le cours à ajouter,
                         });
 
                 td.stream()
