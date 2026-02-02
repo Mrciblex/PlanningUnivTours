@@ -109,7 +109,7 @@ public class UnivTime {
         promo.add(new SousGroupe("G1A", 10));
         promo.add(new SousGroupe("G1B", 10));
         promo.add(new SousGroupe("G2A", 10));
-        promo.add(new SousGroupe("G2A", 10));
+        promo.add(new SousGroupe("G2B", 10));
 
         List<Composante> composantes = new ArrayList<>();
         composantes.add(new Composante("Maths", 2 * 60, 2 * 60, 2 * 60));
@@ -120,7 +120,8 @@ public class UnivTime {
         HashMap<Integer, Integer> repartitionSemaineCM = new HashMap<>();
         repartitionSemaineCM.put(1, 2); // Première semaine contient 2 fois x composition(prof, composante, promo)
         cm.add(new CM(profs.get(1), composantes.get(1), promo, repartitionSemaineCM)); // CM - HELENE BROUARD - ADMIN BD - G1A,G1B,G2A,G2B - S1 x2
-        cm.add(new CM(profs.get(3), composantes.get(1), promo, repartitionSemaineCM)); // CM - HELENE BROUARD - ADMIN BD - G1A,G1B,G2A,G2B - S1 x2
+
+        List<TP> td = new ArrayList<>();
 
         List<TP> tp = new ArrayList<>();
         HashMap<Integer, Integer> repartitionSemaineTP = new HashMap<>();
@@ -128,9 +129,9 @@ public class UnivTime {
         tp.add(new TP(profs.get(1), composantes.get(1), List.of(promo.get(0)), repartitionSemaineTP)); // TP - HELENE BROUARD - ADMIN BD - G1A - S1 x1
         tp.add(new TP(profs.get(1), composantes.get(1), List.of(promo.get(2)), repartitionSemaineTP)); // TP - HELENE BROUARD - ADMIN BD - G2A - S1 x1
 
-        System.out.println(cm);
+        //System.out.println(cm);
         //System.out.println(td);
-        System.out.println(tp);
+        //System.out.println(tp);
 
         /**
          * Boucle sur tout les jours du semestre
@@ -214,8 +215,53 @@ public class UnivTime {
                 return Double.compare(ratio2, ratio1); // Plus le ratio est élevé, plus il est prioritaire
             });
 
+            System.out.println("COURS QUI DOIVENT ÊTRE PLACER ------------");
+            System.out.println("SEMAINE " + currentWeek + " : ");
             for (Professeurs prof : profs) {
-                System.out.println(prof);
+                cm.stream()
+                        .filter(cours -> cours.prof().equals(prof))
+                        .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                        .forEach(cours -> {
+                            StringBuilder cmGroupes = new StringBuilder();
+                            for(int sg = 0; sg < cours.participants.size(); sg++){
+                                if (sg == cours.participants.size() - 1){
+                                    cmGroupes.append(cours.participants.get(sg).nomSousGroupe());
+                                }else{
+                                    cmGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
+                                }
+                            }
+                            System.out.println("CM " + cmGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+                        });
+
+                td.stream()
+                        .filter(cours -> cours.prof().equals(prof))
+                        .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                        .forEach(cours -> {
+                            StringBuilder tdGroupes = new StringBuilder();
+                            for(int sg = 0; sg < cours.participants.size(); sg++){
+                                if (sg == cours.participants.size() - 1){
+                                    tdGroupes.append(cours.participants.get(sg).nomSousGroupe());
+                                }else{
+                                    tdGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
+                                }
+                            }
+                            System.out.println("TD " + tdGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+                        });
+
+                tp.stream()
+                        .filter(cours -> cours.prof().equals(prof))
+                        .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                        .forEach(cours -> {
+                            StringBuilder tpGroupes = new StringBuilder();
+                            for(int sg = 0; sg < cours.participants.size(); sg++){
+                                if (sg == cours.participants.size() - 1){
+                                    tpGroupes.append(cours.participants.get(sg).nomSousGroupe());
+                                }else{
+                                    tpGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
+                                }
+                            }
+                            System.out.println("TP " + tpGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+                        });
             }
         }
 
