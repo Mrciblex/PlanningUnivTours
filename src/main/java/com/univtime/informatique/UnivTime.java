@@ -138,6 +138,7 @@ public class UnivTime {
          */
         long nbSemaine = ChronoUnit.WEEKS.between(firstWeek, lastWeek) + 1;
         Map<Integer, Map<Integer, List<Slot>>> slotsStorage = new HashMap<>();
+
         for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++) {
             // Début et fin de la semaine du calendrier
             LocalDate weekStart = firstWeek.plusWeeks(weekOffset);
@@ -234,6 +235,10 @@ public class UnivTime {
 
                             // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
                             // Le cours à ajouter,
+                            // Optimisation à faire : on ne recalcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
+                            // Après on re-fait juste la moyenne
+
+                            calcBestPlacement(slotsStorage.get(currentWeek), cours);
                         });
 
                 td.stream()
@@ -279,6 +284,15 @@ public class UnivTime {
             });
         });
         */
+    }
+
+    static List<Slot> calcBestPlacement(Map<Integer, List<Slot>> slotsStorageWeek, CM cours){
+        List<Slot> bestPlacement = new ArrayList<>();
+        for (int i = 0; i < slotsStorageWeek.size(); i++){
+            List<Slot> slots = slotsStorageWeek.get(i); // Slot of the day
+
+        }
+        return null;
     }
 
     static int getDisponibiliteMinutes(Professeurs p) {
@@ -327,16 +341,6 @@ public class UnivTime {
             List<DayOfWeek> excludeDays
     ) {
         return excludeDays.contains(actualDate.getDayOfWeek());
-    }
-
-    record Semestre(
-            LocalDate debut,
-            LocalDate fin,
-            long dureeJours
-    ) {
-        Semestre(LocalDate debut, LocalDate fin) {
-            this(debut, fin, ChronoUnit.DAYS.between(debut, fin) + 1);
-        }
     }
 
     record PlanningPeriodMinutes(
@@ -496,7 +500,8 @@ public class UnivTime {
             TypeCours typeCours,
             Composante composante,
             Professeurs prof,
-            List<SousGroupe> participants
+            List<SousGroupe> participants,
+            int Score
     ) {
     }
 
