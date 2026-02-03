@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class SousGroupeRepository {
+import com.univtime.informatique.entities.SousGroupeEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SousGroupeRepository extends JpaRepository<SousGroupeEntity, Integer> {
+
 }

@@ -1,4 +1,8 @@
 package com.univtime.informatique.repositories;
 
-public class JourRepository {
+import com.univtime.informatique.entities.DisponibiliteEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface JourRepository extends JpaRepository<DisponibiliteEntity, Long> {
+
 }
