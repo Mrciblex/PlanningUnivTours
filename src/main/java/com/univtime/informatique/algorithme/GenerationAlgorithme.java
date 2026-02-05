@@ -1,8 +1,6 @@
 package com.univtime.informatique.algorithme;
 
-import com.univtime.informatique.dtos.CoursDto;
 import com.univtime.informatique.dtos.ProfesseurDto;
-import com.univtime.informatique.dtos.SousGroupeDto;
 import com.univtime.informatique.helpers.MomentBanalise;
 import com.univtime.informatique.helpers.PlanningPeriodMinutes;
 import com.univtime.informatique.helpers.Semestre;
@@ -16,21 +14,8 @@ import java.util.List;
 
 public class GenerationAlgorithme {
     private static int slotStep = 15;
-    private static Semestre semestre;
     private static List<DayOfWeek> excludedDays = new ArrayList<>();
-    private static List<ProfesseurPojo> professeurPojos = new ArrayList<>();
     private static List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<>();
-    private static List<SousGroupePojo> promo = new ArrayList<>();
-    private static List<ComposantePojo> composantes = new ArrayList<>();
-
-
-    public static List<ProfesseurPojo> getProfesseurPojos() {
-        return professeurPojos;
-    }
-
-    public static void setProfesseurPojos(List<ProfesseurPojo> professeurPojos) {
-        GenerationAlgorithme.professeurPojos = professeurPojos;
-    }
 
     public static List<PlanningPeriodMinutes> getPlanningPossiblePeriod() {
         return planningPossiblePeriod;
@@ -38,14 +23,6 @@ public class GenerationAlgorithme {
 
     public static void setPlanningPossiblePeriod(List<PlanningPeriodMinutes> planningPossiblePeriod) {
         GenerationAlgorithme.planningPossiblePeriod = planningPossiblePeriod;
-    }
-
-    public static Semestre getSemestre() {
-        return semestre;
-    }
-
-    public static void setSemestre(Semestre semestre) {
-        GenerationAlgorithme.semestre = semestre;
     }
 
     public static List<DayOfWeek> getExcludedDays() {
@@ -111,24 +88,152 @@ public class GenerationAlgorithme {
         return null;
     }
 
-    public static List<CoursPojo> generatePlanning(){
+    private static List<PlanningPeriodMinutes> generatePlanningPossiblePeriod(){
+        List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<PlanningPeriodMinutes>();
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(8 * 60, 10 * 60)); // 8h00 à 10h00
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(10 * 60 + 15, 12 * 60 + 15)); // 10h15 à 12h15
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(13 * 60 + 30, 15 * 60 + 30)); // 13h30 à 15h30
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(15 * 60 + 45, 17 * 60 + 45)); // 15h45 à 17h45
+        planningPossiblePeriod.add(new PlanningPeriodMinutes(18 * 60, 20 * 60)); // 18h00 à 20h00
+
+        return planningPossiblePeriod;
+    }
+
+    private static List<DayOfWeek> generateExcludedDays(){
+        List<DayOfWeek> excludedDays = new ArrayList<DayOfWeek>();
+        excludedDays.add(DayOfWeek.SATURDAY); // Samedi
+        excludedDays.add(DayOfWeek.SUNDAY); // Dimanche
+
+        return excludedDays;
+    }
+
+    public static List<CoursPojo> generatePlanning(LocalDate debutSemestre, LocalDate finSemestre, Integer idPromo) {
         // INSERT TEST DATA
+        /**
+         * Paramètres globaux
+         */
+        // Hard coded (15 min)
+        int slotStep = getSlotStep();
+
+        // Dynamique (non lié à la BD -> saisie lors de la génération)
+        Semestre semestre = new Semestre(debutSemestre, finSemestre);
+
+        // Hard coded
+        List<DayOfWeek> excludedDays = generateExcludedDays();
+
+        // Hard coded
+        List<PlanningPeriodMinutes> planningPossiblePeriod = generatePlanningPossiblePeriod();
+
+        GenerationAlgorithme.setExcludedDays(excludedDays);
+        GenerationAlgorithme.setPlanningPossiblePeriod(planningPossiblePeriod);
+
+        /**
+         * Paramètres dynamiques de la base de données
+         */
+        // Tout les sous groupes de la promo actuelle selectionner (paramètre idPromo)
+        List<SousGroupePojo> promo = GenerationAlgorithme.testDataPromo();
+
+        // Toutes les composantes concerné par cette promo
+        List<ComposantePojo> composantes = testDataComposantes();
+
+        // Tout les professeurs avec leurs jours et leurs disponibilités concerné par cette promo
+        List<ProfesseurPojo> professeurs = GenerationAlgorithme.testDataProfesseurs();
+
         return null;
     }
+
+
+
+    /**
+     * Fonction pour générer les données issues de la base données de test
+     */
 
     private static List<ProfesseurPojo> testDataProfesseurs(){
-        return null;
+        List<ProfesseurPojo> profs = new ArrayList<>();
+        // DISPO QUE LE MATIN (8h-12h15)
+        profs.add(new ProfesseurPojo(
+                        "Brouard",
+                        "Thierry",
+                        false,
+                        List.of(
+                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
+                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
+                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
+                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
+                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15)))
+                        )
+                )
+        );
+        // DISPO TOUT LE TEMPS
+        profs.add(new ProfesseurPojo(
+                        "Brouard",
+                        "Helene",
+                        false,
+                        List.of(
+                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
+                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
+                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
+                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
+                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 20 * 60)))
+                        )
+                )
+        );
+        // DISPO QUE LE MATIN (10h30-12h15) DONC MOINS DE 2H
+        profs.add(new ProfesseurPojo(
+                        "Desport",
+                        "Pierre",
+                        false,
+                        List.of(
+                                new JourPojo(1, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
+                                new JourPojo(2, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
+                                new JourPojo(3, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
+                                new JourPojo(4, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
+                                new JourPojo(5, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15)))
+                        )
+                )
+        );
+        // DISPO DECOUPER
+        profs.add(new ProfesseurPojo(
+                        "Cabet",
+                        "Aurore",
+                        false,
+                        List.of(
+                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
+                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
+                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
+                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
+                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45)))
+                        )
+                )
+        );
+        return profs;
     }
 
-    private static Semestre testDataSemestre(){
-        return null;
+    public static Semestre testDataSemestre(){
+        return new Semestre(
+                LocalDate.of(2025, 9, 1),
+                LocalDate.of(2025, 9, 7)
+        );
     }
 
-    private static List<PlanningPeriodMinutes> testDataPlanningPossiblePeriod(){
-        return null;
+    private static List<ComposantePojo> testDataComposantes(){
+        List<ComposantePojo> composantes = new ArrayList<>();
+        composantes.add(new ComposantePojo("Maths", 2 * 60, 2 * 60, 2 * 60));
+        composantes.add(new ComposantePojo("Admin BD", 2 * 60, 2 * 60, 2 * 60));
+        composantes.add(new ComposantePojo("Securite Logicielle", 2 * 60, 2 * 60, 2 * 60));
+
+        return composantes;
     }
 
+    private static List<SousGroupePojo> testDataPromo(){
+        List<SousGroupePojo> promo = new ArrayList<>();
+        promo.add(new SousGroupePojo("G1A", 10));
+        promo.add(new SousGroupePojo("G1B", 10));
+        promo.add(new SousGroupePojo("G2A", 10));
+        promo.add(new SousGroupePojo("G2B", 10));
 
+        return promo;
+    }
 
 
 }

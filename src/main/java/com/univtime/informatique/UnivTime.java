@@ -1,6 +1,12 @@
 package com.univtime.informatique;
 
+import com.univtime.informatique.algorithme.GenerationAlgorithme;
 import com.univtime.informatique.constants.TypeCours;
+import com.univtime.informatique.helpers.PlanningPeriodMinutes;
+import com.univtime.informatique.helpers.Semestre;
+import com.univtime.informatique.pojos.ComposantePojo;
+import com.univtime.informatique.pojos.ProfesseurPojo;
+import com.univtime.informatique.pojos.SousGroupePojo;
 import org.hibernate.query.spi.Limit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,99 +28,9 @@ public class UnivTime {
         System.out.println("Application lancé..");
         System.out.println("----------------- TEST ALGO -----------------");
 
-        int slotStep = 15;
-        List<Slot> slotsAvailable = new ArrayList<>();
-        Semestre semestre = new Semestre(
-                LocalDate.of(2025, 9, 1),
-                LocalDate.of(2025, 9, 7)
-        );
-
-        // On calcule les semaines du lundi au dimanche pas que 7 + 7 + 7...
-        // Donc si c'est pas par défaut setup comme ça, on corrige pour avoir un bon calcul du numSemaine
-        LocalDate firstWeek = semestre.debut().with(DayOfWeek.MONDAY);
-        LocalDate lastWeek = semestre.fin().with(DayOfWeek.MONDAY);
-
-        List<DayOfWeek> excludedDays = new ArrayList<>();
-        excludedDays.add(DayOfWeek.SATURDAY); // Samedi
-        excludedDays.add(DayOfWeek.SUNDAY); // Dimanche
-
-        List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<PlanningPeriodMinutes>();
-        planningPossiblePeriod.add(new PlanningPeriodMinutes(8 * 60, 10 * 60)); // 8h00 à 10h00
-        planningPossiblePeriod.add(new PlanningPeriodMinutes(10 * 60 + 15, 12 * 60 + 15)); // 10h15 à 12h15
-        planningPossiblePeriod.add(new PlanningPeriodMinutes(13 * 60 + 30, 15 * 60 + 30)); // 13h30 à 15h30
-        planningPossiblePeriod.add(new PlanningPeriodMinutes(15 * 60 + 45, 17 * 60 + 45)); // 15h45 à 17h45
-        planningPossiblePeriod.add(new PlanningPeriodMinutes(18 * 60, 20 * 60)); // 18h00 à 20h00
 
 
 
-        List<Professeurs> profs = new ArrayList<>();
-        // DISPO QUE LE MATIN (8h-12h15)
-        profs.add(new Professeurs(
-                        "Brouard",
-                        "Thierry",
-                        false,
-                        List.of(
-                                new Jours(1, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
-                                new Jours(2, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
-                                new Jours(3, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
-                                new Jours(4, List.of(new Disponibilite(8 * 60, 12 * 60 + 15))),
-                                new Jours(5, List.of(new Disponibilite(8 * 60, 12 * 60 + 15)))
-                        )
-                )
-        );
-        // DISPO TOUT LE TEMPS
-        profs.add(new Professeurs(
-                        "Brouard",
-                        "Helene",
-                        false,
-                        List.of(
-                                new Jours(1, List.of(new Disponibilite(8 * 60, 20 * 60))),
-                                new Jours(2, List.of(new Disponibilite(8 * 60, 20 * 60))),
-                                new Jours(3, List.of(new Disponibilite(8 * 60, 20 * 60))),
-                                new Jours(4, List.of(new Disponibilite(8 * 60, 20 * 60))),
-                                new Jours(5, List.of(new Disponibilite(8 * 60, 20 * 60)))
-                        )
-                )
-        );
-        // DISPO QUE LE MATIN (10h30-12h15) DONC MOINS DE 2H
-        profs.add(new Professeurs(
-                        "Desport",
-                        "Pierre",
-                        false,
-                        List.of(
-                                new Jours(1, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
-                                new Jours(2, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
-                                new Jours(3, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
-                                new Jours(4, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15))),
-                                new Jours(5, List.of(new Disponibilite(10 * 60 + 30, 12 * 60 + 15)))
-                        )
-                )
-        );
-        // DISPO DECOUPER
-        profs.add(new Professeurs(
-                        "Cabet",
-                        "Aurore",
-                        false,
-                        List.of(
-                                new Jours(1, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
-                                new Jours(2, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
-                                new Jours(3, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
-                                new Jours(4, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45))),
-                                new Jours(5, List.of(new Disponibilite(8 * 60, 10 * 60 + 15), new Disponibilite(15 * 60 + 45, 17 * 60 + 45)))
-                        )
-                )
-        );
-
-        List<SousGroupe> promo = new ArrayList<>();
-        promo.add(new SousGroupe("G1A", 10));
-        promo.add(new SousGroupe("G1B", 10));
-        promo.add(new SousGroupe("G2A", 10));
-        promo.add(new SousGroupe("G2B", 10));
-
-        List<Composante> composantes = new ArrayList<>();
-        composantes.add(new Composante("Maths", 2 * 60, 2 * 60, 2 * 60));
-        composantes.add(new Composante("Admin BD", 2 * 60, 2 * 60, 2 * 60));
-        composantes.add(new Composante("Securite Logicielle", 2 * 60, 2 * 60, 2 * 60));
 
         List<CM> cm = new ArrayList<>();
         HashMap<Integer, Integer> repartitionSemaineCM = new HashMap<>();

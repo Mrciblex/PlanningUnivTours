@@ -1,7 +1,6 @@
 package com.univtime.informatique.algorithme;
 
-import com.univtime.informatique.UnivTime;
-import com.univtime.informatique.dtos.CoursDto;
+import com.univtime.informatique.dtos.coursDto.CoursDto;
 
 import java.util.ArrayList;
 import java.util.List;

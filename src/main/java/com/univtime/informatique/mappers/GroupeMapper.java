@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.GroupeDto;
+import com.univtime.informatique.dtos.groupeDto.GroupeDto;
 import com.univtime.informatique.entities.GroupeEntity;
 
 public final class GroupeMapper {

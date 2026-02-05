@@ -1,23 +1,23 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.composanteDto;
 
 public class ComposanteDto {
-    private int idComposante;
+    private Integer idComposante;
     private String nomComposante;
-    private int volumeHoraireTotal;
-    private int volumeHoraireCM;
-    private int volumeHoraireTD;
-    private int volumeHoraireTP;
+    private Integer volumeHoraireTotal;
+    private Integer volumeHoraireCM;
+    private Integer volumeHoraireTD;
+    private Integer volumeHoraireTP;
     private Integer blocHoraireCM;
     private Integer blocHoraireTD;
     private Integer blocHoraireTP;
-    private int idModule;
+    private ModuleComposanteDto moduleDto;
 
     // Getters et Setters
-    public int getIdComposante() {
+    public Integer getIdComposante() {
         return idComposante;
     }
 
-    public void setIdComposante(int idComposante) {
+    public void setIdComposante(Integer idComposante) {
         this.idComposante = idComposante;
     }
 
@@ -29,35 +29,35 @@ public class ComposanteDto {
         this.nomComposante = nomComposante;
     }
 
-    public int getVolumeHoraireTotal() {
+    public Integer getVolumeHoraireTotal() {
         return volumeHoraireTotal;
     }
 
-    public void setVolumeHoraireTotal(int volumeHoraireTotal) {
+    public void setVolumeHoraireTotal(Integer volumeHoraireTotal) {
         this.volumeHoraireTotal = volumeHoraireTotal;
     }
 
-    public int getVolumeHoraireCM() {
+    public Integer getVolumeHoraireCM() {
         return volumeHoraireCM;
     }
 
-    public void setVolumeHoraireCM(int volumeHoraireCM) {
+    public void setVolumeHoraireCM(Integer volumeHoraireCM) {
         this.volumeHoraireCM = volumeHoraireCM;
     }
 
-    public int getVolumeHoraireTD() {
+    public Integer getVolumeHoraireTD() {
         return volumeHoraireTD;
     }
 
-    public void setVolumeHoraireTD(int volumeHoraireTD) {
+    public void setVolumeHoraireTD(Integer volumeHoraireTD) {
         this.volumeHoraireTD = volumeHoraireTD;
     }
 
-    public int getVolumeHoraireTP() {
+    public Integer getVolumeHoraireTP() {
         return volumeHoraireTP;
     }
 
-    public void setVolumeHoraireTP(int volumeHoraireTP) {
+    public void setVolumeHoraireTP(Integer volumeHoraireTP) {
         this.volumeHoraireTP = volumeHoraireTP;
     }
 
@@ -85,12 +85,10 @@ public class ComposanteDto {
         this.blocHoraireTP = blocHoraireTP;
     }
 
-    public int getIdModule() {
-        return idModule;
-    }
+    public ModuleComposanteDto getModuleDto() { return moduleDto; }
 
-    public void setIdModule(int idModule) {
-        this.idModule = idModule;
+    public void setModuleDto(ModuleComposanteDto moduleComposanteDto) {
+        this.moduleDto = moduleComposanteDto;
     }
 }
 
