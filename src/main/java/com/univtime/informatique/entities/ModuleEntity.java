@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "modules")
@@ -17,19 +17,10 @@ public class ModuleEntity {
     private String nomModule;
 
     @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
-    private List<PromoEstComposeeEntity> promoEstComposeeEntities = new ArrayList<>();
+    private Set<PromoEstComposeeEntity> promoEstComposeeEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "module", fetch = FetchType.LAZY)
-    private List<ComposanteEntity> composanteEntities = new ArrayList<>();
-
-    public ModuleEntity() {
-
-    }
-
-    public ModuleEntity(Integer idModule, String nomModule) {
-        this.idModule = idModule;
-        this.nomModule = nomModule;
-    }
+    private Set<ComposanteEntity> composanteEntities = new HashSet<>();
 
     public Integer getIdModule() {
         return idModule;
@@ -45,5 +36,21 @@ public class ModuleEntity {
 
     public void setNomModule(String nomModule) {
         this.nomModule = nomModule;
+    }
+
+    public Set<PromoEstComposeeEntity> getPromoEstComposeeEntities() {
+        return promoEstComposeeEntities;
+    }
+
+    public void setPromoEstComposeeEntities(Set<PromoEstComposeeEntity> promoEstComposeeEntities) {
+        this.promoEstComposeeEntities = promoEstComposeeEntities;
+    }
+
+    public Set<ComposanteEntity> getComposanteEntities() {
+        return composanteEntities;
+    }
+
+    public void setComposanteEntities(Set<ComposanteEntity> composanteEntities) {
+        this.composanteEntities = composanteEntities;
     }
 }

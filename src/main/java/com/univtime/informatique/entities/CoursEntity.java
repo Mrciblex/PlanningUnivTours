@@ -2,10 +2,9 @@ package com.univtime.informatique.entities;
 
 import com.univtime.informatique.constants.TypeCours;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "cours")
@@ -37,29 +36,14 @@ public class CoursEntity {
     private SalleEntity salle;
 
     @OneToMany(mappedBy = "cours", fetch = FetchType.LAZY)
-    private List<ParticipeAEntity> participeAEntities = new ArrayList<>();
+    private Set<ParticipeAEntity> participeAEntities = new HashSet<>();
 
-    public CoursEntity() {
-
-    }
-
-    public CoursEntity(Integer idCours, LocalDateTime heureDebutCours, LocalDateTime heureFinCours, TypeCours typeCours,
-                       ComposanteEntity composante, ProfesseurEntity professeur, SalleEntity salle) {
-        this.idCours = idCours;
-        this.heureDebutCours = heureDebutCours;
-        this.heureFinCours = heureFinCours;
-        this.typeCours = typeCours;
-        this.composante = composante;
-        this.professeur = professeur;
-        this.salle = salle;
-    }
-
-    public Integer getId() {
+    public Integer getIdCours() {
         return idCours;
     }
 
-    public void setId(Integer id) {
-        this.idCours = id;
+    public void setIdCours(Integer idCours) {
+        this.idCours = idCours;
     }
 
     public LocalDateTime getHeureDebutCours() {
@@ -108,5 +92,13 @@ public class CoursEntity {
 
     public void setSalle(SalleEntity salle) {
         this.salle = salle;
+    }
+
+    public Set<ParticipeAEntity> getParticipeAEntities() {
+        return participeAEntities;
+    }
+
+    public void setParticipeAEntities(Set<ParticipeAEntity> participeAEntities) {
+        this.participeAEntities = participeAEntities;
     }
 }

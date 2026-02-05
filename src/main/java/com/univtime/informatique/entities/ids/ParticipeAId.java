@@ -27,6 +27,22 @@ public class ParticipeAId implements Serializable {
         this.idCours = idCours;
     }
 
+    public Integer getIdSousGroupe() {
+        return idSousGroupe;
+    }
+
+    public void setIdSousGroupe(Integer idSousGroupe) {
+        this.idSousGroupe = idSousGroupe;
+    }
+
+    public Integer getIdCours() {
+        return idCours;
+    }
+
+    public void setIdCours(Integer idCours) {
+        this.idCours = idCours;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idSousGroupe, idCours);

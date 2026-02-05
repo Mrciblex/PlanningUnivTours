@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "jours")
@@ -20,17 +20,7 @@ public class JourEntity {
     private ProfesseurEntity professeur;
 
     @OneToMany(mappedBy = "jour", fetch = FetchType.LAZY)
-    private List<DisponibiliteEntity> disponibiliteEntities = new ArrayList<>();
-
-    public JourEntity() {
-
-    }
-
-    public JourEntity(Integer idJour, Integer jourSemaine, ProfesseurEntity professeur) {
-        this.idJour = idJour;
-        this.jourSemaine = jourSemaine;
-        this.professeur = professeur;
-    }
+    private Set<DisponibiliteEntity> disponibiliteEntities = new HashSet<>();
 
     public Integer getIdJour() {
         return idJour;
@@ -54,5 +44,13 @@ public class JourEntity {
 
     public void setProfesseur(ProfesseurEntity professeur) {
         this.professeur = professeur;
+    }
+
+    public Set<DisponibiliteEntity> getDisponibiliteEntities() {
+        return disponibiliteEntities;
+    }
+
+    public void setDisponibiliteEntities(Set<DisponibiliteEntity> disponibiliteEntities) {
+        this.disponibiliteEntities = disponibiliteEntities;
     }
 }

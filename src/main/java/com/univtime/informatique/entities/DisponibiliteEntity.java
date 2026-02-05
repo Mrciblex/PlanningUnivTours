@@ -19,17 +19,6 @@ public class DisponibiliteEntity {
     @JoinColumn(name = "idJour", nullable = false)
     private JourEntity jour;
 
-    public DisponibiliteEntity() {
-
-    }
-
-    public DisponibiliteEntity(Integer idDispo, Integer heureDebutDispo, Integer heureFinDispo, JourEntity jour) {
-        this.idDispo = idDispo;
-        this.heureDebutDispo = heureDebutDispo;
-        this.heureFinDispo = heureFinDispo;
-        this.jour = jour;
-    }
-
     public Integer getIdDispo() {
         return idDispo;
     }

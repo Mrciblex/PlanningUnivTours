@@ -29,10 +29,6 @@ public class CMEntity {
     @JoinColumn(name = "idRepartitionSemaine", referencedColumnName = "idRepartitionSemaine", insertable = false, updatable = false)
     private RepartitionSemaineEntity repartitionSemaine;
 
-    public CMEntity() {
-
-    }
-
     public CMId getIdCM() {
         return idCM;
     }

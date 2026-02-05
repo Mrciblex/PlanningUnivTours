@@ -28,10 +28,6 @@ public class TDEntity {
     @JoinColumn(name = "idRepartitionSemaine", referencedColumnName = "idRepartitionSemaine", insertable = false, updatable = false)
     private RepartitionSemaineEntity repartitionSemaine;
 
-    public TDEntity() {
-
-    }
-
     public Integer getIdTD() {
         return idTD;
     }

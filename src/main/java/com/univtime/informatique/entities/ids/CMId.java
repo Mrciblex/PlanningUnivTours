@@ -35,6 +35,38 @@ public class CMId implements Serializable {
         this.idRepartitionSemaine = idRepartitionSemaine;
     }
 
+    public Integer getIdProf() {
+        return idProf;
+    }
+
+    public void setIdProf(Integer idProf) {
+        this.idProf = idProf;
+    }
+
+    public Integer getIdPromo() {
+        return idPromo;
+    }
+
+    public void setIdPromo(Integer idPromo) {
+        this.idPromo = idPromo;
+    }
+
+    public Integer getIdComposante() {
+        return idComposante;
+    }
+
+    public void setIdComposante(Integer idComposante) {
+        this.idComposante = idComposante;
+    }
+
+    public Integer getIdRepartitionSemaine() {
+        return idRepartitionSemaine;
+    }
+
+    public void setIdRepartitionSemaine(Integer idRepartitionSemaine) {
+        this.idRepartitionSemaine = idRepartitionSemaine;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idProf, idPromo, idComposante, idRepartitionSemaine);

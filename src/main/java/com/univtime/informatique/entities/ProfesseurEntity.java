@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "professeurs")
@@ -23,30 +23,19 @@ public class ProfesseurEntity {
     private Boolean intervenantExterieur;
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<CMEntity> cmEntities = new ArrayList<>();
+    private Set<CMEntity> cmEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<TDEntity> tdEntities = new ArrayList<>();
+    private Set<TDEntity> tdEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<TPEntity> tpEntities = new ArrayList<>();
+    private Set<TPEntity> tpEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<CoursEntity> coursEntities = new ArrayList<>();
+    private Set<CoursEntity> coursEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "professeur", fetch = FetchType.LAZY)
-    private List<JourEntity> jourEntities = new ArrayList<>();
-
-    public ProfesseurEntity() {
-
-    }
-
-    public ProfesseurEntity(Integer idProf, String nomProf, String prenomProf, Boolean intervenantProf) {
-        this.idProf = idProf;
-        this.nomProf = nomProf;
-        this.prenomProf = prenomProf;
-        this.intervenantExterieur = intervenantProf;
-    }
+    private Set<JourEntity> jourEntities = new HashSet<>();
 
     public Integer getIdProf() {
         return idProf;
@@ -78,5 +67,45 @@ public class ProfesseurEntity {
 
     public void setIntervenantExterieur(Boolean intervenantExterieur) {
         this.intervenantExterieur = intervenantExterieur;
+    }
+
+    public Set<CMEntity> getCmEntities() {
+        return cmEntities;
+    }
+
+    public void setCmEntities(Set<CMEntity> cmEntities) {
+        this.cmEntities = cmEntities;
+    }
+
+    public Set<TDEntity> getTdEntities() {
+        return tdEntities;
+    }
+
+    public void setTdEntities(Set<TDEntity> tdEntities) {
+        this.tdEntities = tdEntities;
+    }
+
+    public Set<TPEntity> getTpEntities() {
+        return tpEntities;
+    }
+
+    public void setTpEntities(Set<TPEntity> tpEntities) {
+        this.tpEntities = tpEntities;
+    }
+
+    public Set<CoursEntity> getCoursEntities() {
+        return coursEntities;
+    }
+
+    public void setCoursEntities(Set<CoursEntity> coursEntities) {
+        this.coursEntities = coursEntities;
+    }
+
+    public Set<JourEntity> getJourEntities() {
+        return jourEntities;
+    }
+
+    public void setJourEntities(Set<JourEntity> jourEntities) {
+        this.jourEntities = jourEntities;
     }
 }

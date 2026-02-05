@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "sousGroupes")
@@ -24,21 +24,10 @@ public class SousGroupeEntity {
     private GroupeEntity groupe;
 
     @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY)
-    private List<TPEntity> tpEntities = new ArrayList<>();
+    private Set<TPEntity> tpEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY)
-    private List<ParticipeAEntity> participeAEntities = new ArrayList<>();
-
-    public SousGroupeEntity() {
-
-    }
-
-    public SousGroupeEntity(Integer idSousGroupe, String nomSousGroupe, Integer nbEtuSousGroupe, GroupeEntity groupe) {
-        this.idSousGroupe = idSousGroupe;
-        this.nomSousGroupe = nomSousGroupe;
-        this.nbEtuSousGroupe = nbEtuSousGroupe;
-        this.groupe = groupe;
-    }
+    private Set<ParticipeAEntity> participeAEntities = new HashSet<>();
 
     public Integer getIdSousGroupe() {
         return idSousGroupe;
@@ -70,5 +59,21 @@ public class SousGroupeEntity {
 
     public void setGroupe(GroupeEntity groupe) {
         this.groupe = groupe;
+    }
+
+    public Set<TPEntity> getTpEntities() {
+        return tpEntities;
+    }
+
+    public void setTpEntities(Set<TPEntity> tpEntities) {
+        this.tpEntities = tpEntities;
+    }
+
+    public Set<ParticipeAEntity> getParticipeAEntities() {
+        return participeAEntities;
+    }
+
+    public void setParticipeAEntities(Set<ParticipeAEntity> participeAEntities) {
+        this.participeAEntities = participeAEntities;
     }
 }
