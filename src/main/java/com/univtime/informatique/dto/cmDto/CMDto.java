@@ -6,54 +6,69 @@ import com.univtime.informatique.entities.PromoEntity;
 import com.univtime.informatique.entities.RepartitionSemaineEntity;
 import com.univtime.informatique.entities.ids.CMId;
 
+import java.util.Objects;
+
 public class CMDto {
-    private CMId idCM;
-    private ProfesseurEntity professeur;
-    private PromoEntity promo;
-    private ComposanteEntity composante;
-    private RepartitionSemaineEntity repartitionSemaine;
+    private ProfesseurCMDto professeurDto;
+    private PromoCMDto promoDto;
+    private ComposanteCMDto composanteDto;
+    private RepartitionSemaineCMDto repartitionSemaineDto;
 
-    public CMEntity() {
+    public CMDto() {
 
     }
 
-    public CMId getIdCM() {
-        return idCM;
+    public CMDto(ProfesseurCMDto professeurDto, PromoCMDto promoDto, ComposanteCMDto composanteDto, RepartitionSemaineCMDto repartitionSemaineDto) {
+        this.professeurDto = professeurDto;
+        this.promoDto = promoDto;
+        this.composanteDto = composanteDto;
+        this.repartitionSemaineDto = repartitionSemaineDto;
     }
 
-    public void setIdCM(CMId idCM) {
-        this.idCM = idCM;
+    public ProfesseurCMDto getProfesseurDto() {
+        return professeurDto;
     }
 
-    public ProfesseurEntity getProfesseur() {
-        return professeur;
+    public void setProfesseurDto(ProfesseurCMDto professeurDto) {
+        this.professeurDto = professeurDto;
     }
 
-    public void setProfesseur(ProfesseurEntity professeur) {
-        this.professeur = professeur;
+    public PromoCMDto getPromoDto() {
+        return promoDto;
     }
 
-    public PromoEntity getPromo() {
-        return promo;
+    public void setPromoDto(PromoCMDto promoDto) {
+        this.promoDto = promoDto;
     }
 
-    public void setPromo(PromoEntity promo) {
-        this.promo = promo;
+    public ComposanteCMDto getComposanteDto() {
+        return composanteDto;
     }
 
-    public ComposanteEntity getComposante() {
-        return composante;
+    public void setComposanteDto(ComposanteCMDto composanteDto) {
+        this.composanteDto = composanteDto;
     }
 
-    public void setComposante(ComposanteEntity composante) {
-        this.composante = composante;
+    public RepartitionSemaineCMDto getRepartitionSemaineDto() {
+        return repartitionSemaineDto;
     }
 
-    public RepartitionSemaineEntity getRepartitionSemaine() {
-        return repartitionSemaine;
+    public void setRepartitionSemaineDto(RepartitionSemaineCMDto repartitionSemaineDto) {
+        this.repartitionSemaineDto = repartitionSemaineDto;
     }
 
-    public void setRepartitionSemaine(RepartitionSemaineEntity repartitionSemaine) {
-        this.repartitionSemaine = repartitionSemaine;
+    @Override
+    public int hashCode() {
+        return Objects.hash(professeurDto, promoDto, composanteDto, repartitionSemaineDto);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CMDto cmDto = (CMDto) obj;
+        return Objects.equals(professeurDto, cmDto.professeurDto)
+                && Objects.equals(promoDto, cmDto.promoDto)
+                && Objects.equals(composanteDto, cmDto.composanteDto)
+                && Objects.equals(repartitionSemaineDto, cmDto.repartitionSemaineDto);
     }
 }

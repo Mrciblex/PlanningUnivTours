@@ -1,5 +1,8 @@
 package com.univtime.informatique.dto.composanteDto;
 
+import java.util.Objects;
+import java.util.Set;
+
 public class ComposanteDto {
     private Integer idComposante;
     private String nomComposante;
@@ -11,6 +14,33 @@ public class ComposanteDto {
     private Integer blocHoraireTD;
     private Integer blocHoraireTP;
     private ModuleComposanteDto moduleDto;
+    private Set<CMComposanteDto> cmDto;
+    private Set<TDComposanteDto> tdDto;
+    private Set<TPComposanteDto> tpDto;
+    private Set<CoursComposanteDto> coursDto;
+    private Set<BesoinSalleComposanteDto> besoinSalleDto;
+
+    public ComposanteDto(){
+
+    }
+
+    public ComposanteDto(Integer idComposante, String nomComposante, Integer volumeHoraireTotal, Integer volumeHoraireCM, Integer volumeHoraireTD, Integer volumeHoraireTP, Integer blocHoraireCM, Integer blocHoraireTD, Integer blocHoraireTP, ModuleComposanteDto moduleDto, Set<CMComposanteDto> cmDto, Set<TDComposanteDto> tdDto, Set<TPComposanteDto> tpDto, Set<CoursComposanteDto> coursDto, Set<BesoinSalleComposanteDto> besoinSalleDto) {
+        this.idComposante = idComposante;
+        this.nomComposante = nomComposante;
+        this.volumeHoraireTotal = volumeHoraireTotal;
+        this.volumeHoraireCM = volumeHoraireCM;
+        this.volumeHoraireTD = volumeHoraireTD;
+        this.volumeHoraireTP = volumeHoraireTP;
+        this.blocHoraireCM = blocHoraireCM;
+        this.blocHoraireTD = blocHoraireTD;
+        this.blocHoraireTP = blocHoraireTP;
+        this.moduleDto = moduleDto;
+        this.cmDto = cmDto;
+        this.tdDto = tdDto;
+        this.tpDto = tpDto;
+        this.coursDto = coursDto;
+        this.besoinSalleDto = besoinSalleDto;
+    }
 
     // Getters et Setters
     public Integer getIdComposante() {
@@ -90,5 +120,58 @@ public class ComposanteDto {
     public void setModuleDto(ModuleComposanteDto moduleComposanteDto) {
         this.moduleDto = moduleComposanteDto;
     }
+
+    public Set<CMComposanteDto> getCmDto() {
+        return cmDto;
+    }
+
+    public void setCmDto(Set<CMComposanteDto> cmDto) {
+        this.cmDto = cmDto;
+    }
+
+    public Set<TDComposanteDto> getTdDto() {
+        return tdDto;
+    }
+
+    public void setTdDto(Set<TDComposanteDto> tdDto) {
+        this.tdDto = tdDto;
+    }
+
+    public Set<TPComposanteDto> getTpDto() {
+        return tpDto;
+    }
+
+    public void setTpDto(Set<TPComposanteDto> tpDto) {
+        this.tpDto = tpDto;
+    }
+
+    public Set<CoursComposanteDto> getCoursDto() {
+        return coursDto;
+    }
+
+    public void setCoursDto(Set<CoursComposanteDto> coursDto) {
+        this.coursDto = coursDto;
+    }
+
+    public Set<BesoinSalleComposanteDto> getBesoinSalleDto() {
+        return besoinSalleDto;
+    }
+
+    public void setBesoinSalleDto(Set<BesoinSalleComposanteDto> besoinSalleDto) {
+        this.besoinSalleDto = besoinSalleDto;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(idComposante);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ComposanteDto that = (ComposanteDto) obj;
+        return Objects.equals(idComposante, that.idComposante);
+    }
+
 }
 

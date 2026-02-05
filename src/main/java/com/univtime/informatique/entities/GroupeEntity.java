@@ -20,7 +20,7 @@ public class GroupeEntity {
     private Integer nbEtuGroupe;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "idPromo", nullable = false)
+    @JoinColumn(name = "idPromo", nullable = false)
     private PromoEntity promo;
 
     @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY)
