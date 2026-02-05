@@ -2,7 +2,6 @@ package com.univtime.informatique.dto.coursDto;
 
 import com.univtime.informatique.constants.TypeCours;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -116,4 +115,3 @@ public class CoursDto {
         return Objects.equals(idCours, coursDto.idCours);
     }
 }
-

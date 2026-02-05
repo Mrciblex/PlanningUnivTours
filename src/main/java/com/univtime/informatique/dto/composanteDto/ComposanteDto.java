@@ -172,6 +172,4 @@ public class ComposanteDto {
         ComposanteDto that = (ComposanteDto) obj;
         return Objects.equals(idComposante, that.idComposante);
     }
-
 }
-

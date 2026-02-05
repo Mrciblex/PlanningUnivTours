@@ -83,5 +83,4 @@ public class GroupeDto {
         GroupeDto groupeDto = (GroupeDto) obj;
         return Objects.equals(idGroupe, groupeDto.idGroupe);
     }
-
 }

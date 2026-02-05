@@ -1,11 +1,5 @@
 package com.univtime.informatique.dto.cmDto;
 
-import com.univtime.informatique.entities.ComposanteEntity;
-import com.univtime.informatique.entities.ProfesseurEntity;
-import com.univtime.informatique.entities.PromoEntity;
-import com.univtime.informatique.entities.RepartitionSemaineEntity;
-import com.univtime.informatique.entities.ids.CMId;
-
 import java.util.Objects;
 
 public class CMDto {
