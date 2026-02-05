@@ -1,5 +1,6 @@
 package com.univtime.informatique.entities;
 
+import com.univtime.informatique.constants.TypeCours;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class CoursEntity {
     private LocalDateTime heureFinCours;
 
     @Column(name = "typeCours", nullable = false, length = 150)
-    private Enum typeCours;
+    private TypeCours typeCours;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idComposante", nullable = false)
@@ -42,7 +43,7 @@ public class CoursEntity {
 
     }
 
-    public CoursEntity(Integer idCours, LocalDateTime heureDebutCours, LocalDateTime heureFinCours, Enum typeCours,
+    public CoursEntity(Integer idCours, LocalDateTime heureDebutCours, LocalDateTime heureFinCours, TypeCours typeCours,
                        ComposanteEntity composante, ProfesseurEntity professeur, SalleEntity salle) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
@@ -77,11 +78,11 @@ public class CoursEntity {
         this.heureFinCours = heureFinCours;
     }
 
-    public Enum getTypeCours() {
+    public TypeCours getTypeCours() {
         return typeCours;
     }
 
-    public void setTypeCours(Enum typeCours) {
+    public void setTypeCours(TypeCours typeCours) {
         this.typeCours = typeCours;
     }
 
