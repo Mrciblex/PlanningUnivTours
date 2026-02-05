@@ -1,19 +1,20 @@
-package com.univtime.informatique.dto.composanteDto;
+package com.univtime.informatique.dto.besoinSalleDto;
 
 import com.univtime.informatique.constants.TypeBesoin;
-import com.univtime.informatique.dto.besoinSalleDto.SalleBesoinSalleDto;
 
 import java.util.Objects;
 
-public class BesoinSalleComposanteDto {
+public class BesoinSalleDto {
     private SalleBesoinSalleDto salleDto;
+    private ComposanteBesoinSalleDto composanteDto;
     private TypeBesoin typeBesoin;
 
-    public BesoinSalleComposanteDto() {
+    public BesoinSalleDto() {
     }
 
-    public BesoinSalleComposanteDto(TypeBesoin typeBesoin, SalleBesoinSalleDto salleDto) {
+    public BesoinSalleDto(TypeBesoin typeBesoin, ComposanteBesoinSalleDto composanteDto, SalleBesoinSalleDto salleDto) {
         this.typeBesoin = typeBesoin;
+        this.composanteDto = composanteDto;
         this.salleDto = salleDto;
     }
 
@@ -23,6 +24,14 @@ public class BesoinSalleComposanteDto {
 
     public void setSalleDto(SalleBesoinSalleDto salleDto) {
         this.salleDto = salleDto;
+    }
+
+    public ComposanteBesoinSalleDto getComposanteDto() {
+        return composanteDto;
+    }
+
+    public void setComposanteDto(ComposanteBesoinSalleDto composanteDto) {
+        this.composanteDto = composanteDto;
     }
 
     public TypeBesoin getTypeBesoin() {
@@ -35,13 +44,13 @@ public class BesoinSalleComposanteDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(salleDto);
+        return Objects.hash(salleDto, composanteDto);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) return false;
-        BesoinSalleComposanteDto that = (BesoinSalleComposanteDto) obj;
-        return Objects.equals(salleDto, that.salleDto);
+        BesoinSalleDto that = (BesoinSalleDto) obj;
+        return Objects.equals(salleDto, that.salleDto) && Objects.equals(composanteDto, that.composanteDto);
     }
 }
