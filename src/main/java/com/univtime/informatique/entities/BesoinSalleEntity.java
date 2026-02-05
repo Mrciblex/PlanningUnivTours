@@ -1,5 +1,6 @@
 package com.univtime.informatique.entities;
 
+import com.univtime.informatique.constants.TypeBesoin;
 import com.univtime.informatique.entities.ids.BesoinSalleId;
 import jakarta.persistence.*;
 
@@ -20,7 +21,7 @@ public class BesoinSalleEntity {
     private ComposanteEntity composante;
 
     @Column(name = "typeBesoin", nullable = false)
-    private Enum typeBesoin;
+    private TypeBesoin typeBesoin;
 
     public BesoinSalleEntity() {
 
@@ -50,11 +51,11 @@ public class BesoinSalleEntity {
         this.composante = composante;
     }
 
-    public Enum getTypeBesoin() {
+    public TypeBesoin getTypeBesoin() {
         return typeBesoin;
     }
 
-    public void setTypeBesoin(Enum typeBesoin) {
+    public void setTypeBesoin(TypeBesoin typeBesoin) {
         this.typeBesoin = typeBesoin;
     }
 }

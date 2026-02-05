@@ -38,7 +38,7 @@ public class ComposanteEntity {
     private Integer blocHoraireTP;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "idModule", nullable = false)
+    @JoinColumn(name = "idModule", nullable = false)
     private ModuleEntity module;
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
