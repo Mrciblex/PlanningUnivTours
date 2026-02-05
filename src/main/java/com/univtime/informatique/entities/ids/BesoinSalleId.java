@@ -27,6 +27,22 @@ public class BesoinSalleId implements Serializable {
         this.idComposante = idComposante;
     }
 
+    public Integer getIdSalle() {
+        return idSalle;
+    }
+
+    public void setIdSalle(Integer idSalle) {
+        this.idSalle = idSalle;
+    }
+
+    public Integer getIdComposante() {
+        return idComposante;
+    }
+
+    public void setIdComposante(Integer idComposante) {
+        this.idComposante = idComposante;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idSalle, idComposante);

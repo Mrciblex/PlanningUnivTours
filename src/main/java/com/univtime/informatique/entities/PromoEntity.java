@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "promos")
@@ -23,24 +23,13 @@ public class PromoEntity {
     private Integer nbEtuPromo;
 
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
-    private List<PromoEstComposeeEntity> promoEstComposeeEntities = new ArrayList<>();
+    private Set<PromoEstComposeeEntity> promoEstComposeeEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
-    private List<CMEntity> cmEntities = new ArrayList<>();
+    private Set<CMEntity> cmEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
-    private List<GroupeEntity> groupeEntities = new ArrayList<>();
-
-    public PromoEntity() {
-
-    }
-
-    public PromoEntity(Integer idPromo, String nomPromo, Integer anneePromo, Integer nbEtuPromo) {
-        this.idPromo = idPromo;
-        this.nomPromo = nomPromo;
-        this.anneePromo = anneePromo;
-        this.nbEtuPromo = nbEtuPromo;
-    }
+    private Set<GroupeEntity> groupeEntities = new HashSet<>();
 
     public Integer getIdPromo() {
         return idPromo;
@@ -72,5 +61,29 @@ public class PromoEntity {
 
     public void setNbEtuPromo(Integer nbEtuPromo) {
         this.nbEtuPromo = nbEtuPromo;
+    }
+
+    public Set<PromoEstComposeeEntity> getPromoEstComposeeEntities() {
+        return promoEstComposeeEntities;
+    }
+
+    public void setPromoEstComposeeEntities(Set<PromoEstComposeeEntity> promoEstComposeeEntities) {
+        this.promoEstComposeeEntities = promoEstComposeeEntities;
+    }
+
+    public Set<CMEntity> getCmEntities() {
+        return cmEntities;
+    }
+
+    public void setCmEntities(Set<CMEntity> cmEntities) {
+        this.cmEntities = cmEntities;
+    }
+
+    public Set<GroupeEntity> getGroupeEntities() {
+        return groupeEntities;
+    }
+
+    public void setGroupeEntities(Set<GroupeEntity> groupeEntities) {
+        this.groupeEntities = groupeEntities;
     }
 }

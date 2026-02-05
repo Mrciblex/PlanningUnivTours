@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "repartitionSemaines")
@@ -20,23 +20,13 @@ public class RepartitionSemaineEntity {
     private Integer qteTypeCours;
 
     @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
-    private List<CMEntity> cmEntities = new ArrayList<>();
+    private Set<CMEntity> cmEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
-    private List<TDEntity> tdEntities = new ArrayList<>();
+    private Set<TDEntity> tdEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
-    private List<TPEntity> tpEntities = new ArrayList<>();
-
-    public RepartitionSemaineEntity() {
-
-    }
-
-    public RepartitionSemaineEntity(Integer idRepartitionSemaine, Integer numSemaine, Integer qteTypeCours) {
-        this.idRepartitionSemaine = idRepartitionSemaine;
-        this.numSemaine = numSemaine;
-        this.qteTypeCours = qteTypeCours;
-    }
+    private Set<TPEntity> tpEntities = new HashSet<>();
 
     public Integer getIdRepartitionSemaine() {
         return idRepartitionSemaine;
@@ -60,5 +50,29 @@ public class RepartitionSemaineEntity {
 
     public void setQteTypeCours(Integer qteTypeCours) {
         this.qteTypeCours = qteTypeCours;
+    }
+
+    public Set<CMEntity> getCmEntities() {
+        return cmEntities;
+    }
+
+    public void setCmEntities(Set<CMEntity> cmEntities) {
+        this.cmEntities = cmEntities;
+    }
+
+    public Set<TDEntity> getTdEntities() {
+        return tdEntities;
+    }
+
+    public void setTdEntities(Set<TDEntity> tdEntities) {
+        this.tdEntities = tdEntities;
+    }
+
+    public Set<TPEntity> getTpEntities() {
+        return tpEntities;
+    }
+
+    public void setTpEntities(Set<TPEntity> tpEntities) {
+        this.tpEntities = tpEntities;
     }
 }

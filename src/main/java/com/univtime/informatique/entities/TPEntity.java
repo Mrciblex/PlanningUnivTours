@@ -29,10 +29,6 @@ public class TPEntity {
     @JoinColumn(name = "idRepartitionSemaine", referencedColumnName = "idRepartitionSemaine", insertable = false, updatable = false)
     private RepartitionSemaineEntity repartitionSemaine;
 
-    public TPEntity() {
-
-    }
-
     public TPId getIdTP() {
         return idTP;
     }

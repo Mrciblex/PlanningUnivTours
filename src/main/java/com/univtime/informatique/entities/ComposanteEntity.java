@@ -1,9 +1,8 @@
 package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "composantes")
@@ -42,37 +41,26 @@ public class ComposanteEntity {
     private ModuleEntity module;
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<CMEntity> cmEntities = new ArrayList<>();
+    private Set<CMEntity> cmEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<TDEntity> tdEntities = new ArrayList<>();
+    private Set<TDEntity> tdEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<TPEntity> tpEntities = new ArrayList<>();
+    private Set<TPEntity> tpEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<CoursEntity> coursEntities = new ArrayList<>();
+    private Set<CoursEntity> coursEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "composante", fetch = FetchType.LAZY)
-    private List<BesoinSalleEntity> besoinSalleEntities = new ArrayList<>();
+    private Set<BesoinSalleEntity> besoinSalleEntities = new HashSet<>();
 
-    public ComposanteEntity() {
-
+    public Integer getIdComposante() {
+        return idComposante;
     }
 
-    public ComposanteEntity(Integer idComposante, String nomCoposante, Integer volumeHoraireTotal, ModuleEntity module) {
+    public void setIdComposante(Integer idComposante) {
         this.idComposante = idComposante;
-        this.nomCoposante = nomCoposante;
-        this.volumeHoraireTotal = volumeHoraireTotal;
-        this.module = module;
-    }
-
-    public ModuleEntity getModule() {
-        return module;
-    }
-
-    public void setmodule(ModuleEntity module) {
-        this.module = module;
     }
 
     public String getNomCoposante() {
@@ -99,11 +87,11 @@ public class ComposanteEntity {
         this.volumeHoraireCM = volumeHoraireCM;
     }
 
-    public Integer getBlocoHoraireCM() {
+    public Integer getBlocHoraireCM() {
         return blocHoraireCM;
     }
 
-    public void setBlocoHoraireCM(Integer blocHoraireCM) {
+    public void setBlocHoraireCM(Integer blocHoraireCM) {
         this.blocHoraireCM = blocHoraireCM;
     }
 
@@ -115,11 +103,11 @@ public class ComposanteEntity {
         this.volumeHoraireTD = volumeHoraireTD;
     }
 
-    public Integer getBlocoHoraireTD() {
+    public Integer getBlocHoraireTD() {
         return blocHoraireTD;
     }
 
-    public void setBlocoHoraireTD(Integer blocHoraireTD) {
+    public void setBlocHoraireTD(Integer blocHoraireTD) {
         this.blocHoraireTD = blocHoraireTD;
     }
 
@@ -131,12 +119,59 @@ public class ComposanteEntity {
         this.volumeHoraireTP = volumeHoraireTP;
     }
 
-    public Integer getBlocoHoraireTP() {
+    public Integer getBlocHoraireTP() {
         return blocHoraireTP;
     }
 
-    public void setBlocoHoraireTP(Integer blocHoraireTP) {
+    public void setBlocHoraireTP(Integer blocHoraireTP) {
         this.blocHoraireTP = blocHoraireTP;
     }
-}
 
+    public ModuleEntity getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleEntity module) {
+        this.module = module;
+    }
+
+    public Set<CMEntity> getCmEntities() {
+        return cmEntities;
+    }
+
+    public void setCmEntities(Set<CMEntity> cmEntities) {
+        this.cmEntities = cmEntities;
+    }
+
+    public Set<TDEntity> getTdEntities() {
+        return tdEntities;
+    }
+
+    public void setTdEntities(Set<TDEntity> tdEntities) {
+        this.tdEntities = tdEntities;
+    }
+
+    public Set<TPEntity> getTpEntities() {
+        return tpEntities;
+    }
+
+    public void setTpEntities(Set<TPEntity> tpEntities) {
+        this.tpEntities = tpEntities;
+    }
+
+    public Set<CoursEntity> getCoursEntities() {
+        return coursEntities;
+    }
+
+    public void setCoursEntities(Set<CoursEntity> coursEntities) {
+        this.coursEntities = coursEntities;
+    }
+
+    public Set<BesoinSalleEntity> getBesoinSalleEntities() {
+        return besoinSalleEntities;
+    }
+
+    public void setBesoinSalleEntities(Set<BesoinSalleEntity> besoinSalleEntities) {
+        this.besoinSalleEntities = besoinSalleEntities;
+    }
+}

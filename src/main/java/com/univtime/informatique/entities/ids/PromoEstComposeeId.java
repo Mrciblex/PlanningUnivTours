@@ -27,6 +27,22 @@ public class PromoEstComposeeId implements Serializable {
         this.idModule = idModule;
     }
 
+    public Integer getIdPromo() {
+        return idPromo;
+    }
+
+    public void setIdPromo(Integer idPromo) {
+        this.idPromo = idPromo;
+    }
+
+    public Integer getIdModule() {
+        return idModule;
+    }
+
+    public void setIdModule(Integer idModule) {
+        this.idModule = idModule;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idPromo, idModule);

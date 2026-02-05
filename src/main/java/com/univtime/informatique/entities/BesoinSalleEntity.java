@@ -23,10 +23,6 @@ public class BesoinSalleEntity {
     @Column(name = "typeBesoin", nullable = false)
     private TypeBesoin typeBesoin;
 
-    public BesoinSalleEntity() {
-
-    }
-
     public BesoinSalleId getIdBesoinSalle() {
         return idBesoinSalle;
     }

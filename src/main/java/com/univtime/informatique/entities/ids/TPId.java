@@ -35,6 +35,38 @@ public class TPId implements Serializable {
         this.idRepartitionSemaine = idRepartitionSemaine;
     }
 
+    public Integer getIdProf() {
+        return idProf;
+    }
+
+    public void setIdProf(Integer idProf) {
+        this.idProf = idProf;
+    }
+
+    public Integer getIdSousGroupe() {
+        return idSousGroupe;
+    }
+
+    public void setIdSousGroupe(Integer idSousGroupe) {
+        this.idSousGroupe = idSousGroupe;
+    }
+
+    public Integer getIdComposante() {
+        return idComposante;
+    }
+
+    public void setIdComposante(Integer idComposante) {
+        this.idComposante = idComposante;
+    }
+
+    public Integer getIdRepartitionSemaine() {
+        return idRepartitionSemaine;
+    }
+
+    public void setIdRepartitionSemaine(Integer idRepartitionSemaine) {
+        this.idRepartitionSemaine = idRepartitionSemaine;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(idProf, idSousGroupe, idComposante, idRepartitionSemaine);

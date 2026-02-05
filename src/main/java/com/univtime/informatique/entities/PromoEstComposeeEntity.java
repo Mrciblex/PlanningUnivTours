@@ -19,10 +19,6 @@ public class PromoEstComposeeEntity {
     @JoinColumn(name = "idModule", referencedColumnName = "idModule", insertable = false, updatable = false)
     private ModuleEntity module;
 
-    public PromoEstComposeeEntity() {
-
-    }
-
     public PromoEstComposeeId getIdPromoEstComposee() {
         return idPromoEstComposee;
     }

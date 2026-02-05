@@ -3,7 +3,9 @@ package com.univtime.informatique.entities;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Salles")
@@ -22,26 +24,10 @@ public class SalleEntity {
     private Integer nbPC;
 
     @OneToMany(mappedBy = "salle", fetch = FetchType.LAZY)
-    private List<CoursEntity> coursEntities = new ArrayList<>();
+    private Set<CoursEntity> coursEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "salle", fetch = FetchType.LAZY)
-    private List<BesoinSalleEntity> besoinSalleEntities = new ArrayList<>();
-
-    public SalleEntity() {
-
-    }
-
-    public SalleEntity(Integer idSalle, Boolean salleMachine) {
-        this.idSalle = idSalle;
-        this.salleMachine = salleMachine;
-    }
-
-    public SalleEntity(Integer idSalle, Integer nbPlace, boolean salleMachine, Integer nbPC) {
-        this.idSalle = idSalle;
-        this.nbPlace = nbPlace;
-        this.salleMachine = salleMachine;
-        this.nbPC = nbPC;
-    }
+    private Set<BesoinSalleEntity> besoinSalleEntities = new HashSet<>();
 
     public Integer getIdSalle() {
         return idSalle;
@@ -73,5 +59,21 @@ public class SalleEntity {
 
     public void setNbPC(Integer nbPC) {
         this.nbPC = nbPC;
+    }
+
+    public Set<CoursEntity> getCoursEntities() {
+        return coursEntities;
+    }
+
+    public void setCoursEntities(Set<CoursEntity> coursEntities) {
+        this.coursEntities = coursEntities;
+    }
+
+    public Set<BesoinSalleEntity> getBesoinSalleEntities() {
+        return besoinSalleEntities;
+    }
+
+    public void setBesoinSalleEntities(Set<BesoinSalleEntity> besoinSalleEntities) {
+        this.besoinSalleEntities = besoinSalleEntities;
     }
 }

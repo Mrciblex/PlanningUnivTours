@@ -19,10 +19,6 @@ public class ParticipeAEntity {
     @JoinColumn(name = "idCours", referencedColumnName = "idCours", insertable = false, updatable = false)
     private CoursEntity cours;
 
-    public ParticipeAEntity() {
-
-    }
-
     public ParticipeAId getIdParticipeA() {
         return idParticipeA;
     }

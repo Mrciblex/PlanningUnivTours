@@ -2,8 +2,8 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "groupes")
@@ -24,21 +24,10 @@ public class GroupeEntity {
     private PromoEntity promo;
 
     @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY)
-    private List<TDEntity> tdEntities = new ArrayList<>();
+    private Set<TDEntity> tdEntities = new HashSet<>();
 
     @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY)
-    private List<SousGroupeEntity> sousGroupeEntities = new ArrayList<>();
-
-    public GroupeEntity() {
-
-    }
-
-    public GroupeEntity(Integer idGroupe, String nomGroupe, Integer nbEtuGroupe, PromoEntity promo) {
-        this.idGroupe = idGroupe;
-        this.nomGroupe = nomGroupe;
-        this.nbEtuGroupe = nbEtuGroupe;
-        this.promo = promo;
-    }
+    private Set<SousGroupeEntity> sousGroupeEntities = new HashSet<>();
 
     public Integer getIdGroupe() {
         return idGroupe;
@@ -70,5 +59,21 @@ public class GroupeEntity {
 
     public void setPromo(PromoEntity promo) {
         this.promo = promo;
+    }
+
+    public Set<TDEntity> getTdEntities() {
+        return tdEntities;
+    }
+
+    public void setTdEntities(Set<TDEntity> tdEntities) {
+        this.tdEntities = tdEntities;
+    }
+
+    public Set<SousGroupeEntity> getSousGroupeEntities() {
+        return sousGroupeEntities;
+    }
+
+    public void setSousGroupeEntities(Set<SousGroupeEntity> sousGroupeEntities) {
+        this.sousGroupeEntities = sousGroupeEntities;
     }
 }
