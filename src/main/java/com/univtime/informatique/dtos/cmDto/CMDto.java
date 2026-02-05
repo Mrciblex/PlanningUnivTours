@@ -1,11 +1,10 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.cmDto;
 
 import com.univtime.informatique.entities.ComposanteEntity;
 import com.univtime.informatique.entities.ProfesseurEntity;
 import com.univtime.informatique.entities.PromoEntity;
 import com.univtime.informatique.entities.RepartitionSemaineEntity;
 import com.univtime.informatique.entities.ids.CMId;
-import jakarta.persistence.*;
 
 public class CMDto {
     private CMId idCM;
