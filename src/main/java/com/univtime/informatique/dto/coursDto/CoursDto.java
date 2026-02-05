@@ -20,9 +20,15 @@ public class CoursDto {
     public CoursDto() {
     }
 
-    public CoursDto(Integer idCours, LocalDateTime heureDebutCours, LocalDateTime heureFinCours, TypeCours typeCoursEnum,
-                    ComposanteCoursDto composanteDto, ProfesseurCoursDto professeurDto, SalleCoursDto salleDto,
-                    Set<ParticipeACoursDto> participeADto) {
+    public CoursDto(
+            Integer idCours,
+            LocalDateTime heureDebutCours,
+            LocalDateTime heureFinCours,
+            TypeCours typeCoursEnum,
+            ComposanteCoursDto composanteDto,
+            ProfesseurCoursDto professeurDto,
+            SalleCoursDto salleDto,
+            Set<ParticipeACoursDto> participeADto) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
