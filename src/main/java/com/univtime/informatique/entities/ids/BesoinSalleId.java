@@ -18,25 +18,13 @@ public class BesoinSalleId implements Serializable {
     @Column(name = "idComposante", nullable = false)
     private Integer idComposante;
 
-    @Column(name = "typeBesoin", nullable = false)
-    private Enum typeBesoin;
-
     public BesoinSalleId() {
 
     }
 
-    public BesoinSalleId(Integer idSalle, Integer idComposante, Enum typeBesoin) {
+    public BesoinSalleId(Integer idSalle, Integer idComposante) {
         this.idSalle = idSalle;
         this.idComposante = idComposante;
-        this.typeBesoin = typeBesoin;
-    }
-
-    public Enum getTypeBesoin() {
-        return typeBesoin;
-    }
-
-    public void setTypeBesoin(Enum typeBesoin) {
-        this.typeBesoin = typeBesoin;
     }
 
     @Override
