@@ -1,6 +1,6 @@
 package com.univtime.informatique.algorithme;
 
-import com.univtime.informatique.dtos.ProfesseurDto;
+import com.univtime.informatique.dtos.professeurDto.ProfesseurDto;
 import com.univtime.informatique.helpers.MomentBanalise;
 import com.univtime.informatique.helpers.PlanningPeriodMinutes;
 import com.univtime.informatique.helpers.Semestre;

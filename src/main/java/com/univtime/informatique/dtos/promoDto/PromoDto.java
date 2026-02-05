@@ -1,17 +1,17 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.promoDto;
 
 public class PromoDto {
-    private int idPromo;
+    private Integer idPromo;
     private String nomPromo;
-    private int anneePromo;
-    private int nbEtuPromo;
+    private Integer anneePromo;
+    private Integer nbEtuPromo;
 
     // Getters et Setters
-    public int getIdPromo() {
+    public Integer getIdPromo() {
         return idPromo;
     }
 
-    public void setIdPromo(int idPromo) {
+    public void setIdPromo(Integer idPromo) {
         this.idPromo = idPromo;
     }
 
@@ -23,19 +23,19 @@ public class PromoDto {
         this.nomPromo = nomPromo;
     }
 
-    public int getAnneePromo() {
+    public Integer getAnneePromo() {
         return anneePromo;
     }
 
-    public void setAnneePromo(int anneePromo) {
+    public void setAnneePromo(Integer anneePromo) {
         this.anneePromo = anneePromo;
     }
 
-    public int getNbEtuPromo() {
+    public Integer getNbEtuPromo() {
         return nbEtuPromo;
     }
 
-    public void setNbEtuPromo(int nbEtuPromo) {
+    public void setNbEtuPromo(Integer nbEtuPromo) {
         this.nbEtuPromo = nbEtuPromo;
     }
 }

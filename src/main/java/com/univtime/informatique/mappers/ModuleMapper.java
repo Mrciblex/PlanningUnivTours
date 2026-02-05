@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.ModuleDto;
+import com.univtime.informatique.dtos.moduleDto.ModuleDto;
 import com.univtime.informatique.entities.ModuleEntity;
 
 public final class ModuleMapper {

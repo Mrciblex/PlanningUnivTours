@@ -1,25 +1,25 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.salleDto;
 
 public class SalleDto {
-    private int idSalle;
-    private int nbPlace;
+    private Integer idSalle;
+    private Integer nbPlace;
     private boolean salleMachine;
     private Integer nbPC;
 
     // Getters et Setters
-    public int getIdSalle() {
+    public Integer getIdSalle() {
         return idSalle;
     }
 
-    public void setIdSalle(int idSalle) {
+    public void setIdSalle(Integer idSalle) {
         this.idSalle = idSalle;
     }
 
-    public int getNbPlace() {
+    public Integer getNbPlace() {
         return nbPlace;
     }
 
-    public void setNbPlace(int nbPlace) {
+    public void setNbPlace(Integer nbPlace) {
         this.nbPlace = nbPlace;
     }
 

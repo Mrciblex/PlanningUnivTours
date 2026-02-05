@@ -1,17 +1,17 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.professeurDto;
 
 public class ProfesseurDto {
-    private int idProf;
+    private Integer idProf;
     private String nomProf;
     private String prenomProf;
     private boolean intervenantExterieur;
 
     // Getters et Setters
-    public int getIdProf() {
+    public Integer getIdProf() {
         return idProf;
     }
 
-    public void setIdProf(int idProf) {
+    public void setIdProf(Integer idProf) {
         this.idProf = idProf;
     }
 

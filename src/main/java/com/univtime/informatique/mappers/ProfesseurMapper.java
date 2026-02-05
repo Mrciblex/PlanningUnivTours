@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.ProfesseurDto;
+import com.univtime.informatique.dtos.professeurDto.ProfesseurDto;
 import com.univtime.informatique.entities.ProfesseurEntity;
 
 public final class ProfesseurMapper {

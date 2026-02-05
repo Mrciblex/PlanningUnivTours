@@ -1,15 +1,15 @@
-package com.univtime.informatique.dtos;
+package com.univtime.informatique.dtos.moduleDto;
 
 public class ModuleDto {
-    private int idModule;
+    private Integer idModule;
     private String nomModule;
 
     // Getters et Setters
-    public int getIdModule() {
+    public Integer getIdModule() {
         return idModule;
     }
 
-    public void setIdModule(int idModule) {
+    public void setIdModule(Integer idModule) {
         this.idModule = idModule;
     }
 
