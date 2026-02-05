@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.jourDto.JourDto;
+import com.univtime.informatique.dto.jourDto.JourDto;
 import com.univtime.informatique.entities.JourEntity;
 
 public class JourMapper {

@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.disponibiliteDto.DisponibiliteDto;
+import com.univtime.informatique.dto.disponibiliteDto.DisponibiliteDto;
 import com.univtime.informatique.entities.DisponibiliteEntity;
 
 public final class DisponibiliteMapper {

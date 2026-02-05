@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.salleDto.SalleDto;
+import com.univtime.informatique.dto.salleDto.SalleDto;
 import com.univtime.informatique.entities.SalleEntity;
 
 public final class SalleMapper {

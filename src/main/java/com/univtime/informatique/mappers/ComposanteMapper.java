@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.composanteDto.ComposanteDto;
+import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.entities.ComposanteEntity;
 
 public final class ComposanteMapper {

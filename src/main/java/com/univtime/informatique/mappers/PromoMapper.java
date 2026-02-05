@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.promoDto.PromoDto;
+import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.entities.PromoEntity;
 
 public final class PromoMapper {

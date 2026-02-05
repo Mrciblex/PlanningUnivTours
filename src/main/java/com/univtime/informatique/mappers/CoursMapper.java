@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dtos.coursDto.CoursDto;
+import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.entities.CoursEntity;
 
 public final class CoursMapper {
