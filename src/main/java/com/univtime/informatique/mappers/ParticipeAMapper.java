@@ -4,6 +4,7 @@ import com.univtime.informatique.dto.participeADto.*;
 import com.univtime.informatique.entities.ParticipeAEntity;
 import com.univtime.informatique.entities.SousGroupeEntity;
 import com.univtime.informatique.entities.CoursEntity;
+import com.univtime.informatique.dto.coursDto.CoursDto;
 
 public final class ParticipeAMapper {
 

@@ -2,15 +2,15 @@ package com.univtime.informatique.dto.participeADto;
 
 import java.util.Objects;
 
-public class participeADto {
+public class ParticipeADto {
     private SousGroupeParticipeADto sousGroupeDto;
     private CoursParticipeADto coursDto;
 
-    public participeADto() {
+    public ParticipeADto() {
 
     }
 
-    public participeADto(SousGroupeParticipeADto sousGroupeDto, CoursParticipeADto coursDto) {
+    public ParticipeADto(SousGroupeParticipeADto sousGroupeDto, CoursParticipeADto coursDto) {
         this.sousGroupeDto = sousGroupeDto;
         this.coursDto = coursDto;
     }
@@ -39,7 +39,7 @@ public class participeADto {
     @Override
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) return false;
-        participeADto that = (participeADto) obj;
+        ParticipeADto that = (ParticipeADto) obj;
         return Objects.equals(sousGroupeDto, that.sousGroupeDto) && Objects.equals(coursDto, that.coursDto);
     }
 }

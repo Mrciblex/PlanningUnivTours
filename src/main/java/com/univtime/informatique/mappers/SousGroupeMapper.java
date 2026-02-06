@@ -1,6 +1,5 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.entities.SousGroupeEntity;
 
