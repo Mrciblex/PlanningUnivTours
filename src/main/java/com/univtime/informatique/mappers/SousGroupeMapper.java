@@ -1,5 +1,6 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.entities.SousGroupeEntity;
 
@@ -10,18 +11,26 @@ public final class SousGroupeMapper {
     }
 
     public static SousGroupeDto toDto(SousGroupeEntity entity) {
-        return entity == null ? null : new SousGroupeDto()
-                .setIdSousGroupe(entity.getIdSousGroupe())
-                .setNomSousGroupe(entity.getNomSousGroupe())
-                .setNbEtuSousGroupe(entity.getNbEtuSousGroupe())
-                .setIdGroupe(entity.getIdGroupe());
+        if (entity == null) {
+            return null;
+        }
+        SousGroupeDto dto = new SousGroupeDto();
+        dto.setIdSousGroupe(entity.getIdSousGroupe());
+        dto.setNomSousGroupe(entity.getNomSousGroupe());
+        dto.setNbEtuSousGroupe(entity.getNbEtuSousGroupe());
+        dto.setIdSousGroupe(entity.getIdSousGroupe());
+        return dto;
     }
 
     public static SousGroupeEntity toEntity(SousGroupeDto dto) {
-        return dto == null ? null : new SousGroupeEntity()
-                .setIdSousGroupe(dto.getIdSousGroupe())
-                .setNomSousGroupe(dto.getNomSousGroupe())
-                .setNbEtuSousGroupe(dto.getNbEtuSousGroupe())
-                .setIdGroupe(dto.getIdGroupe());
+        if (dto == null) {
+            return null;
+        }
+        SousGroupeEntity entity = new SousGroupeEntity();
+        entity.setIdSousGroupe(dto.getIdSousGroupe());
+        entity.setNomSousGroupe(dto.getNomSousGroupe());
+        entity.setNbEtuSousGroupe(dto.getNbEtuSousGroupe());
+        entity.setIdSousGroupe(dto.getIdSousGroupe());
+        return entity;
     }
 }

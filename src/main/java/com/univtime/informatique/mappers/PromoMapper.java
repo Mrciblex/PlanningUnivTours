@@ -10,18 +10,22 @@ public final class PromoMapper {
     }
 
     public static PromoDto toDto(PromoEntity entity) {
-        return entity == null ? null : new PromoDto()
-                .setIdPromo(entity.getIdPromo())
-                .setNomPromo(entity.getNomPromo())
-                .setAnneePromo(entity.getAnneePromo())
-                .setNbEtuPromo(entity.getNbEtuPromo());
+        if (entity == null) return null;
+        PromoDto dto = new PromoDto();
+        dto.setIdPromo(entity.getIdPromo());
+        dto.setNomPromo(entity.getNomPromo());
+        dto.setAnneePromo(entity.getAnneePromo());
+        dto.setNbEtuPromo(entity.getNbEtuPromo());
+        return dto;
     }
 
     public static PromoEntity toEntity(PromoDto dto) {
-        return dto == null ? null : new PromoEntity()
-                .setIdPromo(dto.getIdPromo())
-                .setNomPromo(dto.getNomPromo())
-                .setAnneePromo(dto.getAnneePromo())
-                .setNbEtuPromo(dto.getNbEtuPromo());
+        if (dto == null) return null;
+        PromoEntity entity = new PromoEntity();
+        entity.setIdPromo(dto.getIdPromo());
+        entity.setNomPromo(dto.getNomPromo());
+        entity.setAnneePromo(dto.getAnneePromo());
+        entity.setNbEtuPromo(dto.getNbEtuPromo());
+        return entity;
     }
 }

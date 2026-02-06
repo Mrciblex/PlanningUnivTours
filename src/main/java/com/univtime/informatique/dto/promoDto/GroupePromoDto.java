@@ -16,7 +16,7 @@ public class GroupePromoDto {
     public GroupePromoDto() {
     }
 
-    public GroupeDto(Integer idGroupe, String nomGroupe, Integer nbEtuGroupe, Set<TDGroupeDto> tdDto, Set<SousGroupeGroupeDto> sousGroupeDto) {
+    public void GroupeDto(Integer idGroupe, String nomGroupe, Integer nbEtuGroupe, Set<TDGroupeDto> tdDto, Set<SousGroupeGroupeDto> sousGroupeDto) {
         this.idGroupe = idGroupe;
         this.nomGroupe = nomGroupe;
         this.nbEtuGroupe = nbEtuGroupe;
