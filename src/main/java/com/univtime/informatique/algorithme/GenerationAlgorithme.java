@@ -1,6 +1,9 @@
 package com.univtime.informatique.algorithme;
 
+import com.univtime.informatique.dto.cmDto.CMDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
+import com.univtime.informatique.dto.tdDto.TDDto;
+import com.univtime.informatique.dto.tpDto.TPDto;
 import com.univtime.informatique.helpers.MomentBanalise;
 import com.univtime.informatique.helpers.PlanningPeriodMinutes;
 import com.univtime.informatique.helpers.Semestre;
@@ -49,11 +52,11 @@ public class GenerationAlgorithme {
         return false;
     }
 
-    private static int getChargeTotaleMinutes(int weekOffset, ProfesseurDto p, List<CM> cms, List<TD> tds, List<TP> tps) {
+    private static int getChargeTotaleMinutes(int weekOffset, ProfesseurDto p, List<CMDto> cms, List<TDDto> tds, List<TPDto> tps) {
         // Somme du nombre total de cours à placer pour un prof * la durée d'un bloc (en minutes), pour la semaine donnée
         int chargeCM = cms.stream()
-                .filter(c -> c.prof().equals(p))
-                .mapToInt(c -> c.repartitionSemaine().getOrDefault(weekOffset, 0) * c.comp().blocCM())
+                .filter(c -> c.getProfesseurDto().getIdProf().equals(p.getIdProf()))
+                .mapToInt(c -> c.getRepartitionSemaineDto().getOrDefault(weekOffset, 0) * c.comp().blocCM())
                 .sum();
 
         int chargeTD = tds.stream()
@@ -148,15 +151,15 @@ public class GenerationAlgorithme {
      * Fonction pour générer les données issues de la base données de test
      */
 
-    private static List<ProfesseurPojo> testDataProfesseurs(){
-        List<ProfesseurPojo> profs = new ArrayList<>();
+    private static List<ProfesseurDto> testDataProfesseurs(){
+        List<ProfesseurDto> profs = new ArrayList<>();
         // DISPO QUE LE MATIN (8h-12h15)
-        profs.add(new ProfesseurPojo(
+        profs.add(new ProfesseurDto(
                         "Brouard",
                         "Thierry",
                         false,
                         List.of(
-                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
+                                new JourDto(1, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
                                 new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
                                 new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
                                 new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
