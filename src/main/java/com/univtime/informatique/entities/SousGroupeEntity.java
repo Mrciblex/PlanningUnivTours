@@ -20,7 +20,7 @@ public class SousGroupeEntity {
     private Integer nbEtuSousGroupe;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "idGroupe", nullable = false)
+    @JoinColumn(name = "idGroupe", nullable = false)
     private GroupeEntity groupe;
 
     @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY)
