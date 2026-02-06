@@ -10,21 +10,22 @@ public final class SalleMapper {
     }
 
     public static SalleDto toDto(SalleEntity entity) {
-        return entity == null ? null : new SalleDto()
-                .setIdSalle(entity.getIdSalle())
-                .setNbPlace(entity.getNbPlace())
-                .setSalleMachine(entity.isSalleMachine())
-                .setNbPC(entity.getNbPC());
+        if (entity == null) return null;
+        SalleDto dto = new SalleDto();
+        dto.setIdSalle(entity.getIdSalle());
+        dto.setNbPlace(entity.getNbPlace());
+        dto.setSalleMachine(entity.isSalleMachine());
+        dto.setNbPC(entity.getNbPC());
+        return dto;
     }
 
     public static SalleEntity toEntity(SalleDto dto) {
-        return dto == null ? null : new SalleEntity()
-                .setIdSalle(dto.getIdSalle())
-                .setNbPlace(dto.getNbPlace())
-                .setSalleMachine(dto.isSalleMachine())
-                .setNbPC(dto.getNbPC());
+        if (dto == null) return null;
+        SalleEntity entity = new SalleEntity();
+        entity.setIdSalle(dto.getIdSalle());
+        entity.setNbPlace(dto.getNbPlace());
+        entity.setSalleMachine(dto.isSalleMachine());
+        entity.setNbPC(dto.getNbPC());
+        return entity;
     }
 }
-
-
-
