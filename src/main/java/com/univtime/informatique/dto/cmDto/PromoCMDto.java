@@ -1,7 +1,6 @@
 package com.univtime.informatique.dto.cmDto;
 
-import com.univtime.informatique.dto.promoDto.GroupePromoDto;
-import com.univtime.informatique.dto.promoDto.PromoEstComposeePromoDto;
+import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -11,24 +10,29 @@ public class PromoCMDto {
     private String nomPromo;
     private Integer anneePromo;
     private Integer nbEtuPromo;
-    private Set<PromoEstComposeePromoDto> promoEstComposeeDto;
-    private Set<GroupePromoDto> groupeDto;
+
+    private Set<PromoEstComposeeIdDto> promoEstComposeeIds;
+    // private Set<CMIdDto> cmIds;
+    private Set<Integer> groupeIds;
 
     public PromoCMDto() {
 
     }
 
-    public PromoCMDto(Integer idPromo, String nomPromo, Integer anneePromo, Integer nbEtuPromo,
-                    Set<PromoEstComposeePromoDto> promoEstComposeeDto, Set<GroupePromoDto> groupeDto) {
+    public PromoCMDto(Integer idPromo,
+                      String nomPromo,
+                      Integer anneePromo,
+                      Integer nbEtuPromo,
+                      Set<PromoEstComposeeIdDto> promoEstComposeeIds,
+                      Set<Integer> groupeIds) {
         this.idPromo = idPromo;
         this.nomPromo = nomPromo;
         this.anneePromo = anneePromo;
         this.nbEtuPromo = nbEtuPromo;
-        this.promoEstComposeeDto = promoEstComposeeDto;
-        this.groupeDto = groupeDto;
+        this.promoEstComposeeIds = promoEstComposeeIds;
+        this.groupeIds = groupeIds;
     }
 
-    // Getters et Setters
     public Integer getIdPromo() {
         return idPromo;
     }
@@ -61,20 +65,20 @@ public class PromoCMDto {
         this.nbEtuPromo = nbEtuPromo;
     }
 
-    public Set<PromoEstComposeePromoDto> getPromoEstComposeeDto() {
-        return promoEstComposeeDto;
+    public Set<PromoEstComposeeIdDto> getPromoEstComposeeIds() {
+        return promoEstComposeeIds;
     }
 
-    public void setPromoEstComposeeDto(Set<PromoEstComposeePromoDto> promoEstComposeeDto) {
-        this.promoEstComposeeDto = promoEstComposeeDto;
+    public void setPromoEstComposeeIds(Set<PromoEstComposeeIdDto> promoEstComposeeIds) {
+        this.promoEstComposeeIds = promoEstComposeeIds;
     }
 
-    public Set<GroupePromoDto> getGroupeDto() {
-        return groupeDto;
+    public Set<Integer> getGroupeIds() {
+        return groupeIds;
     }
 
-    public void setGroupeDto(Set<GroupePromoDto> groupeDto) {
-        this.groupeDto = groupeDto;
+    public void setGroupeIds(Set<Integer> groupeIds) {
+        this.groupeIds = groupeIds;
     }
 
     @Override

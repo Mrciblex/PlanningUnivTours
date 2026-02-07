@@ -12,7 +12,9 @@ public class BesoinSalleDto {
     public BesoinSalleDto() {
     }
 
-    public BesoinSalleDto(TypeBesoin typeBesoin, ComposanteBesoinSalleDto composanteDto, SalleBesoinSalleDto salleDto) {
+    public BesoinSalleDto(TypeBesoin typeBesoin,
+                          ComposanteBesoinSalleDto composanteDto,
+                          SalleBesoinSalleDto salleDto) {
         this.typeBesoin = typeBesoin;
         this.composanteDto = composanteDto;
         this.salleDto = salleDto;

@@ -1,11 +1,8 @@
 package com.univtime.informatique.dto.composanteDto;
 
 import com.univtime.informatique.constants.TypeCours;
-import com.univtime.informatique.dto.coursDto.ParticipeACoursDto;
-import com.univtime.informatique.dto.coursDto.ProfesseurCoursDto;
-import com.univtime.informatique.dto.coursDto.SalleCoursDto;
+import com.univtime.informatique.dto.ids.ParticipeAIdDto;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -15,31 +12,31 @@ public class CoursComposanteDto {
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
     private TypeCours typeCoursEnum;
-    private ProfesseurCoursDto professeurDto;
-    private SalleCoursDto salleDto;
-    private Set<ParticipeACoursDto> participeADto;
+
+    // private Integer composanteId;
+    private Integer professeurId;
+    private Integer salleId;
+    private Set<ParticipeAIdDto> participeAIds;
 
     public CoursComposanteDto() {
     }
 
-    public CoursComposanteDto(
-            Integer idCours,
-            LocalDateTime heureDebutCours,
-            LocalDateTime heureFinCours,
-            TypeCours typeCoursEnum,
-            ProfesseurCoursDto professeurDto,
-            SalleCoursDto salleDto,
-            Set<ParticipeACoursDto> participeADto) {
+    public CoursComposanteDto(Integer idCours,
+                              LocalDateTime heureDebutCours,
+                              LocalDateTime heureFinCours,
+                              TypeCours typeCoursEnum,
+                              Integer professeurId,
+                              Integer salleId,
+                              Set<ParticipeAIdDto> participeAIds) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
         this.typeCoursEnum = typeCoursEnum;
-        this.professeurDto = professeurDto;
-        this.salleDto = salleDto;
-        this.participeADto = participeADto;
+        this.professeurId = professeurId;
+        this.salleId = salleId;
+        this.participeAIds = participeAIds;
     }
 
-    // Getters et Setters
     public Integer getIdCours() {
         return idCours;
     }
@@ -72,28 +69,28 @@ public class CoursComposanteDto {
         this.typeCoursEnum = typeCoursEnum;
     }
 
-    public ProfesseurCoursDto getProfesseurDto() {
-        return professeurDto;
+    public Integer getProfesseurId() {
+        return professeurId;
     }
 
-    public void setProfesseurDto(ProfesseurCoursDto professeurCoursDto) {
-        this.professeurDto = professeurCoursDto;
+    public void setProfesseurId(Integer professeurId) {
+        this.professeurId = professeurId;
     }
 
-    public SalleCoursDto getSalleDto() {
-        return salleDto;
+    public Integer getSalleId() {
+        return salleId;
     }
 
-    public void setSalleDto(SalleCoursDto salleCoursDto) {
-        this.salleDto = salleCoursDto;
+    public void setSalleId(Integer salleId) {
+        this.salleId = salleId;
     }
 
-    public Set<ParticipeACoursDto> getParticipeADto() {
-        return participeADto;
+    public Set<ParticipeAIdDto> getParticipeAIds() {
+        return participeAIds;
     }
 
-    public void setParticipeADto(Set<ParticipeACoursDto> participeADto) {
-        this.participeADto = participeADto;
+    public void setParticipeAIds(Set<ParticipeAIdDto> participeAIds) {
+        this.participeAIds = participeAIds;
     }
 
     @Override

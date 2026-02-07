@@ -1,7 +1,5 @@
 package com.univtime.informatique.dto.besoinSalleDto;
 
-import com.univtime.informatique.dto.salleDto.CoursSalleDto;
-
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,22 +8,26 @@ public class SalleBesoinSalleDto {
     private Integer nbPlace;
     private boolean salleMachine;
     private Integer nbPC;
-    private Set<CoursSalleDto> coursDto;
+
+    private Set<Integer> coursIds;
+    // private Set<BesoinSalleIdDto> besoinSalleIds;
 
     public SalleBesoinSalleDto() {
 
     }
 
-    public SalleBesoinSalleDto(Integer idSalle, Integer nbPlace, boolean salleMachine, Integer nbPC,
-                    Set<CoursSalleDto> coursDto) {
+    public SalleBesoinSalleDto(Integer idSalle,
+                               Integer nbPlace,
+                               boolean salleMachine,
+                               Integer nbPC,
+                               Set<Integer> coursIds) {
         this.idSalle = idSalle;
         this.nbPlace = nbPlace;
         this.salleMachine = salleMachine;
         this.nbPC = nbPC;
-        this.coursDto = coursDto;
+        this.coursIds = coursIds;
     }
 
-    // Getters et Setters
     public Integer getIdSalle() {
         return idSalle;
     }
@@ -58,12 +60,12 @@ public class SalleBesoinSalleDto {
         this.nbPC = nbPC;
     }
 
-    public Set<CoursSalleDto> getCoursDto() {
-        return coursDto;
+    public Set<Integer> getCoursIds() {
+        return coursIds;
     }
 
-    public void setCoursDto(Set<CoursSalleDto> coursDto) {
-        this.coursDto = coursDto;
+    public void setCoursIds(Set<Integer> coursIds) {
+        this.coursIds = coursIds;
     }
 
     @Override

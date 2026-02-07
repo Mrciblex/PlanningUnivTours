@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.cmDto;
 
-import com.univtime.informatique.dto.repartitionSemaineDto.TDRepartitionSemaineDto;
-import com.univtime.informatique.dto.repartitionSemaineDto.TPRepartitionSemaineDto;
+import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -10,20 +10,25 @@ public class RepartitionSemaineCMDto {
     private Integer idRepartitionSemaine;
     private Integer numSemaine;
     private Integer qteTypeCours;
-    private Set<TDRepartitionSemaineDto> TDDto;
-    private Set<TPRepartitionSemaineDto> TPDto;
+
+    // private Set<CMIdDto> cmIds;
+    private Set<TDIdDto> tdIds;
+    private Set<TPIdDto> tpIds;
 
     public RepartitionSemaineCMDto() {
 
     }
 
-    public RepartitionSemaineCMDto(Integer idRepartitionSemaine, Integer numSemaine, Integer qteTypeCours,
-                                   Set<TDRepartitionSemaineDto> TDDto, Set<TPRepartitionSemaineDto> TPDto) {
+    public RepartitionSemaineCMDto(Integer idRepartitionSemaine,
+                                   Integer numSemaine,
+                                   Integer qteTypeCours,
+                                   Set<TDIdDto> tdIds,
+                                   Set<TPIdDto> tpIds) {
         this.idRepartitionSemaine = idRepartitionSemaine;
         this.numSemaine = numSemaine;
         this.qteTypeCours = qteTypeCours;
-        this.TDDto = TDDto;
-        this.TPDto = TPDto;
+        this.tdIds = tdIds;
+        this.tpIds = tpIds;
     }
 
     public Integer getIdRepartitionSemaine() {
@@ -50,20 +55,20 @@ public class RepartitionSemaineCMDto {
         this.qteTypeCours = qteTypeCours;
     }
 
-    public Set<TDRepartitionSemaineDto> getTDDto() {
-        return TDDto;
+    public Set<TDIdDto> getTdIds() {
+        return tdIds;
     }
 
-    public void setTDDto(Set<TDRepartitionSemaineDto> TDDto) {
-        this.TDDto = TDDto;
+    public void setTdIds(Set<TDIdDto> tdIds) {
+        this.tdIds = tdIds;
     }
 
-    public Set<TPRepartitionSemaineDto> getTPDto() {
-        return TPDto;
+    public Set<TPIdDto> getTpIds() {
+        return tpIds;
     }
 
-    public void setTPDto(Set<TPRepartitionSemaineDto> TPDto) {
-        this.TPDto = TPDto;
+    public void setTpIds(Set<TPIdDto> tpIds) {
+        this.tpIds = tpIds;
     }
 
     @Override

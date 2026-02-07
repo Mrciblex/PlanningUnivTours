@@ -24,7 +24,22 @@ public class ComposanteDto {
 
     }
 
-    public ComposanteDto(Integer idComposante, String nomComposante, Integer volumeHoraireTotal, Integer volumeHoraireCM, Integer volumeHoraireTD, Integer volumeHoraireTP, Integer blocHoraireCM, Integer blocHoraireTD, Integer blocHoraireTP, ModuleComposanteDto moduleDto, Set<CMComposanteDto> cmDto, Set<TDComposanteDto> tdDto, Set<TPComposanteDto> tpDto, Set<CoursComposanteDto> coursDto, Set<BesoinSalleComposanteDto> besoinSalleDto) {
+    public ComposanteDto(
+            Integer idComposante,
+            String nomComposante,
+            Integer volumeHoraireTotal,
+            Integer volumeHoraireCM,
+            Integer volumeHoraireTD,
+            Integer volumeHoraireTP,
+            Integer blocHoraireCM,
+            Integer blocHoraireTD,
+            Integer blocHoraireTP,
+            ModuleComposanteDto moduleDto,
+            Set<CMComposanteDto> cmDto,
+            Set<TDComposanteDto> tdDto,
+            Set<TPComposanteDto> tpDto,
+            Set<CoursComposanteDto> coursDto,
+            Set<BesoinSalleComposanteDto> besoinSalleDto) {
         this.idComposante = idComposante;
         this.nomComposante = nomComposante;
         this.volumeHoraireTotal = volumeHoraireTotal;
