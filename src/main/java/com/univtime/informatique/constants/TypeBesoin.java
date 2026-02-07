@@ -1,9 +1,9 @@
 package com.univtime.informatique.constants;
 
 public enum TypeBesoin {
-    SALLE_INFORMATIQUE("salle_informatique"),
-    SALLE_PHYSIQUE("salle_physique"),
-    SALLE_NORMALE("salle_normale");
+    SALLE_INFORMATIQUE("salle informatique"),
+    SALLE_PHYSIQUE("salle physique"),
+    SALLE_NORMALE("salle normale");
 
     private String nom;
 
