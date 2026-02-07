@@ -10,7 +10,10 @@ public class DisponibiliteJourDto {
     public DisponibiliteJourDto(){
     }
 
-    public DisponibiliteJourDto(Integer idDispo, Integer heureDebutDispo, Integer heureFinDispo) {
+    public DisponibiliteJourDto(
+            Integer idDispo,
+            Integer heureDebutDispo,
+            Integer heureFinDispo) {
         this.idDispo = idDispo;
         this.heureDebutDispo = heureDebutDispo;
         this.heureFinDispo = heureFinDispo;
@@ -48,7 +51,9 @@ public class DisponibiliteJourDto {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         DisponibiliteJourDto that = (DisponibiliteJourDto) obj;
         return Objects.equals(idDispo, that.idDispo);
     }

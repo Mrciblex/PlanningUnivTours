@@ -11,9 +11,6 @@ public class CoursParticipeADto {
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
     private TypeCours typeCoursEnum;
-    private ComposanteCoursDto composanteDto;
-    private ProfesseurCoursDto professeurDto;
-    private SalleCoursDto salleDto;
 
     public CoursParticipeADto() {
     }
@@ -22,17 +19,11 @@ public class CoursParticipeADto {
             Integer idCours,
             LocalDateTime heureDebutCours,
             LocalDateTime heureFinCours,
-            TypeCours typeCoursEnum,
-            ComposanteCoursDto composanteDto,
-            ProfesseurCoursDto professeurDto,
-            SalleCoursDto salleDto) {
+            TypeCours typeCoursEnum) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
         this.typeCoursEnum = typeCoursEnum;
-        this.composanteDto = composanteDto;
-        this.professeurDto = professeurDto;
-        this.salleDto = salleDto;
     }
 
     // Getters et Setters
@@ -66,30 +57,6 @@ public class CoursParticipeADto {
 
     public void setTypeCoursEnum(TypeCours typeCoursEnum) {
         this.typeCoursEnum = typeCoursEnum;
-    }
-
-    public ComposanteCoursDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteCoursDto composanteCoursDto) {
-        this.composanteDto = composanteCoursDto;
-    }
-
-    public ProfesseurCoursDto getProfesseurDto() {
-        return professeurDto;
-    }
-
-    public void setProfesseurDto(ProfesseurCoursDto professeurCoursDto) {
-        this.professeurDto = professeurCoursDto;
-    }
-
-    public SalleCoursDto getSalleDto() {
-        return salleDto;
-    }
-
-    public void setSalleDto(SalleCoursDto salleCoursDto) {
-        this.salleDto = salleCoursDto;
     }
 
     @Override

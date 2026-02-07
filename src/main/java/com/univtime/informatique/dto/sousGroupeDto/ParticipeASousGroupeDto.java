@@ -1,41 +1,40 @@
 package com.univtime.informatique.dto.sousGroupeDto;
 
-import com.univtime.informatique.dto.participeADto.CoursParticipeADto;
 import com.univtime.informatique.entities.ids.ParticipeAId;
 
 import java.util.Objects;
 
 public class ParticipeASousGroupeDto {
     private ParticipeAId idParticipeA;
-    private CoursParticipeADto coursDto;
 
     public ParticipeASousGroupeDto() {
 
     }
 
-    public ParticipeASousGroupeDto(CoursParticipeADto coursDto) {
-        this.coursDto = coursDto;
+    public ParticipeASousGroupeDto(
+            ParticipeAId participeAId) {
+        this.idParticipeA = participeAId;
     }
 
-    public CoursParticipeADto getCoursDto() {
-        return coursDto;
+    public ParticipeAId getIdParticipeA() {
+        return idParticipeA;
     }
 
-    public void setCoursDto(CoursParticipeADto coursDto) {
-        this.coursDto = coursDto;
+    public void setIdParticipeA(ParticipeAId idParticipeA) {
+        this.idParticipeA = idParticipeA;
     }
-
-
 
     @Override
     public int hashCode() {
-        return Objects.hash(coursDto);
+        return Objects.hash(idParticipeA);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         ParticipeASousGroupeDto that = (ParticipeASousGroupeDto) obj;
-        return Objects.equals(coursDto, that.coursDto);
+        return Objects.equals(idParticipeA, that.idParticipeA);
     }
 }

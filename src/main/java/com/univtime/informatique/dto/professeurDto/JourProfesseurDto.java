@@ -8,16 +8,16 @@ import java.util.Set;
 public class JourProfesseurDto {
     private Integer idJour;
     private Integer jourSemaine;
-    private Set<DisponibiliteJourDto> disponibiliteDto;
 
     public JourProfesseurDto() {
 
     }
 
-    public JourProfesseurDto(Integer idJour, Integer jourSemaine, Set<DisponibiliteJourDto> disponibiliteDto) {
+    public JourProfesseurDto(
+            Integer idJour,
+            Integer jourSemaine) {
         this.idJour = idJour;
         this.jourSemaine = jourSemaine;
-        this.disponibiliteDto = disponibiliteDto;
     }
 
     // Getters et Setters
@@ -37,14 +37,6 @@ public class JourProfesseurDto {
         this.jourSemaine = jourSemaine;
     }
 
-    public Set<DisponibiliteJourDto> getDisponibiliteDto() {
-        return disponibiliteDto;
-    }
-
-    public void setDisponibiliteDto(Set<DisponibiliteJourDto> disponibiliteDto) {
-        this.disponibiliteDto = disponibiliteDto;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hashCode(idJour);
@@ -52,7 +44,9 @@ public class JourProfesseurDto {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         JourProfesseurDto jourDto = (JourProfesseurDto) obj;
         return Objects.equals(idJour, jourDto.idJour);
     }

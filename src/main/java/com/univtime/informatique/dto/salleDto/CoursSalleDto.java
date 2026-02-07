@@ -12,9 +12,6 @@ public class CoursSalleDto {
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
     private TypeCours typeCoursEnum;
-    private ComposanteCoursDto composanteDto;
-    private ProfesseurCoursDto professeurDto;
-    private Set<ParticipeACoursDto> participeADto;
 
     public CoursSalleDto() {
     }
@@ -32,9 +29,6 @@ public class CoursSalleDto {
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
         this.typeCoursEnum = typeCoursEnum;
-        this.composanteDto = composanteDto;
-        this.professeurDto = professeurDto;
-        this.participeADto = participeADto;
     }
 
     // Getters et Setters
@@ -70,30 +64,6 @@ public class CoursSalleDto {
         this.typeCoursEnum = typeCoursEnum;
     }
 
-    public ComposanteCoursDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteCoursDto composanteCoursDto) {
-        this.composanteDto = composanteCoursDto;
-    }
-
-    public ProfesseurCoursDto getProfesseurDto() {
-        return professeurDto;
-    }
-
-    public void setProfesseurDto(ProfesseurCoursDto professeurCoursDto) {
-        this.professeurDto = professeurCoursDto;
-    }
-
-    public Set<ParticipeACoursDto> getParticipeADto() {
-        return participeADto;
-    }
-
-    public void setParticipeADto(Set<ParticipeACoursDto> participeADto) {
-        this.participeADto = participeADto;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hashCode(idCours);
@@ -101,7 +71,9 @@ public class CoursSalleDto {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         CoursSalleDto coursDto = (CoursSalleDto) obj;
         return Objects.equals(idCours, coursDto.idCours);
     }
