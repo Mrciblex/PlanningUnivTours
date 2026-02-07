@@ -1,7 +1,9 @@
 package com.univtime.informatique.mappers;
 
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
+import com.univtime.informatique.dto.composanteDto.ModuleComposanteDto;
 import com.univtime.informatique.entities.ComposanteEntity;
+import com.univtime.informatique.entities.ModuleEntity;
 
 public final class ComposanteMapper {
 
@@ -10,31 +12,43 @@ public final class ComposanteMapper {
     }
 
     public static ComposanteDto toDto(ComposanteEntity entity) {
-        return entity == null ? null : new ComposanteDto()
-                .setIdComposante(entity.getIdComposante())
-                .setNomComposante(entity.getNomComposante())
-                .setVolumeHoraireTotal(entity.getVolumeHoraireTotal())
-                .setVolumeHoraireCM(entity.getVolumeHoraireCM())
-                .setVolumeHoraireTD(entity.getVolumeHoraireTD())
-                .setVolumeHoraireTP(entity.getVolumeHoraireTP())
-                .setBlocHoraireCM(entity.getBlocHoraireCM())
-                .setBlocHoraireTD(entity.getBlocHoraireTD())
-                .setBlocHoraireTP(entity.getBlocHoraireTP())
-                .setIdModule(entity.getIdModule());
+        if (entity == null) return null;
+        ComposanteDto dto = new ComposanteDto();
+        dto.setIdComposante(entity.getIdComposante());
+        dto.setNomComposante(entity.getNomCoposante());
+        dto.setVolumeHoraireTotal(entity.getVolumeHoraireTotal());
+        dto.setVolumeHoraireCM(entity.getVolumeHoraireCM());
+        dto.setVolumeHoraireTD(entity.getVolumeHoraireTD());
+        dto.setVolumeHoraireTP(entity.getVolumeHoraireTP());
+        dto.setBlocHoraireCM(entity.getBlocHoraireCM());
+        dto.setBlocHoraireTD(entity.getBlocHoraireTD());
+        dto.setBlocHoraireTP(entity.getBlocHoraireTP());
+        if (entity.getModule() != null) {
+            ModuleComposanteDto m = new ModuleComposanteDto();
+            m.setIdModule(entity.getModule().getIdModule());
+            m.setNomModule(entity.getModule().getNomModule());
+            dto.setModuleDto(m);
+        }
+        return dto;
     }
 
     public static ComposanteEntity toEntity(ComposanteDto dto) {
-        return dto == null ? null : new ComposanteEntity()
-                .setIdComposante(dto.getIdComposante())
-                .setNomComposante(dto.getNomComposante())
-                .setVolumeHoraireTotal(dto.getVolumeHoraireTotal())
-                .setVolumeHoraireCM(dto.getVolumeHoraireCM())
-                .setVolumeHoraireTD(dto.getVolumeHoraireTD())
-                .setVolumeHoraireTP(dto.getVolumeHoraireTP())
-                .setBlocHoraireCM(dto.getBlocHoraireCM())
-                .setBlocHoraireTD(dto.getBlocHoraireTD())
-                .setBlocHoraireTP(dto.getBlocHoraireTP())
-                .setIdModule(dto.getIdModule());
+        if (dto == null) return null;
+        ComposanteEntity entity = new ComposanteEntity();
+        entity.setIdComposante(dto.getIdComposante());
+        entity.setNomCoposante(dto.getNomComposante());
+        entity.setVolumeHoraireTotal(dto.getVolumeHoraireTotal());
+        entity.setVolumeHoraireCM(dto.getVolumeHoraireCM());
+        entity.setVolumeHoraireTD(dto.getVolumeHoraireTD());
+        entity.setVolumeHoraireTP(dto.getVolumeHoraireTP());
+        entity.setBlocHoraireCM(dto.getBlocHoraireCM());
+        entity.setBlocHoraireTD(dto.getBlocHoraireTD());
+        entity.setBlocHoraireTP(dto.getBlocHoraireTP());
+        if (dto.getModuleDto() != null) {
+            ModuleEntity m = new ModuleEntity();
+            m.setIdModule(dto.getModuleDto().getIdModule());
+            entity.setModule(m);
+        }
+        return entity;
     }
 }
-

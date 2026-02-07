@@ -1,7 +1,9 @@
 package com.univtime.informatique.mappers;
 
 import com.univtime.informatique.dto.groupeDto.GroupeDto;
+import com.univtime.informatique.dto.groupeDto.PromoGroupeDto;
 import com.univtime.informatique.entities.GroupeEntity;
+import com.univtime.informatique.entities.PromoEntity;
 
 public final class GroupeMapper {
 
@@ -10,18 +12,31 @@ public final class GroupeMapper {
     }
 
     public static GroupeDto toDto(GroupeEntity entity) {
-        return entity == null ? null : new GroupeDto()
-                .setIdGroupe(entity.getIdGroupe())
-                .setNomGroupe(entity.getNomGroupe())
-                .setNbEtuGroupe(entity.getNbEtuGroupe())
-                .setIdPromo(entity.getIdPromo());
+        if (entity == null) return null;
+        GroupeDto dto = new GroupeDto();
+        dto.setIdGroupe(entity.getIdGroupe());
+        dto.setNomGroupe(entity.getNomGroupe());
+        dto.setNbEtuGroupe(entity.getNbEtuGroupe());
+        if (entity.getPromo() != null) {
+            PromoGroupeDto p = new PromoGroupeDto();
+            p.setIdPromo(entity.getPromo().getIdPromo());
+            p.setNomPromo(entity.getPromo().getNomPromo());
+            dto.setPromoDto(p);
+        }
+        return dto;
     }
 
     public static GroupeEntity toEntity(GroupeDto dto) {
-        return dto == null ? null : new GroupeEntity()
-                .setIdGroupe(dto.getIdGroupe())
-                .setNomGroupe(dto.getNomGroupe())
-                .setNbEtuGroupe(dto.getNbEtuGroupe())
-                .setIdPromo(dto.getIdPromo());
+        if (dto == null) return null;
+        GroupeEntity entity = new GroupeEntity();
+        entity.setIdGroupe(dto.getIdGroupe());
+        entity.setNomGroupe(dto.getNomGroupe());
+        entity.setNbEtuGroupe(dto.getNbEtuGroupe());
+        if (dto.getPromoDto() != null) {
+            PromoEntity p = new PromoEntity();
+            p.setIdPromo(dto.getPromoDto().getIdPromo());
+            entity.setPromo(p);
+        }
+        return entity;
     }
 }

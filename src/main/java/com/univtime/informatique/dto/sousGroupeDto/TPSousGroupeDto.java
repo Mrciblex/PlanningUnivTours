@@ -1,10 +1,12 @@
 package com.univtime.informatique.dto.sousGroupeDto;
 
 import com.univtime.informatique.dto.tpDto.*;
+import com.univtime.informatique.entities.ids.TPId;
 
 import java.util.Objects;
 
 public class TPSousGroupeDto {
+    private TPId idTP;
     private ProfesseurTPDto professeurDto;
     private ComposanteTPDto composanteDto;
     private RepartitionSemaineTPDto repartitionSemaineDto;
@@ -41,6 +43,14 @@ public class TPSousGroupeDto {
 
     public void setRepartitionSemaineDto(RepartitionSemaineTPDto repartitionSemaineDto) {
         this.repartitionSemaineDto = repartitionSemaineDto;
+    }
+
+    public TPId getIdTP() {
+        return idTP;
+    }
+
+    public void setIdTP(TPId idTP) {
+        this.idTP = idTP;
     }
 
     @Override

@@ -10,18 +10,22 @@ public final class ProfesseurMapper {
     }
 
     public static ProfesseurDto toDTO(ProfesseurEntity entity) {
-        return entity == null ? null : new ProfesseurDto()
-                .setIdProf(entity.getIdProf())
-                .setNomProf(entity.getNomProf())
-                .setPrenomProf(entity.getPrenomProf())
-                .setIntervenantExterieur(entity.isIntervenantExterieur());
+        if (entity == null) return null;
+        ProfesseurDto dto = new ProfesseurDto();
+        dto.setIdProf(entity.getIdProf());
+        dto.setNomProf(entity.getNomProf());
+        dto.setPrenomProf(entity.getPrenomProf());
+        dto.setIntervenantExterieur(Boolean.TRUE.equals(entity.getIntervenantExterieur()));
+        return dto;
     }
 
     public static ProfesseurEntity toEntity(ProfesseurDto dto) {
-        return dto == null ? null : new ProfesseurEntity()
-                .setIdProf(dto.getIdProf())
-                .setNomProf(dto.getNomProf())
-                .setPrenomProf(dto.getPrenomProf())
-                .setIntervenantExterieur(dto.isIntervenantExterieur());
+        if (dto == null) return null;
+        ProfesseurEntity entity = new ProfesseurEntity();
+        entity.setIdProf(dto.getIdProf());
+        entity.setNomProf(dto.getNomProf());
+        entity.setPrenomProf(dto.getPrenomProf());
+        entity.setIntervenantExterieur(dto.isIntervenantExterieur());
+        return entity;
     }
 }

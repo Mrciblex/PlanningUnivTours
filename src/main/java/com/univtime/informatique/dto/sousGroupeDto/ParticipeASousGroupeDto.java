@@ -1,10 +1,12 @@
 package com.univtime.informatique.dto.sousGroupeDto;
 
 import com.univtime.informatique.dto.participeADto.CoursParticipeADto;
+import com.univtime.informatique.entities.ids.ParticipeAId;
 
 import java.util.Objects;
 
 public class ParticipeASousGroupeDto {
+    private ParticipeAId idParticipeA;
     private CoursParticipeADto coursDto;
 
     public ParticipeASousGroupeDto() {
@@ -22,6 +24,8 @@ public class ParticipeASousGroupeDto {
     public void setCoursDto(CoursParticipeADto coursDto) {
         this.coursDto = coursDto;
     }
+
+
 
     @Override
     public int hashCode() {

@@ -10,14 +10,18 @@ public final class ModuleMapper {
     }
 
     public static ModuleDto toDto(ModuleEntity entity) {
-        return entity == null ? null : new ModuleDto()
-                .setIdModule(entity.getIdModule())
-                .setNomModule(entity.getNomModule());
+        if (entity == null) return null;
+        ModuleDto dto = new ModuleDto();
+        dto.setIdModule(entity.getIdModule());
+        dto.setNomModule(entity.getNomModule());
+        return dto;
     }
 
     public static ModuleEntity toEntity(ModuleDto dto) {
-        return dto == null ? null : new ModuleEntity()
-                .setIdModule(dto.getIdModule())
-                .setNomModule(dto.getNomModule());
+        if (dto == null) return null;
+        ModuleEntity entity = new ModuleEntity();
+        entity.setIdModule(dto.getIdModule());
+        entity.setNomModule(dto.getNomModule());
+        return entity;
     }
 }

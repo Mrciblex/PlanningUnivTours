@@ -1,12 +1,13 @@
 package com.univtime.informatique.entities;
 
+import com.univtime.informatique.entities.ids.TDId;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tds")
 public class TDEntity {
     @EmbeddedId
-    private Integer idTD;
+    private TDId idTD;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("idProf")
@@ -28,11 +29,11 @@ public class TDEntity {
     @JoinColumn(name = "idRepartitionSemaine", referencedColumnName = "idRepartitionSemaine", insertable = false, updatable = false)
     private RepartitionSemaineEntity repartitionSemaine;
 
-    public Integer getIdTD() {
+    public TDId getIdTD() {
         return idTD;
     }
 
-    public void setIdTD(Integer idTD) {
+    public void setIdTD(TDId idTD) {
         this.idTD = idTD;
     }
 
