@@ -1,51 +1,33 @@
 package com.univtime.informatique.dto.professeurDto;
 
 import com.univtime.informatique.dto.tpDto.*;
+import com.univtime.informatique.entities.ids.TPId;
 
 import java.util.Objects;
 
 public class TPProfesseurDto {
-    private SousGroupeTPDto sousGroupeDto;
-    private ComposanteTPDto composanteDto;
-    private RepartitionSemaineTPDto repartitionSemaineDto;
+    private TPId idTP;
 
     public TPProfesseurDto() {
 
     }
 
-    public TPProfesseurDto(SousGroupeTPDto sousGroupeDto, ComposanteTPDto composanteDto, RepartitionSemaineTPDto repartitionSemaineDto) {
-        this.sousGroupeDto = sousGroupeDto;
-        this.composanteDto = composanteDto;
-        this.repartitionSemaineDto = repartitionSemaineDto;
+    public TPProfesseurDto(
+            TPId idTP) {
+        this.idTP = idTP;
     }
 
-    public SousGroupeTPDto getSousGroupeDto() {
-        return sousGroupeDto;
+    public TPId getIdTP() {
+        return idTP;
     }
 
-    public void setSousGroupeDto(SousGroupeTPDto sousGroupeDto) {
-        this.sousGroupeDto = sousGroupeDto;
-    }
-
-    public ComposanteTPDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteTPDto composanteDto) {
-        this.composanteDto = composanteDto;
-    }
-
-    public RepartitionSemaineTPDto getRepartitionSemaineDto() {
-        return repartitionSemaineDto;
-    }
-
-    public void setRepartitionSemaineDto(RepartitionSemaineTPDto repartitionSemaineDto) {
-        this.repartitionSemaineDto = repartitionSemaineDto;
+    public void setIdTP(TPId idTP) {
+        this.idTP = idTP;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sousGroupeDto, composanteDto, repartitionSemaineDto);
+        return Objects.hash(idTP);
     }
 
     @Override
@@ -54,8 +36,6 @@ public class TPProfesseurDto {
             return false;
         }
         TPProfesseurDto tpDto = (TPProfesseurDto) obj;
-        return Objects.equals(sousGroupeDto, tpDto.sousGroupeDto)
-                && Objects.equals(composanteDto, tpDto.composanteDto)
-                && Objects.equals(repartitionSemaineDto, tpDto.repartitionSemaineDto);
+        return Objects.equals(idTP, tpDto.idTP);
     }
 }

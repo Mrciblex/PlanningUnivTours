@@ -10,18 +10,17 @@ public class GroupePromoDto {
     private Integer idGroupe;
     private String nomGroupe;
     private Integer nbEtuGroupe;
-    private Set<TDGroupeDto> tdDto;
-    private Set<SousGroupeGroupeDto> sousGroupeDto;
 
     public GroupePromoDto() {
     }
 
-    public void GroupeDto(Integer idGroupe, String nomGroupe, Integer nbEtuGroupe, Set<TDGroupeDto> tdDto, Set<SousGroupeGroupeDto> sousGroupeDto) {
+    public void GroupeDto(
+            Integer idGroupe,
+            String nomGroupe,
+            Integer nbEtuGroupe) {
         this.idGroupe = idGroupe;
         this.nomGroupe = nomGroupe;
         this.nbEtuGroupe = nbEtuGroupe;
-        this.tdDto = tdDto;
-        this.sousGroupeDto = sousGroupeDto;
     }
 
     // Getters et Setters
@@ -47,22 +46,6 @@ public class GroupePromoDto {
 
     public void setNbEtuGroupe(Integer nbEtuGroupe) {
         this.nbEtuGroupe = nbEtuGroupe;
-    }
-
-    public Set<TDGroupeDto> getTdDto() {
-        return tdDto;
-    }
-
-    public void setTdDto(Set<TDGroupeDto> tdDto) {
-        this.tdDto = tdDto;
-    }
-
-    public Set<SousGroupeGroupeDto> getSousGroupeDto() {
-        return sousGroupeDto;
-    }
-
-    public void setSousGroupeDto(Set<SousGroupeGroupeDto> sousGroupeDto) {
-        this.sousGroupeDto = sousGroupeDto;
     }
 
     @Override

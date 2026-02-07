@@ -3,32 +3,26 @@ package com.univtime.informatique.dto.tdDto;
 import com.univtime.informatique.dto.professeurDto.*;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class ProfesseurTDDto {
     private Integer idProf;
     private String nomProf;
     private String prenomProf;
     private boolean intervenantExterieur;
-    private Set<CMProfesseurDto> cmDto;
-    private Set<TPProfesseurDto> tpDto;
-    private Set<CoursProfesseurDto> coursDto;
-    private Set<JourProfesseurDto> jourDto;
 
     public ProfesseurTDDto() {
 
     }
 
-    public ProfesseurTDDto(Integer idProf, String nomProf, String prenomProf, boolean intervenantExterieur, Set<CMProfesseurDto> cmDto,
-                         Set<TPProfesseurDto> tpDto, Set<CoursProfesseurDto> coursDto, Set<JourProfesseurDto> jourDto) {
+    public ProfesseurTDDto(
+            Integer idProf,
+            String nomProf,
+            String prenomProf,
+            boolean intervenantExterieur) {
         this.idProf = idProf;
         this.nomProf = nomProf;
         this.prenomProf = prenomProf;
         this.intervenantExterieur = intervenantExterieur;
-        this.cmDto = cmDto;
-        this.tpDto = tpDto;
-        this.coursDto = coursDto;
-        this.jourDto = jourDto;
     }
 
     // Getters et Setters
@@ -62,38 +56,6 @@ public class ProfesseurTDDto {
 
     public void setIntervenantExterieur(boolean intervenantExterieur) {
         this.intervenantExterieur = intervenantExterieur;
-    }
-
-    public Set<CMProfesseurDto> getCmDto() {
-        return cmDto;
-    }
-
-    public void setCmDto(Set<CMProfesseurDto> cmDto) {
-        this.cmDto = cmDto;
-    }
-
-    public Set<TPProfesseurDto> getTpDto() {
-        return tpDto;
-    }
-
-    public void setTpDto(Set<TPProfesseurDto> tpDto) {
-        this.tpDto = tpDto;
-    }
-
-    public Set<CoursProfesseurDto> getCoursDto() {
-        return coursDto;
-    }
-
-    public void setCoursDto(Set<CoursProfesseurDto> coursDto) {
-        this.coursDto = coursDto;
-    }
-
-    public Set<JourProfesseurDto> getJourDto() {
-        return jourDto;
-    }
-
-    public void setJourDto(Set<JourProfesseurDto> jourDto) {
-        this.jourDto = jourDto;
     }
 
     @Override

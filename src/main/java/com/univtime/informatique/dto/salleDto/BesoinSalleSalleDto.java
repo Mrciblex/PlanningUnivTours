@@ -1,29 +1,30 @@
 package com.univtime.informatique.dto.salleDto;
 
 import com.univtime.informatique.constants.TypeBesoin;
-import com.univtime.informatique.dto.besoinSalleDto.ComposanteBesoinSalleDto;
-import com.univtime.informatique.dto.besoinSalleDto.SalleBesoinSalleDto;
+import com.univtime.informatique.entities.ids.BesoinSalleId;
 
 import java.util.Objects;
 
 public class BesoinSalleSalleDto {
-    private ComposanteBesoinSalleDto composanteDto;
+    private BesoinSalleId idBesoinSalle;
     private TypeBesoin typeBesoin;
 
     public BesoinSalleSalleDto() {
     }
 
-    public BesoinSalleSalleDto(TypeBesoin typeBesoin, ComposanteBesoinSalleDto composanteDto) {
+    public BesoinSalleSalleDto(
+            BesoinSalleId idBesoinSalle,
+            TypeBesoin typeBesoin) {
+        this.idBesoinSalle = idBesoinSalle;
         this.typeBesoin = typeBesoin;
-        this.composanteDto = composanteDto;
     }
 
-    public ComposanteBesoinSalleDto getComposanteDto() {
-        return composanteDto;
+    public BesoinSalleId getIdBesoinSalle() {
+        return idBesoinSalle;
     }
 
-    public void setComposanteDto(ComposanteBesoinSalleDto composanteDto) {
-        this.composanteDto = composanteDto;
+    public void setIdBesoinSalle(BesoinSalleId idBesoinSalle) {
+        this.idBesoinSalle = idBesoinSalle;
     }
 
     public TypeBesoin getTypeBesoin() {
@@ -36,13 +37,15 @@ public class BesoinSalleSalleDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(composanteDto);
+        return Objects.hashCode(idBesoinSalle);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
-        BesoinSalleSalleDto that = (BesoinSalleSalleDto) obj;
-        return Objects.equals(composanteDto, that.composanteDto);
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        BesoinSalleSalleDto dto = (BesoinSalleSalleDto) obj;
+        return Objects.equals(idBesoinSalle, dto.idBesoinSalle);
     }
 }

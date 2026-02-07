@@ -1,28 +1,22 @@
 package com.univtime.informatique.dto.tdDto;
 
-import com.univtime.informatique.dto.groupeDto.GroupeDto;
-import com.univtime.informatique.dto.groupeDto.PromoGroupeDto;
-import com.univtime.informatique.dto.groupeDto.SousGroupeGroupeDto;
-
 import java.util.Objects;
-import java.util.Set;
 
 public class GroupeTDDto {
     private Integer idGroupe;
     private String nomGroupe;
     private Integer nbEtuGroupe;
-    private PromoGroupeDto promoDto;
-    private Set<SousGroupeGroupeDto> sousGroupeDto;
 
     public GroupeTDDto() {
     }
 
-    public GroupeTDDto(Integer idGroupe, String nomGroupe, Integer nbEtuGroupe, PromoGroupeDto promoDto, Set<SousGroupeGroupeDto> sousGroupeDto) {
+    public GroupeTDDto(
+            Integer idGroupe,
+            String nomGroupe,
+            Integer nbEtuGroupe) {
         this.idGroupe = idGroupe;
         this.nomGroupe = nomGroupe;
         this.nbEtuGroupe = nbEtuGroupe;
-        this.promoDto = promoDto;
-        this.sousGroupeDto = sousGroupeDto;
     }
 
     // Getters et Setters
@@ -48,22 +42,6 @@ public class GroupeTDDto {
 
     public void setNbEtuGroupe(Integer nbEtuGroupe) {
         this.nbEtuGroupe = nbEtuGroupe;
-    }
-
-    public PromoGroupeDto getPromoDto() {
-        return promoDto;
-    }
-
-    public void setPromoDto(PromoGroupeDto promoDto) {
-        this.promoDto = promoDto;
-    }
-
-    public Set<SousGroupeGroupeDto> getSousGroupeDto() {
-        return sousGroupeDto;
-    }
-
-    public void setSousGroupeDto(Set<SousGroupeGroupeDto> sousGroupeDto) {
-        this.sousGroupeDto = sousGroupeDto;
     }
 
     @Override

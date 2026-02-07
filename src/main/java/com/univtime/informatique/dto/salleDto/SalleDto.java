@@ -1,28 +1,26 @@
 package com.univtime.informatique.dto.salleDto;
 
 import java.util.Objects;
-import java.util.Set;
 
 public class SalleDto {
     private Integer idSalle;
     private Integer nbPlace;
     private boolean salleMachine;
     private Integer nbPC;
-    private Set<CoursSalleDto> coursDto;
-    private Set<BesoinSalleSalleDto> besoinSalleDto;
 
     public SalleDto() {
 
     }
 
-    public SalleDto(Integer idSalle, Integer nbPlace, boolean salleMachine, Integer nbPC,
-                    Set<CoursSalleDto> coursDto, Set<BesoinSalleSalleDto> besoinSalleDto) {
+    public SalleDto(
+            Integer idSalle,
+            Integer nbPlace,
+            boolean salleMachine,
+            Integer nbPC) {
         this.idSalle = idSalle;
         this.nbPlace = nbPlace;
         this.salleMachine = salleMachine;
         this.nbPC = nbPC;
-        this.coursDto = coursDto;
-        this.besoinSalleDto = besoinSalleDto;
     }
 
     // Getters et Setters
@@ -56,22 +54,6 @@ public class SalleDto {
 
     public void setNbPC(Integer nbPC) {
         this.nbPC = nbPC;
-    }
-
-    public Set<CoursSalleDto> getCoursDto() {
-        return coursDto;
-    }
-
-    public void setCoursDto(Set<CoursSalleDto> coursDto) {
-        this.coursDto = coursDto;
-    }
-
-    public Set<BesoinSalleSalleDto> getBesoinSalleDto() {
-        return besoinSalleDto;
-    }
-
-    public void setBesoinSalleDto(Set<BesoinSalleSalleDto> besoinSalleDto) {
-        this.besoinSalleDto = besoinSalleDto;
     }
 
     @Override

@@ -12,9 +12,6 @@ public class CoursProfesseurDto {
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
     private TypeCours typeCoursEnum;
-    private ComposanteCoursDto composanteDto;
-    private SalleCoursDto salleDto;
-    private Set<ParticipeACoursDto> participeADto;
 
     public CoursProfesseurDto() {
 
@@ -24,17 +21,11 @@ public class CoursProfesseurDto {
             Integer idCours,
             LocalDateTime heureDebutCours,
             LocalDateTime heureFinCours,
-            TypeCours typeCoursEnum,
-            ComposanteCoursDto composanteDto,
-            SalleCoursDto salleDto,
-            Set<ParticipeACoursDto> participeADto) {
+            TypeCours typeCoursEnum) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
         this.typeCoursEnum = typeCoursEnum;
-        this.composanteDto = composanteDto;
-        this.salleDto = salleDto;
-        this.participeADto = participeADto;
     }
 
     // Getters et Setters
@@ -70,30 +61,6 @@ public class CoursProfesseurDto {
         this.typeCoursEnum = typeCoursEnum;
     }
 
-    public ComposanteCoursDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteCoursDto composanteCoursDto) {
-        this.composanteDto = composanteCoursDto;
-    }
-
-    public SalleCoursDto getSalleDto() {
-        return salleDto;
-    }
-
-    public void setSalleDto(SalleCoursDto salleCoursDto) {
-        this.salleDto = salleCoursDto;
-    }
-
-    public Set<ParticipeACoursDto> getParticipeADto() {
-        return participeADto;
-    }
-
-    public void setParticipeADto(Set<ParticipeACoursDto> participeADto) {
-        this.participeADto = participeADto;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hashCode(idCours);
@@ -101,7 +68,9 @@ public class CoursProfesseurDto {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         CoursProfesseurDto coursDto = (CoursProfesseurDto) obj;
         return Objects.equals(idCours, coursDto.idCours);
     }

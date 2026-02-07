@@ -1,59 +1,41 @@
 package com.univtime.informatique.dto.repartitionSemaineDto;
 
 import com.univtime.informatique.dto.cmDto.*;
+import com.univtime.informatique.entities.ids.CMId;
 
 import java.util.Objects;
 
 public class CMRepartitionSemaineDto {
-    private ProfesseurCMDto professeurDto;
-    private PromoCMDto promoDto;
-    private ComposanteCMDto composanteDto;
+    private CMId idCM;
 
     public CMRepartitionSemaineDto() {
 
     }
 
-    public CMRepartitionSemaineDto(ProfesseurCMDto professeurDto, PromoCMDto promoDto, ComposanteCMDto composanteDto) {
-        this.professeurDto = professeurDto;
-        this.promoDto = promoDto;
-        this.composanteDto = composanteDto;
+    public CMRepartitionSemaineDto(
+            CMId idCM) {
+        this.idCM = idCM;
     }
 
-    public ProfesseurCMDto getProfesseurDto() {
-        return professeurDto;
+    public CMId getIdCM() {
+        return idCM;
     }
 
-    public void setProfesseurDto(ProfesseurCMDto professeurDto) {
-        this.professeurDto = professeurDto;
-    }
-
-    public PromoCMDto getPromoDto() {
-        return promoDto;
-    }
-
-    public void setPromoDto(PromoCMDto promoDto) {
-        this.promoDto = promoDto;
-    }
-
-    public ComposanteCMDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteCMDto composanteDto) {
-        this.composanteDto = composanteDto;
+    public void setIdCM(CMId idCM) {
+        this.idCM = idCM;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(professeurDto, promoDto, composanteDto);
+        return Objects.hash(idCM);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         CMRepartitionSemaineDto cmDto = (CMRepartitionSemaineDto) obj;
-        return Objects.equals(professeurDto, cmDto.professeurDto)
-                && Objects.equals(promoDto, cmDto.promoDto)
-                && Objects.equals(composanteDto, cmDto.composanteDto);
+        return Objects.equals(idCM, cmDto.idCM);
     }
 }

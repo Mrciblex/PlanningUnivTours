@@ -1,51 +1,33 @@
 package com.univtime.informatique.dto.repartitionSemaineDto;
 
 import com.univtime.informatique.dto.tdDto.*;
+import com.univtime.informatique.entities.ids.TDId;
 
 import java.util.Objects;
 
 public class TDRepartitionSemaineDto {
-    private ProfesseurTDDto professeurDto;
-    private GroupeTDDto groupeDto;
-    private ComposanteTDDto composanteDto;
+    private TDId idTD;
 
     public TDRepartitionSemaineDto() {
 
     }
 
-    public TDRepartitionSemaineDto(ProfesseurTDDto professeurDto, GroupeTDDto groupeDto, ComposanteTDDto composanteDto) {
-        this.professeurDto = professeurDto;
-        this.groupeDto = groupeDto;
-        this.composanteDto = composanteDto;
+    public TDRepartitionSemaineDto(
+            TDId idTD) {
+        this.idTD = idTD;
     }
 
-    public ProfesseurTDDto getProfesseurDto() {
-        return professeurDto;
+    public TDId getIdTD() {
+        return idTD;
     }
 
-    public void setProfesseurDto(ProfesseurTDDto professeurDto) {
-        this.professeurDto = professeurDto;
-    }
-
-    public GroupeTDDto getGroupeDto() {
-        return groupeDto;
-    }
-
-    public void setGroupeDto(GroupeTDDto groupeDto) {
-        this.groupeDto = groupeDto;
-    }
-
-    public ComposanteTDDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteTDDto composanteDto) {
-        this.composanteDto = composanteDto;
+    public void setIdTD(TDId idTD) {
+        this.idTD = idTD;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(professeurDto, groupeDto, composanteDto);
+        return Objects.hash(idTD);
     }
 
     @Override
@@ -54,8 +36,6 @@ public class TDRepartitionSemaineDto {
             return false;
         }
         TDRepartitionSemaineDto tdDto = (TDRepartitionSemaineDto) obj;
-        return Objects.equals(professeurDto, tdDto.professeurDto)
-                && Objects.equals(groupeDto, tdDto.groupeDto)
-                && Objects.equals(composanteDto, tdDto.composanteDto);
+        return Objects.equals(idTD, tdDto.idTD);
     }
 }

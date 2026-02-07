@@ -1,31 +1,32 @@
 package com.univtime.informatique.dto.promoDto;
 
-import com.univtime.informatique.dto.promoEstComposeeDto.ModulePromoEstComposeeDto;
+import com.univtime.informatique.entities.ids.PromoEstComposeeId;
 
 import java.util.Objects;
 
 public class PromoEstComposeePromoDto {
-    private ModulePromoEstComposeeDto moduleDto;
+    private PromoEstComposeeId idPromoEstComposee;
 
     public PromoEstComposeePromoDto() {
 
     }
 
-    public PromoEstComposeePromoDto(ModulePromoEstComposeeDto moduleDto) {
-        this.moduleDto = moduleDto;
+    public PromoEstComposeePromoDto(
+            PromoEstComposeeId idPromoEstComposee) {
+        this.idPromoEstComposee = idPromoEstComposee;
     }
 
-    public ModulePromoEstComposeeDto getModuleDto() {
-        return moduleDto;
+    public PromoEstComposeeId getIdPromoEstComposee() {
+        return idPromoEstComposee;
     }
 
-    public void setModuleDto(ModulePromoEstComposeeDto moduleDto) {
-        this.moduleDto = moduleDto;
+    public void setIdPromoEstComposee(PromoEstComposeeId idPromoEstComposee) {
+        this.idPromoEstComposee = idPromoEstComposee;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(moduleDto);
+        return Objects.hash(idPromoEstComposee);
     }
 
     @Override
@@ -34,6 +35,6 @@ public class PromoEstComposeePromoDto {
             return false;
         }
         PromoEstComposeePromoDto that = (PromoEstComposeePromoDto) obj;
-        return Objects.equals(moduleDto, that.moduleDto);
+        return Objects.equals(idPromoEstComposee, that.idPromoEstComposee);
     }
 }

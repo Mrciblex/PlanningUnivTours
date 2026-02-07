@@ -1,59 +1,32 @@
 package com.univtime.informatique.dto.tdDto;
 
+import com.univtime.informatique.entities.ids.TDId;
+
 import java.util.Objects;
 
 public class TDDto {
-    private ProfesseurTDDto professeurDto;
-    private GroupeTDDto groupeDto;
-    private ComposanteTDDto composanteDto;
-    private RepartitionSemaineTDDto repartitionSemaineDto;
+    private TDId idTD;
 
     public TDDto() {
 
     }
 
-    public TDDto(ProfesseurTDDto professeurDto, GroupeTDDto groupeDto, ComposanteTDDto composanteDto, RepartitionSemaineTDDto repartitionSemaineDto) {
-        this.professeurDto = professeurDto;
-        this.groupeDto = groupeDto;
-        this.composanteDto = composanteDto;
-        this.repartitionSemaineDto = repartitionSemaineDto;
+    public TDDto(
+            TDId idTD) {
+        this.idTD = idTD;
     }
 
-    public ProfesseurTDDto getProfesseurDto() {
-        return professeurDto;
+    public TDId getIdTD() {
+        return idTD;
     }
 
-    public void setProfesseurDto(ProfesseurTDDto professeurDto) {
-        this.professeurDto = professeurDto;
-    }
-
-    public GroupeTDDto getGroupeDto() {
-        return groupeDto;
-    }
-
-    public void setGroupeDto(GroupeTDDto groupeDto) {
-        this.groupeDto = groupeDto;
-    }
-
-    public ComposanteTDDto getComposanteDto() {
-        return composanteDto;
-    }
-
-    public void setComposanteDto(ComposanteTDDto composanteDto) {
-        this.composanteDto = composanteDto;
-    }
-
-    public RepartitionSemaineTDDto getRepartitionSemaineDto() {
-        return repartitionSemaineDto;
-    }
-
-    public void setRepartitionSemaineDto(RepartitionSemaineTDDto repartitionSemaineDto) {
-        this.repartitionSemaineDto = repartitionSemaineDto;
+    public void setIdTD(TDId idTD) {
+        this.idTD = idTD;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(professeurDto, groupeDto, composanteDto, repartitionSemaineDto);
+        return Objects.hash(idTD);
     }
 
     @Override
@@ -62,9 +35,6 @@ public class TDDto {
             return false;
         }
         TDDto tdDto = (TDDto) obj;
-        return Objects.equals(professeurDto, tdDto.professeurDto)
-                && Objects.equals(groupeDto, tdDto.groupeDto)
-                && Objects.equals(composanteDto, tdDto.composanteDto)
-                && Objects.equals(repartitionSemaineDto, tdDto.repartitionSemaineDto);
+        return Objects.equals(idTD, tdDto.idTD);
     }
 }
