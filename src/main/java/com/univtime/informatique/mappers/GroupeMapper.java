@@ -4,11 +4,9 @@ import com.univtime.informatique.dto.groupeDto.GroupeDto;
 import com.univtime.informatique.dto.groupeDto.PromoGroupeDto;
 import com.univtime.informatique.dto.groupeDto.SousGroupeGroupeDto;
 import com.univtime.informatique.dto.groupeDto.TDGroupeDto;
-import com.univtime.informatique.entities.GroupeEntity;
-import com.univtime.informatique.entities.PromoEntity;
-import com.univtime.informatique.entities.SousGroupeEntity;
-import com.univtime.informatique.entities.TDEntity;
-import com.univtime.informatique.entities.ids.TDId;
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
+import com.univtime.informatique.entities.*;
 
 import java.util.stream.Collectors;
 
@@ -56,6 +54,28 @@ public class GroupeMapper {
             promo.setNomPromo(entity.getNomPromo());
             promo.setAnneePromo(entity.getAnneePromo());
             promo.setNbEtuPromo(entity.getNbEtuPromo());
+            promo.setPromoEstComposeeIds(entity.getPromoEstComposeeEntities()
+                    .stream()
+                    .map(promoEstComposee -> {
+                        PromoEstComposeeIdDto promoEstComposeeId = new PromoEstComposeeIdDto(
+                                promoEstComposee.getPromo().getIdPromo(),
+                                promoEstComposee.getModule().getIdModule()
+                        );
+                        return promoEstComposeeId;
+                    })
+                    .collect(Collectors.toSet()));
+            promo.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cm -> {
+                        CMIdDto cmId = new CMIdDto(
+                                cm.getIdCM().getIdProf(),
+                                cm.getIdCM().getIdPromo(),
+                                cm.getIdCM().getIdComposante(),
+                                cm.getIdCM().getIdRepartitionSemaine()
+                        );
+                        return cmId;
+                    })
+                    .collect(Collectors.toSet()));
         }
         return promo;
     }
@@ -63,14 +83,22 @@ public class GroupeMapper {
     private static TDGroupeDto tdToDto(TDEntity entity) {
         TDGroupeDto td = new TDGroupeDto();
         if (entity != null) {
-            td.setIdTD(
-                    new TDId(
-                            entity.getProfesseur().getIdProf(),
-                            entity.getGroupe().getIdGroupe(),
-                            entity.getComposante().getIdComposante(),
-                            entity.getRepartitionSemaine().getIdRepartitionSemaine()
-              )
-            );
+            td.setIdProf(entity.getProfesseur().getIdProf());
+            td.setNomProf(entity.getProfesseur().getNomProf());
+            td.setPrenomProf(entity.getProfesseur().getPrenomProf());
+            td.setIntervenantExterieur(entity.getProfesseur().getIntervenantExterieur());
+            td.setCmProfIds(entity.getProfesseur().getCmEntities()
+                    .stream()
+                    .map(cm -> {
+                        CMIdDto cmId = new CMIdDto(
+                                cm.getIdCM().getIdProf(),
+                                cm.getIdCM().getIdPromo(),
+                                cm.getIdCM().getIdComposante(),
+                                cm.getIdCM().getIdRepartitionSemaine()
+                        );
+                        return cmId;
+                    })
+                    .collect(Collectors.toSet()));
         }
         return td;
     }
