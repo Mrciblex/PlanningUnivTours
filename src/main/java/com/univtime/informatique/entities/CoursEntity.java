@@ -1,7 +1,6 @@
 package com.univtime.informatique.entities;
 
 import com.univtime.informatique.constants.TypeCours;
-import com.univtime.informatique.dto.coursDto.ComposanteCoursDto;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
