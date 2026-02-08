@@ -1,29 +1,40 @@
 package com.univtime.informatique.dto.moduleDto;
 
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
+
 import java.util.Objects;
+import java.util.Set;
 
 public class PromoEstComposeeModuleDto {
     private Integer idPromo;
     private String nomPromo;
     private Integer anneePromo;
     private Integer nbEtuPromo;
+    private Set<PromoEstComposeeIdDto> promoEstComposeePromoIds;
+    private Set<CMIdDto> cmPromoIds;
+    private Set<Integer> groupePromoIds;
 
     public PromoEstComposeeModuleDto() {
 
     }
 
-    public PromoEstComposeeModuleDto(
-            Integer idPromo,
-            String nomPromo,
-            Integer anneePromo,
-            Integer nbEtuPromo) {
+    public PromoEstComposeeModuleDto(Integer idPromo,
+                                     String nomPromo,
+                                     Integer anneePromo,
+                                     Integer nbEtuPromo,
+                                     Set<PromoEstComposeeIdDto> promoEstComposeePromoIds,
+                                     Set<CMIdDto> cmPromoIds,
+                                     Set<Integer> groupePromoIds) {
         this.idPromo = idPromo;
         this.nomPromo = nomPromo;
         this.anneePromo = anneePromo;
         this.nbEtuPromo = nbEtuPromo;
+        this.promoEstComposeePromoIds = promoEstComposeePromoIds;
+        this.cmPromoIds = cmPromoIds;
+        this.groupePromoIds = groupePromoIds;
     }
 
-    // Getters et Setters
     public Integer getIdPromo() {
         return idPromo;
     }
@@ -56,17 +67,39 @@ public class PromoEstComposeeModuleDto {
         this.nbEtuPromo = nbEtuPromo;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(idPromo);
+    public Set<PromoEstComposeeIdDto> getPromoEstComposeePromoIds() {
+        return promoEstComposeePromoIds;
+    }
+
+    public void setPromoEstComposeePromoIds(Set<PromoEstComposeeIdDto> promoEstComposeePromoIds) {
+        this.promoEstComposeePromoIds = promoEstComposeePromoIds;
+    }
+
+    public Set<CMIdDto> getCmPromoIds() {
+        return cmPromoIds;
+    }
+
+    public void setCmPromoIds(Set<CMIdDto> cmPromoIds) {
+        this.cmPromoIds = cmPromoIds;
+    }
+
+    public Set<Integer> getGroupePromoIds() {
+        return groupePromoIds;
+    }
+
+    public void setGroupePromoIds(Set<Integer> groupePromoIds) {
+        this.groupePromoIds = groupePromoIds;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        PromoEstComposeeModuleDto promoDto = (PromoEstComposeeModuleDto) obj;
-        return Objects.equals(idPromo, promoDto.idPromo);
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PromoEstComposeeModuleDto that = (PromoEstComposeeModuleDto) o;
+        return Objects.equals(idPromo, that.idPromo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(idPromo);
     }
 }

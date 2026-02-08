@@ -1,26 +1,26 @@
 package com.univtime.informatique.dto.disponibiliteDto;
 
-import com.univtime.informatique.dto.jourDto.ProfesseurJourDto;
-
 import java.util.Objects;
-import java.util.Set;
 
 public class JourDisponibiliteDto {
     private Integer idJour;
     private Integer jourSemaine;
-    private ProfesseurJourDto professeurDto;
+
+    private Integer professeurId;
+    // private Set<Integer> disponibiliteIds;
 
     public JourDisponibiliteDto() {
 
     }
 
-    public JourDisponibiliteDto(Integer idJour, Integer jourSemaine, ProfesseurJourDto professeurDto) {
+    public JourDisponibiliteDto(Integer idJour,
+                                Integer jourSemaine,
+                                Integer professeurId) {
         this.idJour = idJour;
         this.jourSemaine = jourSemaine;
-        this.professeurDto = professeurDto;
+        this.professeurId = professeurId;
     }
 
-    // Getters et Setters
     public Integer getIdJour() {
         return idJour;
     }
@@ -37,12 +37,12 @@ public class JourDisponibiliteDto {
         this.jourSemaine = jourSemaine;
     }
 
-    public ProfesseurJourDto getProfesseurDto() {
-        return professeurDto;
+    public Integer getProfesseurId() {
+        return professeurId;
     }
 
-    public void setProfesseurDto(ProfesseurJourDto professeurDto) {
-        this.professeurDto = professeurDto;
+    public void setProfesseurId(Integer professeurId) {
+        this.professeurId = professeurId;
     }
 
     @Override

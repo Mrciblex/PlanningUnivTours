@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.coursDto;
 
-import com.univtime.informatique.dto.salleDto.BesoinSalleSalleDto;
+import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -10,22 +10,26 @@ public class SalleCoursDto {
     private Integer nbPlace;
     private boolean salleMachine;
     private Integer nbPC;
-    private Set<BesoinSalleSalleDto> besoinSalleDto;
+
+    // private Set<Integer> coursIds;
+    private Set<BesoinSalleIdDto> besoinSalleIds;
 
     public SalleCoursDto() {
 
     }
 
-    public SalleCoursDto(Integer idSalle, Integer nbPlace, boolean salleMachine, Integer nbPC,
-                         Set<BesoinSalleSalleDto> besoinSalleDto) {
+    public SalleCoursDto(Integer idSalle,
+                         Integer nbPlace,
+                         boolean salleMachine,
+                         Integer nbPC,
+                         Set<BesoinSalleIdDto> besoinSalleIds) {
         this.idSalle = idSalle;
         this.nbPlace = nbPlace;
         this.salleMachine = salleMachine;
         this.nbPC = nbPC;
-        this.besoinSalleDto = besoinSalleDto;
+        this.besoinSalleIds = besoinSalleIds;
     }
 
-    // Getters et Setters
     public Integer getIdSalle() {
         return idSalle;
     }
@@ -58,12 +62,12 @@ public class SalleCoursDto {
         this.nbPC = nbPC;
     }
 
-    public Set<BesoinSalleSalleDto> getBesoinSalleDto() {
-        return besoinSalleDto;
+    public Set<BesoinSalleIdDto> getBesoinSalleIds() {
+        return besoinSalleIds;
     }
 
-    public void setBesoinSalleDto(Set<BesoinSalleSalleDto> besoinSalleDto) {
-        this.besoinSalleDto = besoinSalleDto;
+    public void setBesoinSalleIds(Set<BesoinSalleIdDto> besoinSalleIds) {
+        this.besoinSalleIds = besoinSalleIds;
     }
 
     @Override

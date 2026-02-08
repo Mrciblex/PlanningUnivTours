@@ -1,8 +1,12 @@
 package com.univtime.informatique.dto.tpDto;
 
 import com.univtime.informatique.dto.composanteDto.*;
+import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.TDIdDto;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class ComposanteTPDto {
     private Integer idComposante;
@@ -15,20 +19,31 @@ public class ComposanteTPDto {
     private Integer blocHoraireTD;
     private Integer blocHoraireTP;
 
+    private Integer moduleId;
+    private Set<CMIdDto> cmIds;
+    private Set<TDIdDto> tdIds;
+    // private Set<TPIdDto> tpIds;
+    private Set<Integer> coursIds;
+    private Set<BesoinSalleIdDto> besoinSalleIds;
+
     public ComposanteTPDto(){
 
     }
 
-    public ComposanteTPDto(
-            Integer idComposante,
-            String nomComposante,
-            Integer volumeHoraireTotal,
-            Integer volumeHoraireCM,
-            Integer volumeHoraireTD,
-            Integer volumeHoraireTP,
-            Integer blocHoraireCM,
-            Integer blocHoraireTD,
-            Integer blocHoraireTP) {
+    public ComposanteTPDto(Integer idComposante,
+                           String nomComposante,
+                           Integer volumeHoraireTotal,
+                           Integer volumeHoraireCM,
+                           Integer volumeHoraireTD,
+                           Integer volumeHoraireTP,
+                           Integer blocHoraireCM,
+                           Integer blocHoraireTD,
+                           Integer blocHoraireTP,
+                           Integer moduleId,
+                           Set<CMIdDto> cmIds,
+                           Set<TDIdDto> tdIds,
+                           Set<Integer> coursIds,
+                           Set<BesoinSalleIdDto> besoinSalleIds) {
         this.idComposante = idComposante;
         this.nomComposante = nomComposante;
         this.volumeHoraireTotal = volumeHoraireTotal;
@@ -38,9 +53,13 @@ public class ComposanteTPDto {
         this.blocHoraireCM = blocHoraireCM;
         this.blocHoraireTD = blocHoraireTD;
         this.blocHoraireTP = blocHoraireTP;
+        this.moduleId = moduleId;
+        this.cmIds = cmIds;
+        this.tdIds = tdIds;
+        this.coursIds = coursIds;
+        this.besoinSalleIds = besoinSalleIds;
     }
 
-    // Getters et Setters
     public Integer getIdComposante() {
         return idComposante;
     }
@@ -111,6 +130,46 @@ public class ComposanteTPDto {
 
     public void setBlocHoraireTP(Integer blocHoraireTP) {
         this.blocHoraireTP = blocHoraireTP;
+    }
+
+    public Integer getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(Integer moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public Set<CMIdDto> getCmIds() {
+        return cmIds;
+    }
+
+    public void setCmIds(Set<CMIdDto> cmIds) {
+        this.cmIds = cmIds;
+    }
+
+    public Set<TDIdDto> getTdIds() {
+        return tdIds;
+    }
+
+    public void setTdIds(Set<TDIdDto> tdIds) {
+        this.tdIds = tdIds;
+    }
+
+    public Set<Integer> getCoursIds() {
+        return coursIds;
+    }
+
+    public void setCoursIds(Set<Integer> coursIds) {
+        this.coursIds = coursIds;
+    }
+
+    public Set<BesoinSalleIdDto> getBesoinSalleIds() {
+        return besoinSalleIds;
+    }
+
+    public void setBesoinSalleIds(Set<BesoinSalleIdDto> besoinSalleIds) {
+        this.besoinSalleIds = besoinSalleIds;
     }
 
     @Override

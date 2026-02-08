@@ -1,7 +1,6 @@
 package com.univtime.informatique.dto.participeADto;
 
 import com.univtime.informatique.constants.TypeCours;
-import com.univtime.informatique.dto.coursDto.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,23 +9,31 @@ public class CoursParticipeADto {
     private Integer idCours;
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
-    private TypeCours typeCoursEnum;
+    private TypeCours typeCours;
+    private Integer composanteId;
+    private Integer professeurId;
+    private Integer salleId;
+    // private Set<ParticipeAIdDto> participeAIds;
 
     public CoursParticipeADto() {
     }
 
-    public CoursParticipeADto(
-            Integer idCours,
-            LocalDateTime heureDebutCours,
-            LocalDateTime heureFinCours,
-            TypeCours typeCoursEnum) {
-        this.idCours = idCours;
-        this.heureDebutCours = heureDebutCours;
+    public CoursParticipeADto(Integer salleId,
+                              Integer professeurId,
+                              Integer composanteId,
+                              TypeCours typeCours,
+                              LocalDateTime heureFinCours,
+                              LocalDateTime heureDebutCours,
+                              Integer idCours) {
+        this.salleId = salleId;
+        this.professeurId = professeurId;
+        this.composanteId = composanteId;
+        this.typeCours = typeCours;
         this.heureFinCours = heureFinCours;
-        this.typeCoursEnum = typeCoursEnum;
+        this.heureDebutCours = heureDebutCours;
+        this.idCours = idCours;
     }
 
-    // Getters et Setters
     public Integer getIdCours() {
         return idCours;
     }
@@ -51,12 +58,36 @@ public class CoursParticipeADto {
         this.heureFinCours = heureFinCours;
     }
 
-    public TypeCours getTypeCoursEnum() {
-        return typeCoursEnum;
+    public TypeCours getTypeCours() {
+        return typeCours;
     }
 
-    public void setTypeCoursEnum(TypeCours typeCoursEnum) {
-        this.typeCoursEnum = typeCoursEnum;
+    public void setTypeCours(TypeCours typeCours) {
+        this.typeCours = typeCours;
+    }
+
+    public Integer getComposanteId() {
+        return composanteId;
+    }
+
+    public void setComposanteId(Integer composanteId) {
+        this.composanteId = composanteId;
+    }
+
+    public Integer getProfesseurId() {
+        return professeurId;
+    }
+
+    public void setProfesseurId(Integer professeurId) {
+        this.professeurId = professeurId;
+    }
+
+    public Integer getSalleId() {
+        return salleId;
+    }
+
+    public void setSalleId(Integer salleId) {
+        this.salleId = salleId;
     }
 
     @Override

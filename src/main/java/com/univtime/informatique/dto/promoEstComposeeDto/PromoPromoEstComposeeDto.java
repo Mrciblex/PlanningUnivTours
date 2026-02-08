@@ -1,29 +1,37 @@
 package com.univtime.informatique.dto.promoEstComposeeDto;
 
+import com.univtime.informatique.dto.ids.CMIdDto;
+
 import java.util.Objects;
+import java.util.Set;
 
 public class PromoPromoEstComposeeDto {
     private Integer idPromo;
     private String nomPromo;
     private Integer anneePromo;
     private Integer nbEtuPromo;
+    // private Set<PromoEstComposeeIdDto> promoEstComposeeIds;
+    private Set<CMIdDto> cmIds;
+    private Set<Integer> groupeIds;
 
     public PromoPromoEstComposeeDto() {
 
     }
 
-    public PromoPromoEstComposeeDto(
-            Integer idPromo,
-            String nomPromo,
-            Integer anneePromo,
-            Integer nbEtuPromo) {
+    public PromoPromoEstComposeeDto(Integer idPromo,
+                                    String nomPromo,
+                                    Integer anneePromo,
+                                    Integer nbEtuPromo,
+                                    Set<CMIdDto> cmIds,
+                                    Set<Integer> groupeIds) {
         this.idPromo = idPromo;
         this.nomPromo = nomPromo;
         this.anneePromo = anneePromo;
         this.nbEtuPromo = nbEtuPromo;
+        this.cmIds = cmIds;
+        this.groupeIds = groupeIds;
     }
 
-    // Getters et Setters
     public Integer getIdPromo() {
         return idPromo;
     }
@@ -54,6 +62,22 @@ public class PromoPromoEstComposeeDto {
 
     public void setNbEtuPromo(Integer nbEtuPromo) {
         this.nbEtuPromo = nbEtuPromo;
+    }
+
+    public Set<CMIdDto> getCmIds() {
+        return cmIds;
+    }
+
+    public void setCmIds(Set<CMIdDto> cmIds) {
+        this.cmIds = cmIds;
+    }
+
+    public Set<Integer> getGroupeIds() {
+        return groupeIds;
+    }
+
+    public void setGroupeIds(Set<Integer> groupeIds) {
+        this.groupeIds = groupeIds;
     }
 
     @Override

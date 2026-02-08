@@ -1,23 +1,28 @@
 package com.univtime.informatique.dto.moduleDto;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class ModuleDto {
     private Integer idModule;
     private String nomModule;
+    private Set<PromoEstComposeeModuleDto> promoEstComposeeDto;
+    private Set<ComposanteModuleDto> composanteDto;
 
     public ModuleDto() {
 
     }
 
-    public ModuleDto(
-            Integer idModule,
-            String nomModule) {
+    public ModuleDto(Integer idModule,
+                     String nomModule,
+                     Set<PromoEstComposeeModuleDto> promoEstComposeeDto,
+                     Set<ComposanteModuleDto> composanteDto) {
         this.idModule = idModule;
         this.nomModule = nomModule;
+        this.promoEstComposeeDto = promoEstComposeeDto;
+        this.composanteDto = composanteDto;
     }
 
-    // Getters et Setters
     public Integer getIdModule() {
         return idModule;
     }
@@ -32,6 +37,22 @@ public class ModuleDto {
 
     public void setNomModule(String nomModule) {
         this.nomModule = nomModule;
+    }
+
+    public Set<PromoEstComposeeModuleDto> getPromoEstComposeeDto() {
+        return promoEstComposeeDto;
+    }
+
+    public void setPromoEstComposeeDto(Set<PromoEstComposeeModuleDto> promoEstComposeeDto) {
+        this.promoEstComposeeDto = promoEstComposeeDto;
+    }
+
+    public Set<ComposanteModuleDto> getComposanteDto() {
+        return composanteDto;
+    }
+
+    public void setComposanteDto(Set<ComposanteModuleDto> composanteDto) {
+        this.composanteDto = composanteDto;
     }
 
     @Override

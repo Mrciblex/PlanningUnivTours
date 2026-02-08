@@ -11,7 +11,7 @@ public class CoursComposanteDto {
     private Integer idCours;
     private LocalDateTime heureDebutCours;
     private LocalDateTime heureFinCours;
-    private TypeCours typeCoursEnum;
+    private TypeCours typeCours;
 
     // private Integer composanteId;
     private Integer professeurId;
@@ -24,14 +24,14 @@ public class CoursComposanteDto {
     public CoursComposanteDto(Integer idCours,
                               LocalDateTime heureDebutCours,
                               LocalDateTime heureFinCours,
-                              TypeCours typeCoursEnum,
+                              TypeCours typeCours,
                               Integer professeurId,
                               Integer salleId,
                               Set<ParticipeAIdDto> participeAIds) {
         this.idCours = idCours;
         this.heureDebutCours = heureDebutCours;
         this.heureFinCours = heureFinCours;
-        this.typeCoursEnum = typeCoursEnum;
+        this.typeCours = typeCours;
         this.professeurId = professeurId;
         this.salleId = salleId;
         this.participeAIds = participeAIds;
@@ -61,12 +61,12 @@ public class CoursComposanteDto {
         this.heureFinCours = heureFinCours;
     }
 
-    public TypeCours getTypeCoursEnum() {
-        return typeCoursEnum;
+    public TypeCours getTypeCours() {
+        return typeCours;
     }
 
-    public void setTypeCoursEnum(TypeCours typeCoursEnum) {
-        this.typeCoursEnum = typeCoursEnum;
+    public void setTypeCours(TypeCours typeCours) {
+        this.typeCours = typeCours;
     }
 
     public Integer getProfesseurId() {

@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.composanteDto;
 
-import com.univtime.informatique.dto.moduleDto.PromoEstComposeeModuleDto;
+import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -8,19 +8,23 @@ import java.util.Set;
 public class ModuleComposanteDto {
     private Integer idModule;
     private String nomModule;
-    private Set<PromoEstComposeeModuleDto> promoEstComposeeDto;
+
+    private Set<PromoEstComposeeIdDto> promoEstComposeeIds;
+    // private Set<Integer> composanteIds;
+
 
     public ModuleComposanteDto() {
 
     }
 
-    public ModuleComposanteDto(Integer idModule, String nomModule, Set<PromoEstComposeeModuleDto> promoEstComposeeDto) {
+    public ModuleComposanteDto(Integer idModule,
+                               String nomModule,
+                               Set<PromoEstComposeeIdDto> promoEstComposeeIds) {
         this.idModule = idModule;
         this.nomModule = nomModule;
-        this.promoEstComposeeDto = promoEstComposeeDto;
+        this.promoEstComposeeIds = promoEstComposeeIds;
     }
 
-    // Getters et Setters
     public Integer getIdModule() {
         return idModule;
     }
@@ -37,12 +41,12 @@ public class ModuleComposanteDto {
         this.nomModule = nomModule;
     }
 
-    public Set<PromoEstComposeeModuleDto> getPromoEstComposeeDto() {
-        return promoEstComposeeDto;
+    public Set<PromoEstComposeeIdDto> getPromoEstComposeeIds() {
+        return promoEstComposeeIds;
     }
 
-    public void setPromoEstComposeeDto(Set<PromoEstComposeeModuleDto> promoEstComposeeDto) {
-        this.promoEstComposeeDto = promoEstComposeeDto;
+    public void setPromoEstComposeeIds(Set<PromoEstComposeeIdDto> promoEstComposeeIds) {
+        this.promoEstComposeeIds = promoEstComposeeIds;
     }
 
     @Override

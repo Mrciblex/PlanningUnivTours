@@ -7,6 +7,8 @@ public class DisponibiliteJourDto {
     private Integer heureDebutDispo;
     private Integer heureFinDispo;
 
+    // private Integer jourId;
+
     public DisponibiliteJourDto(){
     }
 

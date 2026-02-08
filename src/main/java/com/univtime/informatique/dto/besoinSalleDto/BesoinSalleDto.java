@@ -53,6 +53,7 @@ public class BesoinSalleDto {
     public boolean equals(Object obj) {
         if (obj == null || getClass() != obj.getClass()) return false;
         BesoinSalleDto that = (BesoinSalleDto) obj;
-        return Objects.equals(salleDto, that.salleDto) && Objects.equals(composanteDto, that.composanteDto);
+        return Objects.equals(salleDto, that.salleDto) 
+                && Objects.equals(composanteDto, that.composanteDto);
     }
 }

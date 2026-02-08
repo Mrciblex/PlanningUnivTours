@@ -1,6 +1,10 @@
 package com.univtime.informatique.dto.coursDto;
 
 import com.univtime.informatique.dto.composanteDto.*;
+import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -15,17 +19,32 @@ public class ComposanteCoursDto {
     private Integer blocHoraireCM;
     private Integer blocHoraireTD;
     private Integer blocHoraireTP;
-    private ModuleComposanteDto moduleDto;
-    private Set<CMComposanteDto> cmDto;
-    private Set<TDComposanteDto> tdDto;
-    private Set<TPComposanteDto> tpDto;
-    private Set<BesoinSalleComposanteDto> besoinSalleDto;
+
+    private Integer moduleId;
+    private Set<CMIdDto> cmIds;
+    private Set<TDIdDto> tdIds;
+    private Set<TPIdDto> tpIds;
+    private Set<BesoinSalleIdDto> besoinSalleIds;
+    // private Set<Integer> coursIds;
 
     public ComposanteCoursDto(){
 
     }
 
-    public ComposanteCoursDto(Integer idComposante, String nomComposante, Integer volumeHoraireTotal, Integer volumeHoraireCM, Integer volumeHoraireTD, Integer volumeHoraireTP, Integer blocHoraireCM, Integer blocHoraireTD, Integer blocHoraireTP, ModuleComposanteDto moduleDto, Set<CMComposanteDto> cmDto, Set<TDComposanteDto> tdDto, Set<TPComposanteDto> tpDto, Set<BesoinSalleComposanteDto> besoinSalleDto) {
+    public ComposanteCoursDto(Integer idComposante,
+                              String nomComposante,
+                              Integer volumeHoraireTotal,
+                              Integer volumeHoraireCM,
+                              Integer volumeHoraireTD,
+                              Integer volumeHoraireTP,
+                              Integer blocHoraireCM,
+                              Integer blocHoraireTD,
+                              Integer blocHoraireTP,
+                              Integer moduleId,
+                              Set<CMIdDto> cmIds,
+                              Set<TDIdDto> tdIds,
+                              Set<TPIdDto> tpIds,
+                              Set<BesoinSalleIdDto> besoinSalleIds) {
         this.idComposante = idComposante;
         this.nomComposante = nomComposante;
         this.volumeHoraireTotal = volumeHoraireTotal;
@@ -35,14 +54,13 @@ public class ComposanteCoursDto {
         this.blocHoraireCM = blocHoraireCM;
         this.blocHoraireTD = blocHoraireTD;
         this.blocHoraireTP = blocHoraireTP;
-        this.moduleDto = moduleDto;
-        this.cmDto = cmDto;
-        this.tdDto = tdDto;
-        this.tpDto = tpDto;
-        this.besoinSalleDto = besoinSalleDto;
+        this.moduleId = moduleId;
+        this.cmIds = cmIds;
+        this.tdIds = tdIds;
+        this.tpIds = tpIds;
+        this.besoinSalleIds = besoinSalleIds;
     }
 
-    // Getters et Setters
     public Integer getIdComposante() {
         return idComposante;
     }
@@ -115,42 +133,44 @@ public class ComposanteCoursDto {
         this.blocHoraireTP = blocHoraireTP;
     }
 
-    public ModuleComposanteDto getModuleDto() { return moduleDto; }
-
-    public void setModuleDto(ModuleComposanteDto moduleComposanteDto) {
-        this.moduleDto = moduleComposanteDto;
+    public Integer getModuleId() {
+        return moduleId;
     }
 
-    public Set<CMComposanteDto> getCmDto() {
-        return cmDto;
+    public void setModuleId(Integer moduleId) {
+        this.moduleId = moduleId;
     }
 
-    public void setCmDto(Set<CMComposanteDto> cmDto) {
-        this.cmDto = cmDto;
+    public Set<CMIdDto> getCmIds() {
+        return cmIds;
     }
 
-    public Set<TDComposanteDto> getTdDto() {
-        return tdDto;
+    public void setCmIds(Set<CMIdDto> cmIds) {
+        this.cmIds = cmIds;
     }
 
-    public void setTdDto(Set<TDComposanteDto> tdDto) {
-        this.tdDto = tdDto;
+    public Set<TDIdDto> getTdIds() {
+        return tdIds;
     }
 
-    public Set<TPComposanteDto> getTpDto() {
-        return tpDto;
+    public void setTdIds(Set<TDIdDto> tdIds) {
+        this.tdIds = tdIds;
     }
 
-    public void setTpDto(Set<TPComposanteDto> tpDto) {
-        this.tpDto = tpDto;
+    public Set<TPIdDto> getTpIds() {
+        return tpIds;
     }
 
-    public Set<BesoinSalleComposanteDto> getBesoinSalleDto() {
-        return besoinSalleDto;
+    public void setTpIds(Set<TPIdDto> tpIds) {
+        this.tpIds = tpIds;
     }
 
-    public void setBesoinSalleDto(Set<BesoinSalleComposanteDto> besoinSalleDto) {
-        this.besoinSalleDto = besoinSalleDto;
+    public Set<BesoinSalleIdDto> getBesoinSalleIds() {
+        return besoinSalleIds;
+    }
+
+    public void setBesoinSalleIds(Set<BesoinSalleIdDto> besoinSalleIds) {
+        this.besoinSalleIds = besoinSalleIds;
     }
 
     @Override

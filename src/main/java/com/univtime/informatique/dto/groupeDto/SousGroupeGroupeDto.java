@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.groupeDto;
 
-import com.univtime.informatique.dto.sousGroupeDto.ParticipeASousGroupeDto;
-import com.univtime.informatique.dto.sousGroupeDto.TPSousGroupeDto;
+import com.univtime.informatique.dto.ids.ParticipeAIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -10,20 +10,25 @@ public class SousGroupeGroupeDto {
     private Integer idSousGroupe;
     private String nomSousGroupe;
     private Integer nbEtuSousGroupe;
-    private Set<TPSousGroupeDto> tpDto;
-    private Set<ParticipeASousGroupeDto> participeADto;
+
+    // private Integer groupeId;
+    private Set<TPIdDto> tpIds;
+    private Set<ParticipeAIdDto> participeAIds;
 
     public SousGroupeGroupeDto() {
 
     }
 
-    public SousGroupeGroupeDto(Integer idSousGroupe, String nomSousGroupe, Integer nbEtuSousGroupe,
-                         Set<TPSousGroupeDto> tpDto, Set<ParticipeASousGroupeDto> participeADto) {
-        this.idSousGroupe = idSousGroupe;
-        this.nomSousGroupe = nomSousGroupe;
+    public SousGroupeGroupeDto(Set<ParticipeAIdDto> participeAIds,
+                               Set<TPIdDto> tpIds,
+                               Integer nbEtuSousGroupe,
+                               String nomSousGroupe,
+                               Integer idSousGroupe) {
+        this.participeAIds = participeAIds;
+        this.tpIds = tpIds;
         this.nbEtuSousGroupe = nbEtuSousGroupe;
-        this.tpDto = tpDto;
-        this.participeADto = participeADto;
+        this.nomSousGroupe = nomSousGroupe;
+        this.idSousGroupe = idSousGroupe;
     }
 
     public Integer getIdSousGroupe() {
@@ -50,20 +55,20 @@ public class SousGroupeGroupeDto {
         this.nbEtuSousGroupe = nbEtuSousGroupe;
     }
 
-    public Set<TPSousGroupeDto> getTpDto() {
-        return tpDto;
+    public Set<TPIdDto> getTpIds() {
+        return tpIds;
     }
 
-    public void setTpDto(Set<TPSousGroupeDto> tpDto) {
-        this.tpDto = tpDto;
+    public void setTpIds(Set<TPIdDto> tpIds) {
+        this.tpIds = tpIds;
     }
 
-    public Set<ParticipeASousGroupeDto> getParticipeADto() {
-        return participeADto;
+    public Set<ParticipeAIdDto> getParticipeAIds() {
+        return participeAIds;
     }
 
-    public void setParticipeADto(Set<ParticipeASousGroupeDto> participeADto) {
-        this.participeADto = participeADto;
+    public void setParticipeAIds(Set<ParticipeAIdDto> participeAIds) {
+        this.participeAIds = participeAIds;
     }
 
     @Override

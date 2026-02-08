@@ -4,25 +4,83 @@ import com.univtime.informatique.constants.TypeBesoin;
 import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class BesoinSalleComposanteDto {
-    private BesoinSalleIdDto besoinSalleId;
+    private Integer idSalle;
+    private Integer nbPlace;
+    private boolean salleMachine;
+    private Integer nbPC;
+    private Set<Integer> coursSalleIds;
+    private Set<BesoinSalleIdDto> besoinSalleSalleIds;
+
     private TypeBesoin typeBesoin;
 
     public BesoinSalleComposanteDto() {
     }
 
-    public BesoinSalleComposanteDto(BesoinSalleIdDto besoinSalleId, TypeBesoin typeBesoin) {
-        this.besoinSalleId = besoinSalleId;
+    public BesoinSalleComposanteDto(Integer idSalle,
+                                    Integer nbPlace,
+                                    boolean salleMachine,
+                                    Integer nbPC,
+                                    Set<Integer> coursSalleIds,
+                                    Set<BesoinSalleIdDto> besoinSalleSalleIds,
+                                    TypeBesoin typeBesoin) {
+        this.idSalle = idSalle;
+        this.nbPlace = nbPlace;
+        this.salleMachine = salleMachine;
+        this.nbPC = nbPC;
+        this.coursSalleIds = coursSalleIds;
+        this.besoinSalleSalleIds = besoinSalleSalleIds;
         this.typeBesoin = typeBesoin;
     }
 
-    public BesoinSalleIdDto getBesoinSalleId() {
-        return besoinSalleId;
+    public Integer getIdSalle() {
+        return idSalle;
     }
 
-    public void setBesoinSalleId(BesoinSalleIdDto besoinSalleId) {
-        this.besoinSalleId = besoinSalleId;
+    public void setIdSalle(Integer idSalle) {
+        this.idSalle = idSalle;
+    }
+
+    public Integer getNbPlace() {
+        return nbPlace;
+    }
+
+    public void setNbPlace(Integer nbPlace) {
+        this.nbPlace = nbPlace;
+    }
+
+    public boolean isSalleMachine() {
+        return salleMachine;
+    }
+
+    public void setSalleMachine(boolean salleMachine) {
+        this.salleMachine = salleMachine;
+    }
+
+    public Integer getNbPC() {
+        return nbPC;
+    }
+
+    public void setNbPC(Integer nbPC) {
+        this.nbPC = nbPC;
+    }
+
+    public Set<Integer> getCoursSalleIds() {
+        return coursSalleIds;
+    }
+
+    public void setCoursSalleIds(Set<Integer> coursSalleIds) {
+        this.coursSalleIds = coursSalleIds;
+    }
+
+    public Set<BesoinSalleIdDto> getBesoinSalleSalleIds() {
+        return besoinSalleSalleIds;
+    }
+
+    public void setBesoinSalleSalleIds(Set<BesoinSalleIdDto> besoinSalleSalleIds) {
+        this.besoinSalleSalleIds = besoinSalleSalleIds;
     }
 
     public TypeBesoin getTypeBesoin() {
@@ -34,14 +92,14 @@ public class BesoinSalleComposanteDto {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(besoinSalleId);
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BesoinSalleComposanteDto that = (BesoinSalleComposanteDto) o;
+        return Objects.equals(idSalle, that.idSalle);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
-        BesoinSalleComposanteDto that = (BesoinSalleComposanteDto) obj;
-        return Objects.equals(besoinSalleId, that.besoinSalleId);
+    public int hashCode() {
+        return Objects.hashCode(idSalle);
     }
 }

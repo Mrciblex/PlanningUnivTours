@@ -1,9 +1,8 @@
 package com.univtime.informatique.dto.coursDto;
 
-import com.univtime.informatique.dto.professeurDto.CMProfesseurDto;
-import com.univtime.informatique.dto.professeurDto.JourProfesseurDto;
-import com.univtime.informatique.dto.professeurDto.TDProfesseurDto;
-import com.univtime.informatique.dto.professeurDto.TPProfesseurDto;
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -13,28 +12,35 @@ public class ProfesseurCoursDto {
     private String nomProf;
     private String prenomProf;
     private boolean intervenantExterieur;
-    private Set<CMProfesseurDto> cmDto;
-    private Set<TDProfesseurDto> tdDto;
-    private Set<TPProfesseurDto> tpDto;
-    private Set<JourProfesseurDto> jourDto;
+
+    private Set<CMIdDto> cmIds;
+    private Set<TDIdDto> tdIds;
+    private Set<TPIdDto> tpIds;
+    // private Set<Integer> coursIds;
+    private Set<Integer> jourIds;
 
     public ProfesseurCoursDto() {
 
     }
 
-    public ProfesseurCoursDto(Integer idProf, String nomProf, String prenomProf, boolean intervenantExterieur, Set<CMProfesseurDto> cmDto,
-                         Set<TDProfesseurDto> tdDto, Set<TPProfesseurDto> tpDto, Set<JourProfesseurDto> jourDto) {
+    public ProfesseurCoursDto(Integer idProf,
+                              String nomProf,
+                              String prenomProf,
+                              boolean intervenantExterieur,
+                              Set<CMIdDto> cmIds,
+                              Set<TDIdDto> tdIds,
+                              Set<TPIdDto> tpIds,
+                              Set<Integer> jourIds) {
         this.idProf = idProf;
         this.nomProf = nomProf;
         this.prenomProf = prenomProf;
         this.intervenantExterieur = intervenantExterieur;
-        this.cmDto = cmDto;
-        this.tdDto = tdDto;
-        this.tpDto = tpDto;
-        this.jourDto = jourDto;
+        this.cmIds = cmIds;
+        this.tdIds = tdIds;
+        this.tpIds = tpIds;
+        this.jourIds = jourIds;
     }
 
-    // Getters et Setters
     public Integer getIdProf() {
         return idProf;
     }
@@ -67,36 +73,36 @@ public class ProfesseurCoursDto {
         this.intervenantExterieur = intervenantExterieur;
     }
 
-    public Set<CMProfesseurDto> getCmDto() {
-        return cmDto;
+    public Set<CMIdDto> getCmIds() {
+        return cmIds;
     }
 
-    public void setCmDto(Set<CMProfesseurDto> cmDto) {
-        this.cmDto = cmDto;
+    public void setCmIds(Set<CMIdDto> cmIds) {
+        this.cmIds = cmIds;
     }
 
-    public Set<TDProfesseurDto> getTdDto() {
-        return tdDto;
+    public Set<TDIdDto> getTdIds() {
+        return tdIds;
     }
 
-    public void setTdDto(Set<TDProfesseurDto> tdDto) {
-        this.tdDto = tdDto;
+    public void setTdIds(Set<TDIdDto> tdIds) {
+        this.tdIds = tdIds;
     }
 
-    public Set<TPProfesseurDto> getTpDto() {
-        return tpDto;
+    public Set<TPIdDto> getTpIds() {
+        return tpIds;
     }
 
-    public void setTpDto(Set<TPProfesseurDto> tpDto) {
-        this.tpDto = tpDto;
+    public void setTpIds(Set<TPIdDto> tpIds) {
+        this.tpIds = tpIds;
     }
 
-    public Set<JourProfesseurDto> getJourDto() {
-        return jourDto;
+    public Set<Integer> getJourIds() {
+        return jourIds;
     }
 
-    public void setJourDto(Set<JourProfesseurDto> jourDto) {
-        this.jourDto = jourDto;
+    public void setJourIds(Set<Integer> jourIds) {
+        this.jourIds = jourIds;
     }
 
     @Override
