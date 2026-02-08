@@ -19,7 +19,7 @@ public class DisponibiliteMapper {
         dto.setIdDispo(entity.getIdDispo());
         dto.setHeureDebutDispo(entity.getHeureDebutDispo());
         dto.setHeureFinDispo(entity.getHeureFinDispo());
-        dto.getJourDto(jourToDto(entity.getJour()));
+        dto.getJourDto(jourToDto(entity.getJour().getIdJour()));
         return dto;
     }
 
@@ -39,6 +39,11 @@ public class DisponibiliteMapper {
         if (entity != null) {
             jour.setIdJour(entity.getIdJour());
             jour.setJourSemaine(entity.getJourSemaine());
+
+            /*
+                Professeur
+             */
+            jour.setIdJour(entity.getIdJour());
         }
         return jour;
     }
