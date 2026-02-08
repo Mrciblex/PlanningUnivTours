@@ -31,7 +31,10 @@ public class SousGroupeMapper {
                 .stream()
                 .map(SousGroupeMapper::tpToDto)
                 .collect(Collectors.toSet()));
-        dto.setParticipeADto();
+        dto.setParticipeADto(entity.getParticipeAEntities()
+                .stream()
+                .map(SousGroupeMapper::participeAToDto)
+                .collect(Collectors.toSet()));
         return dto;
     }
 
@@ -43,7 +46,6 @@ public class SousGroupeMapper {
         entity.setIdSousGroupe(dto.getIdSousGroupe());
         entity.setNomSousGroupe(dto.getNomSousGroupe());
         entity.setNbEtuSousGroupe(dto.getNbEtuSousGroupe());
-        entity.setIdSousGroupe(dto.getIdSousGroupe());
         return entity;
     }
 
@@ -62,10 +64,12 @@ public class SousGroupeMapper {
         if (entity != null) {
             tp.setIdTP(
                     new TPId(
-                        entity.getProfesseur().getIdProf(),
-                        entity.getSousGroupe().getIdSousGroupe(),
-                        entity.getComposante().getIdComposante(),
-                        entity.getRepartitionSemaine().getIdRepartitionSemaine()));
+                            entity.getProfesseur().getIdProf(),
+                            entity.getSousGroupe().getIdSousGroupe(),
+                            entity.getComposante().getIdComposante(),
+                            entity.getRepartitionSemaine().getIdRepartitionSemaine()
+                    )
+            );
         }
         return tp;
     }
@@ -73,7 +77,7 @@ public class SousGroupeMapper {
     private static ParticipeASousGroupeDto participeAToDto(ParticipeAEntity entity) {
         ParticipeASousGroupeDto part = new ParticipeASousGroupeDto();
         if (entity != null) {
-            part
+            part.
         }
         return part;
     }

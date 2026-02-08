@@ -53,7 +53,14 @@ public class TDMapper {
             entity.setRepartitionSemaine(rep);
         }
 
-        entity.setIdTD(new TDId(prof.getIdProf(), groupe.getIdGroupe(), comp.getIdComposante(), rep.getIdRepartitionSemaine()));
+        entity.setIdTD(
+                new TDId(
+                        prof.getIdProf(),
+                        groupe.getIdGroupe(),
+                        comp.getIdComposante(),
+                        rep.getIdRepartitionSemaine()
+                )
+        );
 
         return entity;
     }
