@@ -46,7 +46,7 @@ public class ModuleMapper {
     private static PromoEstComposeeModuleDto promoEstComposeeToDto(PromoEstComposeeEntity entity) {
         PromoEstComposeeModuleDto promoEstComposee = new PromoEstComposeeModuleDto();
         if (entity != null) {
-            promoEstComposee.
+            promoEstComposee.setIdPromoEstComposee(entity.getIdPromoEstComposee());
         }
         return promoEstComposee;
     }
@@ -54,7 +54,7 @@ public class ModuleMapper {
     private static ComposanteModuleDto composanteToDto(ComposanteEntity entity) {
         ComposanteModuleDto composante = new ComposanteModuleDto();
         if (entity != null) {
-            composante.
+            composante.setIdComposante(entity.getIdComposante());
         }
         return composante;
     }

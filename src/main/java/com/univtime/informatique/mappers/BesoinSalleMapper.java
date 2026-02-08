@@ -34,7 +34,7 @@ public class BesoinSalleMapper {
         if (entity != null ) {
             salle.setIdSalle(entity.getIdSalle());
             salle.setNbPlace(entity.getNbPlace());
-            salle.setSalleMachine(entity.getSalleMachine());
+            salle.setSalleMachine(entity.isSalleMachine());
             salle.setNbPC(entity.getNbPC());
         }
         return salle;

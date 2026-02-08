@@ -8,6 +8,7 @@ import com.univtime.informatique.entities.GroupeEntity;
 import com.univtime.informatique.entities.ParticipeAEntity;
 import com.univtime.informatique.entities.SousGroupeEntity;
 import com.univtime.informatique.entities.TPEntity;
+import com.univtime.informatique.entities.ids.ParticipeAId;
 import com.univtime.informatique.entities.ids.TPId;
 
 import java.util.stream.Collectors;
@@ -77,7 +78,12 @@ public class SousGroupeMapper {
     private static ParticipeASousGroupeDto participeAToDto(ParticipeAEntity entity) {
         ParticipeASousGroupeDto part = new ParticipeASousGroupeDto();
         if (entity != null) {
-            part.
+            part.setIdParticipeA(
+                    new ParticipeAId(
+                                entity.getSousGroupe().getIdSousGroupe(),
+                                entity.getCours().getIdCours()
+                    )
+            );
         }
         return part;
     }

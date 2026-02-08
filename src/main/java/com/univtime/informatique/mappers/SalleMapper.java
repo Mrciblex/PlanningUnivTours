@@ -30,7 +30,7 @@ public class SalleMapper {
                 .collect(Collectors.toSet()));
         dto.setBesoinSalleDto(entity.getBesoinSalleEntities()
                 .stream()
-                .map(BesoinSalleMapper::besoinSalleToDto)
+                .map(SalleMapper::besoinSalleToDto)
                 .collect(Collectors.toSet()));
         return dto;
     }
@@ -61,7 +61,7 @@ public class SalleMapper {
     private static BesoinSalleSalleDto besoinSalleToDto(BesoinSalleEntity entity) {
         BesoinSalleSalleDto besoin = new BesoinSalleSalleDto();
         if(entity != null) {
-            besoin.set
+            besoin.setIdBesoinSalle(entity.getIdBesoinSalle());
         }
         return besoin;
     }

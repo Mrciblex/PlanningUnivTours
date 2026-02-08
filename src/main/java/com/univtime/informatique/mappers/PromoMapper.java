@@ -9,6 +9,7 @@ import com.univtime.informatique.entities.GroupeEntity;
 import com.univtime.informatique.entities.PromoEntity;
 import com.univtime.informatique.entities.PromoEstComposeeEntity;
 import com.univtime.informatique.entities.ids.CMId;
+import com.univtime.informatique.entities.ids.PromoEstComposeeId;
 
 import java.util.stream.Collectors;
 
@@ -57,7 +58,12 @@ public class PromoMapper {
     private static PromoEstComposeePromoDto promoEstComposeeToDto(PromoEstComposeeEntity entity) {
         PromoEstComposeePromoDto promoEstComposee = new PromoEstComposeePromoDto();
         if (entity != null) {
-            promoEstComposee.set
+            promoEstComposee.setIdPromoEstComposee(
+                    new PromoEstComposeeId(
+                            entity.getPromo().getIdPromo(),
+                            entity.getModule().getIdModule()
+                    )
+            );
         }
         return promoEstComposee;
     }
@@ -80,7 +86,7 @@ public class PromoMapper {
     private static GroupePromoDto groupeToDto(GroupeEntity entity) {
         GroupePromoDto groupe = new GroupePromoDto();
         if (entity != null) {
-            groupe.set
+            groupe.setIdGroupe(entity.getIdGroupe());
         }
         return groupe;
     }

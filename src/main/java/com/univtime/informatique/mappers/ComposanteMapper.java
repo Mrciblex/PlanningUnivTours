@@ -132,7 +132,7 @@ public class ComposanteMapper {
     private static BesoinSalleComposanteDto besoinSalleToDto(BesoinSalleEntity entity) {
         BesoinSalleComposanteDto besoinSalle = new BesoinSalleComposanteDto();
         if (entity != null) {
-            besoinSalle.setIdSalle(entity);
+            besoinSalle.setIdBesoinSalle(entity.getIdBesoinSalle());
         }
         return besoinSalle;
     }

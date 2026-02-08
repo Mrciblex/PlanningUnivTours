@@ -57,7 +57,12 @@ public class TPMapper {
             entity.setRepartitionSemaine(rep);
         }
 
-        entity.setIdTP(new TPId(prof.getIdProf(), sg.getIdSousGroupe(), comp.getIdComposante(), rep.getIdRepartitionSemaine()));
+        entity.setIdTP(
+                new TPId(
+                        prof.getIdProf(),
+                        sg.getIdSousGroupe(),
+                        comp.getIdComposante(),
+                        rep.getIdRepartitionSemaine()));
 
         return entity;
     }

@@ -106,7 +106,7 @@ public class ProfesseurMapper {
     private static CoursProfesseurDto coursToDto(CoursEntity entity) {
         CoursProfesseurDto cours = new CoursProfesseurDto();
         if (entity != null) {
-            cours.
+            cours.setIdCours(entity.getIdCours());
         }
         return cours;
     }
@@ -114,7 +114,7 @@ public class ProfesseurMapper {
     private static JourProfesseurDto jourToDto(JourEntity entity) {
         JourProfesseurDto jour = new JourProfesseurDto();
         if (entity != null) {
-            jour.
+            jour.setIdJour(entity.getIdJour());
         }
         return jour;
     }

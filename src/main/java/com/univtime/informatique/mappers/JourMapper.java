@@ -54,7 +54,7 @@ public class JourMapper {
     private static DisponibiliteJourDto disponibiliteToDto(DisponibiliteEntity entity) {
         DisponibiliteJourDto disponibilite = new DisponibiliteJourDto();
         if (entity !=  null) {
-            disponibilite.
+            disponibilite.setIdDispo(entity.getIdDispo());
         }
         return disponibilite;
     }
