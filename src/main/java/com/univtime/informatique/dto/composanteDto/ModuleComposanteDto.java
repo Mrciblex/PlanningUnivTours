@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.composanteDto;
 
-import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
+import com.univtime.informatique.dto.idsDto.PromoEstComposeeIdDto;
 
 import java.util.Objects;
 import java.util.Set;

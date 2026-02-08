@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.tpDto;
 
-import com.univtime.informatique.dto.ids.CMIdDto;
-import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
+import com.univtime.informatique.dto.idsDto.TDIdDto;
 
 import java.util.Objects;
 import java.util.Set;

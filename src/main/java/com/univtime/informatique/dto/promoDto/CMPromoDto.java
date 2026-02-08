@@ -1,10 +1,9 @@
 package com.univtime.informatique.dto.promoDto;
 
-import com.univtime.informatique.dto.cmDto.*;
-import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
-import com.univtime.informatique.dto.ids.CMIdDto;
-import com.univtime.informatique.dto.ids.TDIdDto;
-import com.univtime.informatique.dto.ids.TPIdDto;
+import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
+import com.univtime.informatique.dto.idsDto.TDIdDto;
+import com.univtime.informatique.dto.idsDto.TPIdDto;
 
 import java.util.Objects;
 import java.util.Set;

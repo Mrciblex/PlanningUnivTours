@@ -9,6 +9,7 @@ public class ModulePromoEstComposeeDto {
     // private Set<PromoEstComposeeIdDto> promoEstComposeeIds;
     private Set<Integer> composanteIds;
 
+
     public ModulePromoEstComposeeDto() {
 
     }

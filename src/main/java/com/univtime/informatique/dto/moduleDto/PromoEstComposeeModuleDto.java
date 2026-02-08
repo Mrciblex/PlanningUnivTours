@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.moduleDto;
 
-import com.univtime.informatique.dto.ids.CMIdDto;
-import com.univtime.informatique.dto.ids.PromoEstComposeeIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
+import com.univtime.informatique.dto.idsDto.PromoEstComposeeIdDto;
 
 import java.util.Objects;
 import java.util.Set;
@@ -14,6 +14,8 @@ public class PromoEstComposeeModuleDto {
     private Set<PromoEstComposeeIdDto> promoEstComposeePromoIds;
     private Set<CMIdDto> cmPromoIds;
     private Set<Integer> groupePromoIds;
+
+
 
     public PromoEstComposeeModuleDto() {
 

@@ -1,4 +1,4 @@
-package com.univtime.informatique.dto.ids;
+package com.univtime.informatique.dto.idsDto;
 
 import java.util.Objects;
 

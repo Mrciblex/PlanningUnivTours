@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.repartitionSemaineDto;
 
-import com.univtime.informatique.dto.ids.*;
+import com.univtime.informatique.dto.idsDto.*;
 
 import java.util.Objects;
 import java.util.Set;
