@@ -1,10 +1,13 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.TPIdDto;
 import com.univtime.informatique.dto.participeADto.*;
 import com.univtime.informatique.entities.ParticipeAEntity;
 import com.univtime.informatique.entities.SousGroupeEntity;
 import com.univtime.informatique.entities.CoursEntity;
 import com.univtime.informatique.entities.ids.ParticipeAId;
+
+import java.util.stream.Collectors;
 
 public class ParticipeAMapper {
 
@@ -57,6 +60,18 @@ public class ParticipeAMapper {
             sg.setIdSousGroupe(entity.getIdSousGroupe());
             sg.setNomSousGroupe(entity.getNomSousGroupe());
             sg.setNbEtuSousGroupe(entity.getNbEtuSousGroupe());
+            sg.setGroupeId(entity.getGroupe().getIdGroupe());
+            sg.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return sg;
     }
@@ -68,6 +83,9 @@ public class ParticipeAMapper {
             cours.setHeureDebutCours(entity.getHeureDebutCours());
             cours.setHeureFinCours(entity.getHeureFinCours());
             cours.setTypeCours(entity.getTypeCours());
+            cours.setComposanteId(entity.getComposante().getIdComposante());
+            cours.setProfesseurId(entity.getProfesseur().getIdProf());
+            cours.setSalleId(entity.getSalle().getIdSalle());
         }
         return cours;
     }

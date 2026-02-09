@@ -1,5 +1,6 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.*;
 import com.univtime.informatique.dto.salleDto.BesoinSalleSalleDto;
 import com.univtime.informatique.dto.salleDto.CoursSalleDto;
 import com.univtime.informatique.dto.salleDto.SalleDto;
@@ -54,6 +55,17 @@ public class SalleMapper {
             cours.setHeureDebutCours(entity.getHeureDebutCours());
             cours.setHeureFinCours(entity.getHeureFinCours());
             cours.setTypeCours(entity.getTypeCours());
+            cours.setComposanteId(entity.getComposante().getIdComposante());
+            cours.setProfesseurId(entity.getProfesseur().getIdProf());
+            cours.setParticipeAIds(entity.getParticipeAEntities()
+                    .stream()
+                    .map(participeAEntity -> {
+                        return new ParticipeAIdDto(
+                                participeAEntity.getIdParticipeA().getIdSousGroupe(),
+                                participeAEntity.getIdParticipeA().getIdCours()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return cours;
     }
@@ -61,7 +73,67 @@ public class SalleMapper {
     private static BesoinSalleSalleDto besoinSalleToDto(BesoinSalleEntity entity) {
         BesoinSalleSalleDto besoin = new BesoinSalleSalleDto();
         if(entity != null) {
-            besoin.setIdBesoinSalle(entity.getIdBesoinSalle());
+            besoin.setTypeBesoin(entity.getTypeBesoin());
+
+            /*
+                Composante
+             */
+            besoin.setIdComposante(entity.getComposante().getIdComposante());
+            besoin.setNomComposante(entity.getComposante().getNomCoposante());
+            besoin.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
+            besoin.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
+            besoin.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());
+            besoin.setVolumeHoraireTPComposante(entity.getComposante().getVolumeHoraireTP());
+            besoin.setBlocHoraireCMComposante(entity.getComposante().getBlocHoraireCM());
+            besoin.setBlocHoraireTDComposante(entity.getComposante().getBlocHoraireTD());
+            besoin.setBlocHoraireTPComposante(entity.getComposante().getBlocHoraireTP());
+            besoin.setModuleComposanteId(entity.getComposante().getModule().getIdModule());
+            besoin.setCmComposanteIds(entity.getComposante().getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            besoin.setTdComposanteIds(entity.getComposante().getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            besoin.setTpComposanteIds(entity.getComposante().getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            besoin.setCoursComposanteIds(entity.getComposante().getCoursEntities()
+                    .stream()
+                    .map(CoursEntity::getIdCours)
+                    .collect(Collectors.toSet()));
+            besoin.setBesoinSalleComposanteIds(entity.getComposante().getBesoinSalleEntities()
+                    .stream()
+                    .map(besoinSalleEntity -> {
+                        return new BesoinSalleIdDto(
+                                besoinSalleEntity.getIdBesoinSalle().getIdSalle(),
+                                besoinSalleEntity.getIdBesoinSalle().getIdComposante()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return besoin;
     }

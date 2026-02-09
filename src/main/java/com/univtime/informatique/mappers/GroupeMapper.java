@@ -238,11 +238,7 @@ public class GroupeMapper {
             sousGroupe.setIdSousGroupe(entity.getIdSousGroupe());
             sousGroupe.setNomSousGroupe(entity.getNomSousGroupe());
             sousGroupe.setNbEtuSousGroupe(entity.getNbEtuSousGroupe());
-
-            /*
-                Groupe
-             */
-            sousGroupe.setTpGroupeIds(entity.getGroupe().getTpEntities()
+            sousGroupe.setTpIds(entity.getTpEntities()
                     .stream()
                     .map(tpEntity -> {
                         return new TPIdDto(
@@ -253,7 +249,7 @@ public class GroupeMapper {
                         );
                     })
                     .collect(Collectors.toSet()));
-            sousGroupe.getParticipeAGroupeIds(entity.getGroupe().getParticipeAEntities()
+            sousGroupe.setParticipeAIds(entity.getParticipeAEntities()
                     .stream()
                     .map(participeAEntity -> {
                         return new ParticipeAIdDto(

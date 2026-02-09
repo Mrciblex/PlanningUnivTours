@@ -1,8 +1,13 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 import com.univtime.informatique.dto.tdDto.*;
 import com.univtime.informatique.entities.*;
 import com.univtime.informatique.entities.ids.TDId;
+
+import java.util.stream.Collectors;
 
 public class TDMapper {
 
@@ -72,6 +77,36 @@ public class TDMapper {
             prof.setNomProf(entity.getNomProf());
             prof.setPrenomProf(entity.getPrenomProf());
             prof.setIntervenantExterieur(entity.getIntervenantExterieur());
+            prof.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            prof.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            prof.setCoursIds(entity.getCoursEntities()
+                    .stream()
+                    .map(CoursEntity::getIdCours)
+                    .collect(Collectors.toSet()));
+            prof.setJourIds(entity.getJourEntities()
+                    .stream()
+                    .map(JourEntity::getIdJour)
+                    .collect(Collectors.toSet()));
         }
         return prof;
     }
@@ -82,6 +117,11 @@ public class TDMapper {
             groupe.setIdGroupe(entity.getIdGroupe());
             groupe.setNomGroupe(entity.getNomGroupe());
             groupe.setNbEtuGroupe(entity.getNbEtuGroupe());
+            groupe.setPromoId(entity.getPromo().getIdPromo());
+            groupe.setSousGroupeIds(entity.getSousGroupeEntities()
+                    .stream()
+                    .map(SousGroupeEntity::getIdSousGroupe)
+                    .collect(Collectors.toSet()));
         }
         return groupe;
     }
@@ -96,8 +136,44 @@ public class TDMapper {
             comp.setVolumeHoraireTD(entity.getVolumeHoraireTD());
             comp.setVolumeHoraireTP(entity.getVolumeHoraireTP());
             comp.setBlocHoraireCM(entity.getBlocHoraireCM());
+            comp.setBlocHoraireTD(entity.getBlocHoraireTD());
             comp.setBlocHoraireTP(entity.getBlocHoraireTP());
-            comp.setBlocHoraireTP(entity.getBlocHoraireTP());
+            comp.setModuleId(entity.getModule().getIdModule());
+            comp.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            comp.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            comp.setCoursIds(entity.getCoursEntities()
+                    .stream()
+                    .map(CoursEntity::getIdCours)
+                    .collect(Collectors.toSet()));
+            comp.setBesoinSalleIds(entity.getBesoinSalleEntities()
+                    .stream()
+                    .map(besoinSalleEntity -> {
+                        return new BesoinSalleIdDto(
+                                besoinSalleEntity.getIdBesoinSalle().getIdSalle(),
+                                besoinSalleEntity.getIdBesoinSalle().getIdComposante()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return comp;
     }
@@ -108,6 +184,28 @@ public class TDMapper {
             rep.setIdRepartitionSemaine(entity.getIdRepartitionSemaine());
             rep.setNumSemaine(entity.getNumSemaine());
             rep.setQteTypeCours(entity.getQteTypeCours());
+            rep.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            rep.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return rep;
     }

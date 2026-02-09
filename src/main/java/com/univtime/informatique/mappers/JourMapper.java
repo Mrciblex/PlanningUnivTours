@@ -1,5 +1,8 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.ids.TPIdDto;
 import com.univtime.informatique.dto.jourDto.DisponibiliteJourDto;
 import com.univtime.informatique.dto.jourDto.JourDto;
 import com.univtime.informatique.dto.jourDto.ProfesseurJourDto;
@@ -47,6 +50,39 @@ public class JourMapper {
             professeur.setNomProf(entity.getNomProf());
             professeur.setPrenomProf(entity.getPrenomProf());
             professeur.setIntervenantExterieur(entity.getIntervenantExterieur());
+            professeur.setCmIds(entity.getCmEntities()
+                            .stream()
+                            .map(cmEntity -> {
+                                return new CMIdDto(
+                                        cmEntity.getIdCM().getIdProf(),
+                                        cmEntity.getIdCM().getIdPromo(),
+                                        cmEntity.getIdCM().getIdComposante(),
+                                        cmEntity.getIdCM().getIdRepartitionSemaine()
+                                );
+                            })
+                            .collect(Collectors.toSet()));
+            professeur.setTdIds(entity.getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            professeur.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return professeur;
     }
@@ -55,6 +91,8 @@ public class JourMapper {
         DisponibiliteJourDto disponibilite = new DisponibiliteJourDto();
         if (entity !=  null) {
             disponibilite.setIdDispo(entity.getIdDispo());
+            disponibilite.setHeureDebutDispo(entity.getHeureDebutDispo());
+            disponibilite.setHeureFinDispo(entity.getHeureFinDispo());
         }
         return disponibilite;
     }
