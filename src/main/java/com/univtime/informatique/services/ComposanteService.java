@@ -41,7 +41,7 @@ public class ComposanteService {
     }
 
     public ComposanteDto createComposante(ComposanteDto composanteDto) {
-        // Vérifier les clés étrangères obligatoires
+        // Vérifie la clé étrangère de module
         if (composanteDto.getModuleDto().getIdModule() == null) {
             throw new ResourceNotFoundException("L'id du module est obligatoire");
         }
