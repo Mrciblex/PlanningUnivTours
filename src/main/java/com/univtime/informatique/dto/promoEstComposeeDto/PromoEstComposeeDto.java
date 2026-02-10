@@ -34,9 +34,12 @@ public class PromoEstComposeeDto {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
         PromoEstComposeeDto that = (PromoEstComposeeDto) o;
-        return Objects.equals(promoDto, that.promoDto) && Objects.equals(moduleDto, that.moduleDto);
+        return Objects.equals(promoDto, that.promoDto)
+                && Objects.equals(moduleDto, that.moduleDto);
     }
 
     @Override

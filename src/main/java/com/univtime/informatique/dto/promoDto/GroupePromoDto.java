@@ -1,8 +1,6 @@
 package com.univtime.informatique.dto.promoDto;
 
-import com.univtime.informatique.dto.groupeDto.SousGroupeGroupeDto;
-import com.univtime.informatique.dto.groupeDto.TDGroupeDto;
-import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.idsDto.TDIdDto;
 
 import java.util.Objects;
 import java.util.Set;

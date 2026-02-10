@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.composanteDto;
 
 import com.univtime.informatique.constants.TypeCours;
-import com.univtime.informatique.dto.ids.ParticipeAIdDto;
+import com.univtime.informatique.dto.idsDto.ParticipeAIdDto;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

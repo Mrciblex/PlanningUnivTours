@@ -1,8 +1,6 @@
 package com.univtime.informatique.dto.professeurDto;
 
-import com.univtime.informatique.dto.ids.*;
-import com.univtime.informatique.dto.tpDto.*;
-import com.univtime.informatique.entities.ids.TPId;
+import com.univtime.informatique.dto.idsDto.*;
 
 import java.util.Objects;
 import java.util.Set;

@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.tpDto;
 
-import com.univtime.informatique.dto.ids.ParticipeAIdDto;
+import com.univtime.informatique.dto.idsDto.ParticipeAIdDto;
 
 import java.util.Objects;
 import java.util.Set;

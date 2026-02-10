@@ -1,7 +1,7 @@
 package com.univtime.informatique.dto.composanteDto;
 
 import com.univtime.informatique.constants.TypeBesoin;
-import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
+import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
 
 import java.util.Objects;
 import java.util.Set;

@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.coursDto;
 
-import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
+import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
 
 import java.util.Objects;
 import java.util.Set;

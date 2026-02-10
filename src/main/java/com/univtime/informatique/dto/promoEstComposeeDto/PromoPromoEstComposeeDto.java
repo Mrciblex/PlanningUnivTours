@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.promoEstComposeeDto;
 
-import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
 
 import java.util.Objects;
 import java.util.Set;

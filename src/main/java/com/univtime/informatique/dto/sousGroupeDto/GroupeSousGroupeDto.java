@@ -1,6 +1,6 @@
 package com.univtime.informatique.dto.sousGroupeDto;
 
-import com.univtime.informatique.dto.ids.TDIdDto;
+import com.univtime.informatique.dto.idsDto.TDIdDto;
 
 import java.util.Objects;
 import java.util.Set;

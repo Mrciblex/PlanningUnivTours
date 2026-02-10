@@ -1,28 +1,25 @@
-package com.univtime.informatique.dto.ids;
+package com.univtime.informatique.dto.idsDto;
 
 import java.util.Objects;
 
-/**
- * DTO représentant l'identifiant composite de CM.
- */
-public class CMIdDto {
+public class TDIdDto {
 
     private Integer idProf;
-    private Integer idPromo;
+    private Integer idGroupe;
     private Integer idComposante;
     private Integer idRepartitionSemaine;
 
     // Constructeur par défaut
-    public CMIdDto() {
+    public TDIdDto() {
     }
 
     // Constructeur complet
-    public CMIdDto(Integer idProf,
-                   Integer idPromo,
+    public TDIdDto(Integer idProf,
+                   Integer idGroupe,
                    Integer idComposante,
                    Integer idRepartitionSemaine) {
         this.idProf = idProf;
-        this.idPromo = idPromo;
+        this.idGroupe = idGroupe;
         this.idComposante = idComposante;
         this.idRepartitionSemaine = idRepartitionSemaine;
     }
@@ -31,8 +28,8 @@ public class CMIdDto {
     public Integer getIdProf() { return idProf; }
     public void setIdProf(Integer idProf) { this.idProf = idProf; }
 
-    public Integer getIdPromo() { return idPromo; }
-    public void setIdPromo(Integer idPromo) { this.idPromo = idPromo; }
+    public Integer getIdGroupe() { return idGroupe; }
+    public void setIdGroupe(Integer idGroupe) { this.idGroupe = idGroupe; }
 
     public Integer getIdComposante() { return idComposante; }
     public void setIdComposante(Integer idComposante) { this.idComposante = idComposante; }
@@ -44,15 +41,15 @@ public class CMIdDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CMIdDto cmIdDto = (CMIdDto) o;
-        return Objects.equals(idProf, cmIdDto.idProf) &&
-                Objects.equals(idPromo, cmIdDto.idPromo) &&
-                Objects.equals(idComposante, cmIdDto.idComposante) &&
-                Objects.equals(idRepartitionSemaine, cmIdDto.idRepartitionSemaine);
+        TDIdDto tdIdDto = (TDIdDto) o;
+        return Objects.equals(idProf, tdIdDto.idProf) &&
+                Objects.equals(idGroupe, tdIdDto.idGroupe) &&
+                Objects.equals(idComposante, tdIdDto.idComposante) &&
+                Objects.equals(idRepartitionSemaine, tdIdDto.idRepartitionSemaine);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idProf, idPromo, idComposante, idRepartitionSemaine);
+        return Objects.hash(idProf, idGroupe, idComposante, idRepartitionSemaine);
     }
 }
