@@ -30,8 +30,13 @@ set "PATH=%JAVA_HOME%\bin;%PATH%"
 :: ==========================================
 :: CONFIGURATION POSTGRESQL
 :: ==========================================
+echo.
+echo ===================================================
+echo Configuration de PostgreSQL...
+echo ===================================================
+echo.
+
 set DBNAME=univ_time
-set PGUSER=postgres
 
 echo [INFO] Recherche de PostgreSQL...
 set "PGBIN="
@@ -91,7 +96,7 @@ if %errorlevel% neq 0 (
 ) else (
     echo [OK] Le service est deja en ligne.
 )
-goto AUTH_STEP
+goto AUTH_CHECK
 
 :MANUAL_CHECK
 echo.
@@ -101,49 +106,132 @@ pause
 exit /b
 
 :: ==========================================
-:: BOUCLE D'AUTHENTIFICATION (MOT DE PASSE)
+:: BOUCLE D'AUTHENTIFICATION (USER + MDP)
 :: ==========================================
-:AUTH_STEP
+:AUTH_CHECK
 echo.
 if exist ".dbpassword" (
-    set /p PGPASSWORD=<.dbpassword
-    echo [INFO] Mot de passe recupere automatiquement.
+    set "VALID_FORMAT=0"
+    set "PGUSER="
+    set "PGPASSWORD="
+
+    :: Lecture et verification du format
+    for /f "tokens=1* delims=:" %%A in (.dbpassword) do (
+        if not "%%A"=="" if not "%%B"=="" (
+            set "PGUSER=%%A"
+            set "PGPASSWORD=%%B"
+            set "VALID_FORMAT=1"
+        )
+    )
+
+    if "!VALID_FORMAT!"=="0" (
+        echo [ATTENTION] Fichier .dbpassword vide ou mal formate. Suppression...
+        del ".dbpassword"
+        goto ASK_CREDENTIALS
+    ) else (
+        echo [INFO] Identifiants recuperes automatiquement.
+    )
 ) else (
-    set /p PGPASSWORD="[QUESTION] Entrez le mot de passe 'postgres': "
+    goto ASK_CREDENTIALS
 )
 
-"%PGBIN%\psql.exe" -U %PGUSER% -d postgres -c "SELECT 1" >nul 2>&1
+:: Test de connexion
+"%PGBIN%\psql.exe" -U !PGUSER! -d postgres -c "SELECT 1" >nul 2>&1
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ERREUR] Mot de passe incorrect. Reessayer.
+    echo [ERREUR] Identifiants incorrects ou connexion impossible.
+    echo Le fichier sauvegarde va etre supprime.
     if exist ".dbpassword" del ".dbpassword"
-    goto AUTH_STEP
+    goto ASK_CREDENTIALS
+) else (
+    goto DB_INIT
 )
 
+:ASK_CREDENTIALS
+echo.
+set /p "PGUSER=[QUESTION] Entrez le nom d'utilisateur (ex: postgres): "
+set /p "PGPASSWORD=[QUESTION] Entrez le mot de passe (ex: root): "
+
+:: Test immediat des identifiants saisis
+"%PGBIN%\psql.exe" -U !PGUSER! -d postgres -c "SELECT 1" >nul 2>&1
+
+if %errorlevel% neq 0 (
+    echo [ERREUR] Echec de connexion. Verifiez le username et le password.
+    goto ASK_CREDENTIALS
+)
+
+:: Si OK, on sauvegarde au format user:pass
 if not exist ".dbpassword" (
-    echo|set /p="%PGPASSWORD%" > .dbpassword
+    echo !PGUSER!:!PGPASSWORD!>.dbpassword
+    echo [INFO] Identifiants sauvegardes dans '.dbpassword'.
 )
 
 :: ==========================================
-:: 5. INITIALISATION BDD
+:: INITIALISATION BDD
 :: ==========================================
+:DB_INIT
 echo [INFO] Verification de la base '%DBNAME%'...
-"%PGBIN%\psql.exe" -U %PGUSER% -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='%DBNAME%'" | findstr "1" >nul
+"%PGBIN%\psql.exe" -U !PGUSER! -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='%DBNAME%'" | findstr "1" >nul
 
 if %errorlevel% equ 0 (
     echo [OK] La base '%DBNAME%' existe deja.
 ) else (
     echo [INFO] Creation de la base '%DBNAME%'...
-    "%PGBIN%\createdb.exe" -U %PGUSER% -E UTF8 %DBNAME%
+    "%PGBIN%\createdb.exe" -U !PGUSER! -E UTF8 %DBNAME%
 )
 
 :: ==========================================
-:: 6. CONSTRUCTION ET LANCEMENT (JAVA 25 COMPATIBLE)
+:: INITIALISATION BDD
+:: ==========================================
+:DB_INIT
+echo [INFO] Verification de la base '%DBNAME%'...
+"%PGBIN%\psql.exe" -U !PGUSER! -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='%DBNAME%'" | findstr "1" >nul
+
+if %errorlevel% equ 0 (
+    echo [OK] La base '%DBNAME%' existe deja.
+) else (
+    echo [INFO] Creation de la base '%DBNAME%'...
+    "%PGBIN%\createdb.exe" -U !PGUSER! -E UTF8 %DBNAME%
+)
+
+:: ==========================================
+:: EXECUTION SCRIPT SQL (NEW !)
 :: ==========================================
 echo.
 echo ===================================================
-echo [ETAPE 1] Construction du projet...
+echo Mise a jour du schema (Tables/Types)...
+echo ===================================================
+echo.
+
+set "SQL_FILE=src\main\resources\db\schema.sql"
+
+if exist "%SQL_FILE%" (
+    echo [INFO] Execution de %SQL_FILE%...
+
+    :: On execute le fichier avec psql
+    :: PGPASSWORD doit etre set en variable d'environnement pour psql
+    set PGPASSWORD=!PGPASSWORD!
+
+    "%PGBIN%\psql.exe" -q -U !PGUSER! -d %DBNAME% -f "%SQL_FILE%"
+
+    if !errorlevel! neq 0 (
+        echo [ERREUR] Erreur lors de l'execution du script SQL.
+        pause
+        exit /b
+    ) else (
+        echo [OK] Schema mis a jour.
+    )
+) else (
+    echo [ATTENTION] Fichier SQL introuvable ici : %SQL_FILE%
+)
+
+:: ==========================================
+:: CONSTRUCTION ET LANCEMENT (JAVA 25 COMPATIBLE)
+:: ==========================================
+echo.
+echo ===================================================
+echo Construction du projet...
 echo ===================================================
 echo.
 
@@ -162,7 +250,7 @@ if %errorlevel% neq 0 (
 
 echo.
 echo ===================================================
-echo [ETAPE 2] Lancement manuel avec Java 25...
+echo Lancement manuel avec Java 25...
 echo ===================================================
 echo.
 
@@ -175,8 +263,8 @@ if not defined JAR_NAME (
     exit /b
 )
 
-echo [INFO] Lancement de : %JAR_NAME%
-"%JAVA_HOME%\bin\java.exe" -jar "%JAR_NAME%"
+echo [INFO] Lancement de : %JAR_NAME% avec injection du mot de passe DB...
+"%JAVA_HOME%\bin\java.exe" -jar "%JAR_NAME%" --spring.datasource.password=!PGPASSWORD! --spring.datasource.username=!PGUSER!
 
 if %errorlevel% neq 0 (
     echo.
