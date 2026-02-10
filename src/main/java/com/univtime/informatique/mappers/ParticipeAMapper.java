@@ -1,45 +1,92 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.TPIdDto;
 import com.univtime.informatique.dto.participeADto.*;
 import com.univtime.informatique.entities.ParticipeAEntity;
 import com.univtime.informatique.entities.SousGroupeEntity;
 import com.univtime.informatique.entities.CoursEntity;
-import com.univtime.informatique.dto.coursDto.CoursDto;
+import com.univtime.informatique.entities.ids.ParticipeAId;
 
-public final class ParticipeAMapper {
+import java.util.stream.Collectors;
 
-    private ParticipeAMapper() {}
+public class ParticipeAMapper {
+
+    private ParticipeAMapper() {
+
+    }
 
     public static ParticipeADto toDto(ParticipeAEntity entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         ParticipeADto dto = new ParticipeADto();
-        if (entity.getSousGroupe() != null) {
-            SousGroupeParticipeADto sg = new SousGroupeParticipeADto();
-            sg.setIdSousGroupe(entity.getSousGroupe().getIdSousGroupe());
-            sg.setNomSousGroupe(entity.getSousGroupe().getNomSousGroupe());
-            dto.setSousGroupeDto(sg);
-        }
-        if (entity.getCours() != null) {
-            CoursParticipeADto c = new CoursParticipeADto();
-            c.setIdCours(entity.getCours().getIdCours());
-            dto.setCoursDto(c);
-        }
+        dto.setSousGroupeDto(sousGroupeToDto(entity.getSousGroupe()));
+        dto.setCoursDto(coursToDto(entity.getCours()));
+
         return dto;
     }
 
     public static ParticipeAEntity toEntity(ParticipeADto dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         ParticipeAEntity entity = new ParticipeAEntity();
+
+        SousGroupeEntity sg = new SousGroupeEntity();
         if (dto.getSousGroupeDto() != null) {
-            SousGroupeEntity sg = new SousGroupeEntity();
             sg.setIdSousGroupe(dto.getSousGroupeDto().getIdSousGroupe());
             entity.setSousGroupe(sg);
         }
+
+        CoursEntity cours = new CoursEntity();
         if (dto.getCoursDto() != null) {
-            CoursEntity c = new CoursEntity();
-            c.setIdCours(dto.getCoursDto().getIdCours());
-            entity.setCours(c);
+            cours.setIdCours(dto.getCoursDto().getIdCours());
+            entity.setCours(cours);
         }
+
+        entity.setIdParticipeA(
+                new ParticipeAId(
+                        sg.getIdSousGroupe(),
+                        cours.getIdCours()
+                )
+        );
+
         return entity;
+    }
+
+    private static SousGroupeParticipeADto sousGroupeToDto(SousGroupeEntity entity) {
+        SousGroupeParticipeADto sg = new SousGroupeParticipeADto();
+        if (entity != null) {
+            sg.setIdSousGroupe(entity.getIdSousGroupe());
+            sg.setNomSousGroupe(entity.getNomSousGroupe());
+            sg.setNbEtuSousGroupe(entity.getNbEtuSousGroupe());
+            sg.setGroupeId(entity.getGroupe().getIdGroupe());
+            sg.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return sg;
+    }
+
+    private static CoursParticipeADto coursToDto(CoursEntity entity) {
+        CoursParticipeADto cours = new CoursParticipeADto();
+        if (entity != null) {
+            cours.setIdCours(entity.getIdCours());
+            cours.setHeureDebutCours(entity.getHeureDebutCours());
+            cours.setHeureFinCours(entity.getHeureFinCours());
+            cours.setTypeCours(entity.getTypeCours());
+            cours.setComposanteId(entity.getComposante().getIdComposante());
+            cours.setProfesseurId(entity.getProfesseur().getIdProf());
+            cours.setSalleId(entity.getSalle().getIdSalle());
+        }
+        return cours;
     }
 }

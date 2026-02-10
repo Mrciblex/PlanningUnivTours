@@ -1,18 +1,15 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.coursDto.CoursDto;
-import com.univtime.informatique.dto.coursDto.ComposanteCoursDto;
-import com.univtime.informatique.dto.coursDto.ProfesseurCoursDto;
-import com.univtime.informatique.dto.coursDto.SalleCoursDto;
-import com.univtime.informatique.entities.CoursEntity;
-import com.univtime.informatique.entities.ComposanteEntity;
-import com.univtime.informatique.entities.ProfesseurEntity;
-import com.univtime.informatique.entities.SalleEntity;
+import com.univtime.informatique.dto.coursDto.*;
+import com.univtime.informatique.dto.ids.*;
+import com.univtime.informatique.entities.*;
 
-public final class CoursMapper {
+import java.util.stream.Collectors;
+
+public class CoursMapper {
 
     private CoursMapper() {
-        // Private constructor pour éviter l'instantiation
+
     }
 
     public static CoursDto toDto(CoursEntity entity) {
@@ -24,9 +21,13 @@ public final class CoursMapper {
         dto.setHeureDebutCours(entity.getHeureDebutCours());
         dto.setHeureFinCours(entity.getHeureFinCours());
         dto.setTypeCoursEnum(entity.getTypeCours());
-        dto.setComposanteDto(mapComposanteToCoursDto(entity.getComposante()));
-        dto.setProfesseurDto(mapProfesseurToCoursDto(entity.getProfesseur()));
-        dto.setSalleDto(mapSalleToCoursDto(entity.getSalle()));
+        dto.setComposanteDto(composanteToDto(entity.getComposante()));
+        dto.setProfesseurDto(professeurToDto(entity.getProfesseur()));
+        dto.setSalleDto(salleToDto(entity.getSalle()));
+        dto.setParticipeADto(entity.getParticipeAEntities()
+                .stream()
+                .map(CoursMapper::participeAToDto)
+                .collect(Collectors.toSet()));
         return dto;
     }
 
@@ -39,61 +40,164 @@ public final class CoursMapper {
         entity.setHeureDebutCours(dto.getHeureDebutCours());
         entity.setHeureFinCours(dto.getHeureFinCours());
         entity.setTypeCours(dto.getTypeCoursEnum());
-        entity.setComposante(mapComposanteFromCoursDto(dto.getComposanteDto()));
-        entity.setProfesseur(mapProfesseurFromCoursDto(dto.getProfesseurDto()));
-        entity.setSalle(mapSalleFromCoursDto(dto.getSalleDto()));
         return entity;
     }
 
-    // Helpers pour mapper les objets liés vers les DTO spécifiques au contexte "Cours"
-    private static ComposanteCoursDto mapComposanteToCoursDto(ComposanteEntity e) {
-        if (e == null) return null;
-        ComposanteCoursDto dto = new ComposanteCoursDto();
-        dto.setIdComposante(e.getIdComposante());
-        // Note: le nom dans l'entité a un petit typo "nomCoposante"
-        dto.setNomComposante(e.getNomCoposante());
-        return dto;
+    private static ComposanteCoursDto composanteToDto(ComposanteEntity entity) {
+        ComposanteCoursDto composante = new ComposanteCoursDto();
+        if (entity != null) {
+            composante.setIdComposante(entity.getIdComposante());
+            composante.setNomComposante(entity.getNomCoposante());
+            composante.setVolumeHoraireTotal(entity.getVolumeHoraireTotal());
+            composante.setVolumeHoraireCM(entity.getVolumeHoraireCM());
+            composante.setVolumeHoraireTD(entity.getVolumeHoraireTD());
+            composante.setVolumeHoraireTP(entity.getVolumeHoraireTP());
+            composante.setBlocHoraireCM(entity.getBlocHoraireCM());
+            composante.setBlocHoraireTD(entity.getBlocHoraireTD());
+            composante.setBlocHoraireTP(entity.getBlocHoraireTP());
+            composante.setModuleId(entity.getModule().getIdModule());
+            composante.setCmIds(entity.getCmEntities()
+                            .stream()
+                            .map(cmEntity -> {
+                                return new CMIdDto(
+                                        cmEntity.getIdCM().getIdProf(),
+                                        cmEntity.getIdCM().getIdPromo(),
+                                        cmEntity.getIdCM().getIdComposante(),
+                                        cmEntity.getIdCM().getIdRepartitionSemaine()
+                                );
+                            })
+                            .collect(Collectors.toSet()));
+            composante.setTdIds(entity.getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            composante.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            composante.setBesoinSalleIds(entity.getBesoinSalleEntities()
+                    .stream()
+                    .map(besoinSalleEntity -> {
+                        return new BesoinSalleIdDto(
+                                besoinSalleEntity.getIdBesoinSalle().getIdSalle(),
+                                besoinSalleEntity.getIdBesoinSalle().getIdComposante()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return composante;
     }
 
-    private static ProfesseurCoursDto mapProfesseurToCoursDto(ProfesseurEntity e) {
-        if (e == null) return null;
-        ProfesseurCoursDto dto = new ProfesseurCoursDto();
-        dto.setIdProf(e.getIdProf());
-        dto.setNomProf(e.getNomProf());
-        dto.setPrenomProf(e.getPrenomProf());
-        dto.setIntervenantExterieur(Boolean.TRUE.equals(e.getIntervenantExterieur()));
-        return dto;
+    private static ProfesseurCoursDto professeurToDto(ProfesseurEntity entity) {
+        ProfesseurCoursDto prof = new ProfesseurCoursDto();
+        if (entity != null) {
+            prof.setIdProf(entity.getIdProf());
+            prof.setNomProf(entity.getNomProf());
+            prof.setPrenomProf(entity.getPrenomProf());
+            prof.setIntervenantExterieur(entity.getIntervenantExterieur());
+            prof.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            prof.setTdIds(entity.getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            prof.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            prof.setJourIds(entity.getJourEntities()
+                    .stream()
+                    .map(JourEntity::getIdJour)
+                    .collect(Collectors.toSet()));
+        }
+        return prof;
     }
 
-    private static SalleCoursDto mapSalleToCoursDto(SalleEntity e) {
-        if (e == null) return null;
-        SalleCoursDto dto = new SalleCoursDto();
-        dto.setIdSalle(e.getIdSalle());
-        dto.setNbPlace(e.getNbPlace());
-        dto.setSalleMachine(e.isSalleMachine());
-        dto.setNbPC(e.getNbPC());
-        return dto;
+    private static SalleCoursDto salleToDto(SalleEntity entity) {
+        SalleCoursDto salle = new SalleCoursDto();
+        if (entity != null) {
+            salle.setIdSalle(entity.getIdSalle());
+            salle.setNbPlace(entity.getNbPlace());
+            salle.setSalleMachine(entity.isSalleMachine());
+            salle.setNbPC(entity.getNbPC());
+            salle.setBesoinSalleIds(entity.getBesoinSalleEntities()
+                    .stream()
+                    .map(besoinSalleEntity -> {
+                        return new BesoinSalleIdDto(
+                                besoinSalleEntity.getIdBesoinSalle().getIdSalle(),
+                                besoinSalleEntity.getIdBesoinSalle().getIdComposante()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return salle;
     }
 
-    // Helpers inverses : du DTO cours vers une entité partielle (seulement l'id) — utile pour setRelation
-    private static ComposanteEntity mapComposanteFromCoursDto(ComposanteCoursDto dto) {
-        if (dto == null) return null;
-        ComposanteEntity e = new ComposanteEntity();
-        e.setIdComposante(dto.getIdComposante());
-        return e;
-    }
-
-    private static ProfesseurEntity mapProfesseurFromCoursDto(ProfesseurCoursDto dto) {
-        if (dto == null) return null;
-        ProfesseurEntity e = new ProfesseurEntity();
-        e.setIdProf(dto.getIdProf());
-        return e;
-    }
-
-    private static SalleEntity mapSalleFromCoursDto(SalleCoursDto dto) {
-        if (dto == null) return null;
-        SalleEntity e = new SalleEntity();
-        e.setIdSalle(dto.getIdSalle());
-        return e;
+    private static ParticipeACoursDto participeAToDto(ParticipeAEntity entity) {
+        ParticipeACoursDto participeA = new ParticipeACoursDto();
+        if (entity != null) {
+            participeA.setIdSousGroupe(entity.getSousGroupe().getIdSousGroupe());
+            participeA.setNomSousGroupe(entity.getSousGroupe().getNomSousGroupe());
+            participeA.setNbEtuSousGroupe(entity.getSousGroupe().getNbEtuSousGroupe());
+            participeA.setGroupeSousGroupeId(entity.getSousGroupe().getIdSousGroupe());
+            participeA.setTpSousGroupeIds(entity.getSousGroupe().getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            participeA.setParticipeASousGroupeIds(entity.getSousGroupe().getParticipeAEntities()
+                    .stream()
+                    .map(participeAEntity -> {
+                        return new ParticipeAIdDto(
+                                participeAEntity.getIdParticipeA().getIdSousGroupe(),
+                                participeAEntity.getIdParticipeA().getIdCours()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return participeA;
     }
 }

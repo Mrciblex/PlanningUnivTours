@@ -1,14 +1,11 @@
 package com.univtime.informatique.mappers;
 
+import com.univtime.informatique.dto.ids.*;
 import com.univtime.informatique.dto.sousGroupeDto.GroupeSousGroupeDto;
 import com.univtime.informatique.dto.sousGroupeDto.ParticipeASousGroupeDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.dto.sousGroupeDto.TPSousGroupeDto;
-import com.univtime.informatique.entities.GroupeEntity;
-import com.univtime.informatique.entities.ParticipeAEntity;
-import com.univtime.informatique.entities.SousGroupeEntity;
-import com.univtime.informatique.entities.TPEntity;
-import com.univtime.informatique.entities.ids.TPId;
+import com.univtime.informatique.entities.*;
 
 import java.util.stream.Collectors;
 
@@ -31,7 +28,10 @@ public class SousGroupeMapper {
                 .stream()
                 .map(SousGroupeMapper::tpToDto)
                 .collect(Collectors.toSet()));
-        dto.setParticipeADto();
+        dto.setParticipeADto(entity.getParticipeAEntities()
+                .stream()
+                .map(SousGroupeMapper::participeAToDto)
+                .collect(Collectors.toSet()));
         return dto;
     }
 
@@ -43,7 +43,6 @@ public class SousGroupeMapper {
         entity.setIdSousGroupe(dto.getIdSousGroupe());
         entity.setNomSousGroupe(dto.getNomSousGroupe());
         entity.setNbEtuSousGroupe(dto.getNbEtuSousGroupe());
-        entity.setIdSousGroupe(dto.getIdSousGroupe());
         return entity;
     }
 
@@ -53,6 +52,18 @@ public class SousGroupeMapper {
             groupe.setIdGroupe(entity.getIdGroupe());
             groupe.setNomGroupe(entity.getNomGroupe());
             groupe.setNbEtuGroupe(entity.getNbEtuGroupe());
+            groupe.setPromoId(entity.getPromo().getIdPromo());
+            groupe.setTdIds(entity.getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return groupe;
     }
@@ -60,12 +71,154 @@ public class SousGroupeMapper {
     private static TPSousGroupeDto tpToDto(TPEntity entity) {
         TPSousGroupeDto tp = new TPSousGroupeDto();
         if (entity != null) {
-            tp.setIdTP(
-                    new TPId(
-                        entity.getProfesseur().getIdProf(),
-                        entity.getSousGroupe().getIdSousGroupe(),
-                        entity.getComposante().getIdComposante(),
-                        entity.getRepartitionSemaine().getIdRepartitionSemaine()));
+            /*
+                Professeur
+             */
+            tp.setIdProf(entity.getProfesseur().getIdProf());
+            tp.setNomProf(entity.getProfesseur().getNomProf());
+            tp.setPrenomProf(entity.getProfesseur().getPrenomProf());
+            tp.setIntervenantExterieur(entity.getProfesseur().getIntervenantExterieur());
+            tp.setCmProfIds(entity.getProfesseur().getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTdProfIds(entity.getProfesseur().getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTpProfIds(entity.getProfesseur().getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setCoursProfIds(entity.getProfesseur().getCoursEntities()
+                    .stream()
+                    .map(CoursEntity::getIdCours)
+                    .collect(Collectors.toSet()));
+            tp.setJourProfIds(entity.getProfesseur().getJourEntities()
+                    .stream()
+                    .map(JourEntity::getIdJour)
+                    .collect(Collectors.toSet()));
+
+            /*
+                Composante
+             */
+            tp.setIdComposante(entity.getComposante().getIdComposante());
+            tp.setNomComposante(entity.getComposante().getNomCoposante());
+            tp.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
+            tp.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
+            tp.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());
+            tp.setVolumeHoraireTPComposante(entity.getComposante().getVolumeHoraireTP());
+            tp.setBlocHoraireCMComposante(entity.getComposante().getBlocHoraireCM());
+            tp.setBlocHoraireTDComposante(entity.getComposante().getBlocHoraireTD());
+            tp.setBlocHoraireTPComposante(entity.getComposante().getBlocHoraireTP());
+            tp.setModuleComposanteId(entity.getComposante().getModule().getIdModule());
+            tp.setCmComposanteIds(entity.getComposante().getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTdComposanteIds(entity.getComposante().getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTpComposanteIds(entity.getComposante().getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setCoursComposanteIds(entity.getComposante().getCoursEntities()
+                    .stream()
+                    .map(CoursEntity::getIdCours)
+                    .collect(Collectors.toSet()));
+            tp.setBesoinSalleComposanteIds(entity.getComposante().getBesoinSalleEntities()
+                    .stream()
+                    .map(besoinSalleEntity -> {
+                        return new BesoinSalleIdDto(
+                                besoinSalleEntity.getIdBesoinSalle().getIdSalle(),
+                                besoinSalleEntity.getIdBesoinSalle().getIdComposante()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+
+            /*
+                Repartition Semaine
+             */
+            tp.setIdRepartitionSemaine(entity.getRepartitionSemaine().getIdRepartitionSemaine());
+            tp.setNumSemaine(entity.getRepartitionSemaine().getNumSemaine());
+            tp.setQteTypeCours(entity.getRepartitionSemaine().getQteTypeCours());
+            tp.setCmRepartitionSemaineIds(entity.getRepartitionSemaine().getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTdRepartitionSemaineIds(entity.getRepartitionSemaine().getTdEntities()
+                    .stream()
+                    .map(tdEntity -> {
+                        return new TDIdDto(
+                                tdEntity.getIdTD().getIdProf(),
+                                tdEntity.getIdTD().getIdGroupe(),
+                                tdEntity.getIdTD().getIdComposante(),
+                                tdEntity.getIdTD().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            tp.setTpRepartitionSemaineIds(entity.getRepartitionSemaine().getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return tp;
     }
@@ -73,7 +226,22 @@ public class SousGroupeMapper {
     private static ParticipeASousGroupeDto participeAToDto(ParticipeAEntity entity) {
         ParticipeASousGroupeDto part = new ParticipeASousGroupeDto();
         if (entity != null) {
-            part
+            part.setIdCours(entity.getCours().getIdCours());
+            part.setHeureDebutCours(entity.getCours().getHeureDebutCours());
+            part.setHeureFinCours(entity.getCours().getHeureFinCours());
+            part.setTypeCours(entity.getCours().getTypeCours());
+            part.setComposanteCoursId(entity.getCours().getComposante().getIdComposante());
+            part.setProfesseurCoursId(entity.getCours().getProfesseur().getIdProf());
+            part.setSalleCoursId(entity.getCours().getSalle().getIdSalle());
+            part.setParticipeACoursIds(entity.getCours().getParticipeAEntities()
+                    .stream()
+                    .map(participeAEntity -> {
+                        return new ParticipeAIdDto(
+                                participeAEntity.getIdParticipeA().getIdSousGroupe(),
+                                participeAEntity.getIdParticipeA().getIdCours()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
         }
         return part;
     }
