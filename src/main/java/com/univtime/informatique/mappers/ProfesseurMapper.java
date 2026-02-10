@@ -12,7 +12,7 @@ public class ProfesseurMapper {
 
     }
 
-    public static ProfesseurDto toDTO(ProfesseurEntity entity) {
+    public static ProfesseurDto toDto(ProfesseurEntity entity) {
         if (entity == null) {
             return null;
         }
