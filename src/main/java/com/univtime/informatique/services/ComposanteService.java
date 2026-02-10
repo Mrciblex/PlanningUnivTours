@@ -6,7 +6,6 @@ import com.univtime.informatique.entities.ModuleEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ComposanteMapper;
 import com.univtime.informatique.repositories.ComposanteRepository;
-import com.univtime.informatique.repositories.ModuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,7 @@ public class ComposanteService {
     private ComposanteRepository composanteRepository;
 
     @Autowired
-    private ModuleRepository moduleRepository;
+    private ModuleService moduleService;
 
     public List<ComposanteDto> findAllComposantes() {
         List<ComposanteEntity> composanteEntities = composanteRepository.findAll();
@@ -33,11 +32,16 @@ public class ComposanteService {
                 .collect(Collectors.toList());
     }
 
-    public ComposanteDto findComposanteById(Integer id) {
+    public ComposanteDto findComposanteDtoById(Integer id) {
         ComposanteEntity composanteEntity = composanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est trouvé : " + id));
 
         return ComposanteMapper.toDto(composanteEntity);
+    }
+
+    public ComposanteEntity findComposanteEntityById(Integer id) {
+        return composanteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est trouvé : " + id));
     }
 
     public ComposanteDto createComposante(ComposanteDto composanteDto) {
@@ -50,8 +54,7 @@ public class ComposanteService {
 
         Integer idModuleR = composanteDto.getModuleDto().getIdModule();
 
-        ModuleEntity moduleEntity = moduleRepository.findById(idModuleR)
-                .orElseThrow(() -> new ResourceNotFoundException("Le module avec l'id n'est pas trouvé : " + composanteDto.getModuleDto().getIdModule()));
+        ModuleEntity moduleEntity = moduleService.findModuleEntityById(idModuleR);
         moduleEntity.setIdModule(moduleEntity.getIdModule());
 
         ComposanteEntity savedComposante = composanteRepository.save(composanteEntity);
@@ -60,19 +63,15 @@ public class ComposanteService {
     }
 
     public ComposanteDto updateComposante(ComposanteDto composanteDto) {
-        ComposanteEntity composanteEntity = composanteRepository.findById(composanteDto.getIdComposante())
-                .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est pas trouvé : " + composanteDto.getIdComposante()));
+        ComposanteEntity composanteEntity = findComposanteEntityById(composanteDto.getIdComposante());
 
         ComposanteMapper.toEntity(composanteDto);
 
         if (composanteDto.getModuleDto().getIdModule() != null) {
-            Integer currentIdModule = Optional.ofNullable(composanteEntity.getModule().getIdModule())
-                    .map(ModuleEntity::getIdModule)
-                    .orElse(null);
+            Integer currentIdModule = composanteEntity.getModule().getIdModule();
 
             if (currentIdModule == null || !currentIdModule.equals(composanteDto.getModuleDto().getIdModule())) {
-                ModuleEntity moduleEntity = moduleRepository.findById(composanteDto.getModuleDto().getIdModule())
-                        .orElseThrow(() -> new ResourceNotFoundException("Le module avec l'id n'est pas trouvé : " + composanteDto.getModuleDto().getIdModule()));
+                ModuleEntity moduleEntity = moduleService.findModuleEntityById(composanteDto.getModuleDto().getIdModule());
                 composanteEntity.setModule(moduleEntity);
             }
         }
@@ -83,6 +82,7 @@ public class ComposanteService {
     }
 
     public void deleteComposanteById(Integer id) {
+        findComposanteEntityById(id);
         composanteRepository.deleteById(id);
     }
 }
