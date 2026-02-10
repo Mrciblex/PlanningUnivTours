@@ -9,26 +9,25 @@ public class Slot {
     /**
      * Minutes
      */
-    private int debut;
+    private Integer debut;
     /**
      * Minutes
      */
-    private int fin;
+    private Integer fin;
     private List<CoursDto> usedBy = new ArrayList<CoursDto>();
-    private boolean isBlocked = false;
+    private Double score;
 
-    Slot(int debut, int fin, boolean isBlocked) {
+    Slot(Integer debut, Integer fin) {
         this.debut = debut;
         this.fin = fin;
-        this.isBlocked = isBlocked;
+        this.score = 10.0;
     }
 
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
+    Slot(Integer debut, Integer fin, List<CoursDto> usedBy, Double score) {
+        this.debut = debut;
+        this.fin = fin;
+        this.usedBy = usedBy;
+        this.score = score;
     }
 
     public List<CoursDto> getUsedBy() {
@@ -47,20 +46,28 @@ public class Slot {
         this.usedBy.remove(cours);
     }
 
-    public int getFin() {
+    public Integer getFin() {
         return fin;
     }
 
-    public void setFin(int fin) {
+    public void setFin(Integer fin) {
         this.fin = fin;
     }
 
-    public int getDebut() {
+    public Integer getDebut() {
         return debut;
     }
 
-    public void setDebut(int debut) {
+    public void setDebut(Integer debut) {
         this.debut = debut;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
     }
 
     // DEBUG
@@ -68,7 +75,7 @@ public class Slot {
     public String toString() {
         // Re-écrire cette méthode
         return String.format(
-                "Slot [%dh%02d - %dh%02d] isBlocked = " + isBlocked + " | \n" + "---Cours : " + usedBy + "\n",
+                "Slot [%dh%02d - %dh%02d] | \n" + "---Cours : " + usedBy + "\n",
                 this.getDebut() / 60,
                 this.getDebut() % 60,
                 this.getFin() / 60,

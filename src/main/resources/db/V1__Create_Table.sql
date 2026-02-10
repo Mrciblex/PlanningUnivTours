@@ -210,6 +210,6 @@ CREATE TABLE ParticipeA
     idSousGroupe INT,
     idCours INT,
     CONSTRAINT pk_promo_module_participe_a PRIMARY KEY (idSousGroupe, idCours),
-    CONSTRAINT fk_sous_groupee_participe_a FOREIGN KEY (idSousGroupe) REFERENCES SousGroupes (idSousGroupe),
+    CONSTRAINT fk_sous_groupe_participe_a FOREIGN KEY (idSousGroupe) REFERENCES SousGroupes (idSousGroupe),
     CONSTRAINT fk_course_participe_a FOREIGN KEY (idCours) REFERENCES Cours (idCours)
 );
