@@ -1,8 +1,8 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.ids.BesoinSalleIdDto;
-import com.univtime.informatique.dto.ids.CMIdDto;
-import com.univtime.informatique.dto.ids.TPIdDto;
+import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
+import com.univtime.informatique.dto.idsDto.TPIdDto;
 import com.univtime.informatique.dto.tdDto.*;
 import com.univtime.informatique.entities.*;
 import com.univtime.informatique.entities.ids.TDId;

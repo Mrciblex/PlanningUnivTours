@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.ids.*;
+import com.univtime.informatique.dto.idsDto.*;
 import com.univtime.informatique.dto.salleDto.BesoinSalleSalleDto;
 import com.univtime.informatique.dto.salleDto.CoursSalleDto;
 import com.univtime.informatique.dto.salleDto.SalleDto;

@@ -14,11 +14,12 @@ import com.univtime.informatique.helpers.Semestre;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public static class GenerationAlgorithme {
+public class GenerationAlgorithme {
     private static int slotStep = 15;
     private static List<DayOfWeek> excludedDays = new ArrayList<>();
     private static List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<>();
@@ -99,10 +100,6 @@ public static class GenerationAlgorithme {
         return (double) charge / dispo;
     }
 
-    private static List<Slot> generateEmptySlotOfDay(){
-        return null;
-    }
-
     private static List<PlanningPeriodMinutes> generatePlanningPossiblePeriod(){
         List<PlanningPeriodMinutes> planningPossiblePeriod = new ArrayList<PlanningPeriodMinutes>();
         planningPossiblePeriod.add(new PlanningPeriodMinutes(8 * 60, 10 * 60)); // 8h00 à 10h00
@@ -128,12 +125,11 @@ public static class GenerationAlgorithme {
             if (isSlotAvailable && start.isBefore(momentBanalise.fin()) && end.isAfter(momentBanalise.debut())) {
                 // Un chevauchement a été trouvé, donc le slot n'est pas disponible
                 isSlotAvailable = false;
+                break;
             }
         }
         return isSlotAvailable;
     }
-
-}
 
     private static List<Slot> calcBestPlacement(Map<Integer, List<Slot>> slotsStorageWeek, CMDto cours){
         List<Slot> bestPlacement = new ArrayList<>();
@@ -254,9 +250,7 @@ public static class GenerationAlgorithme {
                 List<Jour> jours = new ArrayList<Jour>();
                 for (int dayOffset = weekStart.getDayOfWeek().getValue() - 1; dayOffset < weekEnd.getDayOfWeek().getValue(); dayOffset++) {
                     LocalDate actualDay = semestre.debut().plusWeeks(weekOffset).plusDays(dayOffset);
-                    boolean isExclude = GenerationAlgorithme.isExcludeDay(actualDay, excludedDays);
-
-                    if (isExclude) {
+                    if (GenerationAlgorithme.isExcludeDay(actualDay, excludedDays)) {
                         continue;
                     }
 
@@ -267,17 +261,19 @@ public static class GenerationAlgorithme {
                     for (PlanningPeriodMinutes period : planningPossiblePeriod) {
                         for (int start = period.debut(); start < period.fin(); start = start + slotStep) {
                             // Vérifier si ce créneau est présent dans des MomentBanalisés (jours fériés et autre)
-                            if (!GenerationAlgorithme.isSlotAvailable(
-                                    LocalDateTime.of(actualDay, LocalTime.of(0, 0, 0)),
-                                    LocalDateTime.of(actualDay, LocalTime.of(23, 59, 59)),
-                                    pauses
-                            )) {
-                                continue;
-                            } else if (!GenerationAlgorithme.isSlotAvailable(
-                                    LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
-                                    LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
-                                    pauses
-                            )) {
+                            if (
+                                    !GenerationAlgorithme.isSlotAvailable(
+                                        LocalDateTime.of(actualDay, LocalTime.of(0, 0, 0)),
+                                        LocalDateTime.of(actualDay, LocalTime.of(23, 59, 59)),
+                                        pauses
+                                    )
+                                ||
+                                    !GenerationAlgorithme.isSlotAvailable(
+                                            LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
+                                            LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
+                                            pauses
+                                    )
+                            ) {
                                 continue;
                             }
 
@@ -289,6 +285,8 @@ public static class GenerationAlgorithme {
 
                 }
                 semaines.add(new Semaine(currentWeek, jours));
+
+
 
                 // ------------ Placement des cours dans les slots ------------
                 // On a tous les slots de la semaine actuel qui viennent d'être créés
@@ -330,57 +328,71 @@ public static class GenerationAlgorithme {
 
                 System.out.println("COURS QUI DOIVENT ÊTRE PLACER ------------");
                 System.out.println("SEMAINE " + currentWeek + " : ");
-                for (Professeurs prof : profs) {
-                    cm.stream()
-                            .filter(cours -> cours.prof().equals(prof))
-                            .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                for (ProfesseurDto prof : professeurs) {
+                    cms.stream()
+                            .filter(cours -> cours.getProfesseurDto().getIdProf().equals(prof.getIdProf()))
+                            .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
                             .forEach(cours -> {
+
+                                // ----------------------- DEBUG -----------------------
                                 StringBuilder cmGroupes = new StringBuilder();
-                                for (int sg = 0; sg < cours.participants.size(); sg++) {
-                                    if (sg == cours.participants.size() - 1) {
-                                        cmGroupes.append(cours.participants.get(sg).nomSousGroupe());
+                                for (int sg = 0; sg < promo.size(); sg++) {
+                                    if (sg == promo.size() - 1) {
+                                        cmGroupes.append(promo.get(sg).getNomSousGroupe());
                                     } else {
-                                        cmGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
+                                        cmGroupes.append(promo.get(sg).getNomSousGroupe()).append(",");
                                     }
                                 }
-                                System.out.println("CM " + cmGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+                                System.out.println(
+                                        "CM " + cmGroupes + " | " +
+                                                cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
+                                                cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                                // ----------------------- FIN DEBUG -----------------------
 
                                 // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
                                 // Le cours à ajouter,
-                                // Optimisation à faire : on ne recalcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
+                                // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
                                 // Après on re-fait juste la moyenne
 
-                                calcBestPlacement(slotsStorage.get(currentWeek), cours);
+                               // calcBestPlacement(slotsStorage.get(currentWeek), cours);
                             });
 
-                    td.stream()
-                            .filter(cours -> cours.prof().equals(prof))
-                            .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                    tds.stream()
+                            .filter(cours -> cours.getProfesseurDto().getIdProf().equals(prof.getIdProf()))
+                            .filter(cours ->  cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
                             .forEach(cours -> {
+                                List<SousGroupeDto> sousGroupesDto = promo.stream()
+                                        .filter(sg -> sg.getGroupeDto().getIdGroupe().equals(cours.getGroupeDto().getIdGroupe())).toList();
+
+                                // ----------------------- DEBUG -----------------------
                                 StringBuilder tdGroupes = new StringBuilder();
-                                for (int sg = 0; sg < cours.participants.size(); sg++) {
-                                    if (sg == cours.participants.size() - 1) {
-                                        tdGroupes.append(cours.participants.get(sg).nomSousGroupe());
+                                for (int sg = 0; sg < sousGroupesDto.size(); sg++) {
+                                    if (sg == sousGroupesDto.size() - 1) {
+                                        tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe());
                                     } else {
-                                        tdGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
+                                        tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe()).append(",");
                                     }
                                 }
-                                System.out.println("TD " + tdGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+                                System.out.println(
+                                        "CM " + tdGroupes + " | " +
+                                                cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
+                                                cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                                // ----------------------- FIN DEBUG -----------------------
+
                             });
 
-                    tp.stream()
-                            .filter(cours -> cours.prof().equals(prof))
-                            .filter(cours -> cours.repartitionSemaine().getOrDefault(currentWeek, 0) > 0)
+                    tps.stream()
+                            .filter(cours -> cours.getProfesseurDto().getIdProf().equals(prof.getIdProf()))
+                            .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
                             .forEach(cours -> {
-                                StringBuilder tpGroupes = new StringBuilder();
-                                for (int sg = 0; sg < cours.participants.size(); sg++) {
-                                    if (sg == cours.participants.size() - 1) {
-                                        tpGroupes.append(cours.participants.get(sg).nomSousGroupe());
-                                    } else {
-                                        tpGroupes.append(cours.participants.get(sg).nomSousGroupe()).append(",");
-                                    }
-                                }
-                                System.out.println("TP " + tpGroupes + " | " + cours.comp().nom() + " x" + cours.repartitionSemaine().get(currentWeek) + " | " + cours.prof().prenomProf + " " + cours.prof().nomProf);
+
+                                // ----------------------- DEBUG -----------------------
+                                System.out.println(
+                                        "CM " + cours.getSousGroupeDto().getNomSousGroupe() + " | " +
+                                                cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
+                                                cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                                // ----------------------- FIN DEBUG -----------------------
+
                             });
                 }
 
@@ -481,5 +493,4 @@ public static class GenerationAlgorithme {
         return promo;
     }
     */
-
 }

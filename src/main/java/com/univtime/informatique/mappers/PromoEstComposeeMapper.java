@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.ids.CMIdDto;
+import com.univtime.informatique.dto.idsDto.CMIdDto;
 import com.univtime.informatique.dto.promoEstComposeeDto.*;
 import com.univtime.informatique.entities.*;
 import com.univtime.informatique.entities.ids.PromoEstComposeeId;

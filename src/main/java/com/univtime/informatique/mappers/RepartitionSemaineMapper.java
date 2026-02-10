@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.ids.*;
+import com.univtime.informatique.dto.idsDto.*;
 import com.univtime.informatique.dto.repartitionSemaineDto.CMRepartitionSemaineDto;
 import com.univtime.informatique.dto.repartitionSemaineDto.RepartitionSemaineDto;
 import com.univtime.informatique.dto.repartitionSemaineDto.TDRepartitionSemaineDto;

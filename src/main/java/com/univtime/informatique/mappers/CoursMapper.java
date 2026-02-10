@@ -1,7 +1,7 @@
 package com.univtime.informatique.mappers;
 
 import com.univtime.informatique.dto.coursDto.*;
-import com.univtime.informatique.dto.ids.*;
+import com.univtime.informatique.dto.idsDto.*;
 import com.univtime.informatique.entities.*;
 
 import java.util.stream.Collectors;

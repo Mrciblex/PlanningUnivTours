@@ -1,6 +1,6 @@
 package com.univtime.informatique.mappers;
 
-import com.univtime.informatique.dto.ids.TPIdDto;
+import com.univtime.informatique.dto.idsDto.TPIdDto;
 import com.univtime.informatique.dto.participeADto.*;
 import com.univtime.informatique.entities.ParticipeAEntity;
 import com.univtime.informatique.entities.SousGroupeEntity;

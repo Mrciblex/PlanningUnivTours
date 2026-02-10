@@ -26,10 +26,13 @@ public class ComposanteService {
     }
 
     public ComposanteDto findComposanteById(Integer id) {
+        /*
         ComposanteEntity composante = composanteRepository.findById(id)
                 .orElse(() -> new Exception("La composante avec l'id n'est trouvé : " + id)); // Exception perso
 
         return ComposanteMapper.toDto(composante);
+        */
+        return null;
     }
 
     @Transactional
