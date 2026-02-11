@@ -6,13 +6,11 @@ import com.univtime.informatique.entities.PromoEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.GroupeMapper;
 import com.univtime.informatique.repositories.GroupeRepository;
-import com.univtime.informatique.repositories.PromoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +20,7 @@ public class GroupeService {
     private GroupeRepository groupeRepository;
 
     @Autowired
-    private PromoRepository promoRepository;
+    private PromoService promoService;
 
     public List<GroupeDto> findAllGroupe() {
         List<GroupeEntity> groupeEntities = groupeRepository.findAll();
@@ -33,11 +31,16 @@ public class GroupeService {
                 .collect(Collectors.toList());
     }
 
-    public GroupeDto findGroupeById(Integer id) {
+    public GroupeDto findGroupeDtoById(Integer id) {
         GroupeEntity groupeEntity = groupeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est pas trouvé : " + id));
 
         return GroupeMapper.toDto(groupeEntity);
+    }
+
+    public GroupeEntity findGroupeEntityById(Integer id) {
+        return groupeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est trouvé : " + id));
     }
 
     public GroupeDto createGroupe(GroupeDto groupeDto) {
@@ -50,8 +53,7 @@ public class GroupeService {
 
         Integer idPromoR = groupeDto.getPromoDto().getIdPromo();
 
-        PromoEntity promoEntity = promoRepository.findById(idPromoR)
-                .orElseThrow(() -> new ResourceNotFoundException("La promo avec l'id n'est pas trouvé : " + groupeDto.getPromoDto().getIdPromo()));
+        PromoEntity promoEntity = promoService.findPromoEntityById(idPromoR);
         promoEntity.setIdPromo(promoEntity.getIdPromo());
 
         GroupeEntity savedGroupe = groupeRepository.save(groupeEntity);
@@ -60,19 +62,15 @@ public class GroupeService {
     }
 
     public GroupeDto updateGroupe(GroupeDto groupeDto) {
-        GroupeEntity groupeEntity = groupeRepository.findById(groupeDto.getIdGroupe())
-                .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est pas trouvé : " + groupeDto.getIdGroupe()));
+        GroupeEntity groupeEntity = findGroupeEntityById(groupeDto.getIdGroupe());
 
         GroupeMapper.toEntity(groupeDto);
 
         if (groupeDto.getPromoDto().getIdPromo() != null) {
-            Integer currentIdPromo = Optional.ofNullable(groupeEntity.getPromo().getIdPromo())
-                    .map(PromoEntity::getIdPromo)
-                    .orElse(null);
+            Integer currentIdPromo = groupeEntity.getPromo().getIdPromo();
 
             if (currentIdPromo == null || !currentIdPromo.equals(groupeDto.getPromoDto().getIdPromo())) {
-                PromoEntity promoEntity = promoRepository.findById(groupeDto.getPromoDto().getIdPromo())
-                        .orElseThrow(() -> new ResourceNotFoundException("La promo avec l'id n'est pas trouvé : " + groupeDto.getPromoDto().getIdPromo()));
+                PromoEntity promoEntity = promoService.findPromoEntityById(groupeDto.getPromoDto().getIdPromo());
                 promoEntity.setIdPromo(promoEntity.getIdPromo());
             }
         }
@@ -83,6 +81,7 @@ public class GroupeService {
     }
 
     public void deleteGroupe(Integer id) {
+        findGroupeEntityById(id);
         groupeRepository.deleteById(id);
     }
 }

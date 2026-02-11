@@ -27,10 +27,15 @@ public class ProfesseurService {
                 .collect(Collectors.toList());
     }
 
-    public ProfesseurDto findProfesseurById(Integer id) {
+    public ProfesseurDto findProfesseurDtoById(Integer id) {
         ProfesseurEntity professeurEntity = professeurRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est pas trouvé : " + id));
         return ProfesseurMapper.toDto(professeurEntity);
+    }
+
+    public ProfesseurEntity findProfesseurEntityById(Integer id) {
+        return professeurRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est trouvé : " + id));
     }
 
     public ProfesseurDto createProfesseur(ProfesseurDto professeurDto) {
@@ -42,8 +47,7 @@ public class ProfesseurService {
     }
 
     public ProfesseurDto updateProfesseur(ProfesseurDto professeurDto) {
-        ProfesseurEntity professeurEntity = professeurRepository.findById(professeurDto.getIdProf())
-                .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est pas trouvé : " + professeurDto.getIdProf()));
+        ProfesseurEntity professeurEntity = findProfesseurEntityById(professeurDto.getIdProf());
 
         ProfesseurMapper.toEntity(professeurDto);
 
@@ -53,6 +57,7 @@ public class ProfesseurService {
     }
 
     public void deleteProfesseurById(Integer id) {
+        findProfesseurEntityById(id);
         professeurRepository.deleteById(id);
     }
 }

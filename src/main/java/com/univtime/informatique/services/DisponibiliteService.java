@@ -6,12 +6,10 @@ import com.univtime.informatique.entities.JourEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.DisponibiliteMapper;
 import com.univtime.informatique.repositories.DisponibiliteRepository;
-import com.univtime.informatique.repositories.JourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +18,7 @@ public class DisponibiliteService {
     private DisponibiliteRepository disponibiliteRepository;
 
     @Autowired
-    private JourRepository jourRepository;
+    private JourService jourService;
 
     public List<DisponibiliteDto> findAllDisponibilites() {
         List<DisponibiliteEntity> disponibiliteEntities = disponibiliteRepository.findAll();
@@ -31,11 +29,16 @@ public class DisponibiliteService {
                 .collect(Collectors.toList());
     }
 
-    public DisponibiliteDto findDisponibiliteById(Integer id) {
+    public DisponibiliteDto findDisponibiliteDtoById(Integer id) {
         DisponibiliteEntity disponibiliteEntity = disponibiliteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La disponibilite avec l'id n'est trouvé : " + id));
 
         return DisponibiliteMapper.toDto(disponibiliteEntity);
+    }
+
+    public DisponibiliteEntity findDisponibiliteEntityById(Integer id) {
+        return disponibiliteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La disponibilite avec l'id n'est trouvé : " + id));
     }
 
     public DisponibiliteDto createDisponibilite(DisponibiliteDto disponibiliteDto) {
@@ -48,8 +51,7 @@ public class DisponibiliteService {
 
         Integer idJourR = disponibiliteDto.getJourDto().getIdJour();
 
-        JourEntity jourEntity = jourRepository.findById(idJourR)
-                .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est pas trouvé : " + disponibiliteDto.getJourDto().getIdJour()));
+        JourEntity jourEntity = jourService.findJourEntityById(idJourR);
         jourEntity.setIdJour(jourEntity.getIdJour());
 
         DisponibiliteEntity savedDisponibilite = disponibiliteRepository.save(disponibiliteEntity);
@@ -58,19 +60,14 @@ public class DisponibiliteService {
     }
 
     public DisponibiliteDto updateDisponibilite(DisponibiliteDto disponibiliteDto) {
-        DisponibiliteEntity disponibiliteEntity = disponibiliteRepository.findById(disponibiliteDto.getIdDispo())
-                .orElseThrow(() -> new ResourceNotFoundException("La disponibilite avec l'id n'est pas trouvé : " + disponibiliteDto.getIdDispo()));
-
+        DisponibiliteEntity disponibiliteEntity = findDisponibiliteEntityById(disponibiliteDto.getIdDispo());
         DisponibiliteMapper.toEntity(disponibiliteDto);
 
         if (disponibiliteDto.getJourDto().getIdJour() != null) {
-            Integer currentIdJour = Optional.ofNullable(disponibiliteEntity.getJour().getIdJour())
-                    .map(JourEntity::getIdJour)
-                    .orElse(null);
+            Integer currentIdJour = disponibiliteEntity.getJour().getIdJour();
 
             if (currentIdJour == null || !currentIdJour.equals(disponibiliteDto.getJourDto().getIdJour())) {
-                JourEntity jourEntity = jourRepository.findById(disponibiliteDto.getJourDto().getIdJour())
-                        .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est pas trouvé : " + disponibiliteDto.getJourDto().getIdJour()));
+                JourEntity jourEntity = jourService.findJourEntityById(disponibiliteDto.getJourDto().getIdJour());
                 disponibiliteEntity.setJour(jourEntity);
             }
         }
@@ -78,5 +75,10 @@ public class DisponibiliteService {
         DisponibiliteEntity updatedDisponibilite = disponibiliteRepository.save(disponibiliteEntity);
 
         return DisponibiliteMapper.toDto(updatedDisponibilite);
+    }
+
+    public void deleteDisponibilite(Integer id) {
+        findDisponibiliteEntityById(id);
+        disponibiliteRepository.deleteById(id);
     }
 }

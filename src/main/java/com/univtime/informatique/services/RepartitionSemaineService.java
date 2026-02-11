@@ -27,10 +27,15 @@ public class RepartitionSemaineService {
                 .collect(Collectors.toList());
     }
 
-    public RepartitionSemaineDto findRepartitionSemaineById(Integer id) {
+    public RepartitionSemaineDto findRepartitionSemaineDtoById(Integer id) {
         RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La repartition semaine avec l'id n'est pas trouvé : " + id));
         return RepartitionSemaineMapper.toDto(repartitionSemaineEntity);
+    }
+
+    public RepartitionSemaineEntity findRepartitionSemaineEntityById(Integer id) {
+        return repartitionSemaineRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La repartition semaine avec l'id n'est trouvé : " + id));
     }
 
     public RepartitionSemaineDto createRepartitionSemaine(RepartitionSemaineDto repartitionSemaineDto) {
@@ -42,8 +47,7 @@ public class RepartitionSemaineService {
     }
 
     public RepartitionSemaineDto updateRepartitionSemaine(RepartitionSemaineDto repartitionSemaineDto) {
-        RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineRepository.findById(repartitionSemaineDto.getIdRepartitionSemaine())
-                .orElseThrow(() -> new ResourceNotFoundException("La repartition semaine avec l'id n'est pas trouvé : " + repartitionSemaineDto.getIdRepartitionSemaine()));
+        RepartitionSemaineEntity repartitionSemaineEntity = findRepartitionSemaineEntityById(repartitionSemaineDto.getIdRepartitionSemaine());
 
         RepartitionSemaineMapper.toEntity(repartitionSemaineDto);
 
@@ -53,6 +57,7 @@ public class RepartitionSemaineService {
     }
 
     public void deleteRepartitionSemaineById(Integer id) {
+        findRepartitionSemaineEntityById(id);
         repartitionSemaineRepository.deleteById(id);
     }
 }

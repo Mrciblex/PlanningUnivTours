@@ -6,13 +6,11 @@ import com.univtime.informatique.entities.ProfesseurEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.JourMapper;
 import com.univtime.informatique.repositories.JourRepository;
-import com.univtime.informatique.repositories.ProfesseurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +20,7 @@ public class JourService {
     private JourRepository jourRepository;
 
     @Autowired
-    private ProfesseurRepository professeurRepository;
+    private ProfesseurService professeurService;
 
     public List<JourDto> findAllJours() {
         List<JourEntity> jourEntities = jourRepository.findAll();
@@ -33,11 +31,16 @@ public class JourService {
                 .collect(Collectors.toList());
     }
 
-    public JourDto findJourById(Integer id) {
+    public JourDto findJourDtoById(Integer id) {
         JourEntity jourEntity = jourRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est trouvé : " + id));
 
         return JourMapper.toDto(jourEntity);
+    }
+
+    public JourEntity findJourEntityById(Integer id) {
+        return jourRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est trouvé : " + id));
     }
 
     public JourDto createJour(JourDto jourDto) {
@@ -50,8 +53,7 @@ public class JourService {
 
         Integer idProfesseurR = jourDto.getProfesseurDto().getIdProf();
 
-        ProfesseurEntity professeurEntity = professeurRepository.findById(idProfesseurR)
-                .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est pas trouvé : " + jourDto.getProfesseurDto().getIdProf()));
+        ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(idProfesseurR);
         professeurEntity.setIdProf(professeurEntity.getIdProf());
 
         JourEntity savedJour = jourRepository.save(jourEntity);
@@ -60,19 +62,15 @@ public class JourService {
     }
 
     public JourDto updateJour(JourDto jourDto) {
-        JourEntity jourEntity = jourRepository.findById(jourDto.getIdJour())
-                .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est pas trouvé : " + jourDto.getIdJour()));
+        JourEntity jourEntity = findJourEntityById(jourDto.getIdJour());
 
         JourMapper.toEntity(jourDto);
 
         if (jourDto.getProfesseurDto().getIdProf() != null) {
-            Integer currentIdProfesseur = Optional.ofNullable(jourEntity.getProfesseur().getIdProf())
-                    .map(ProfesseurEntity::getIdProf)
-                    .orElse(null);
+            Integer currentIdProfesseur = jourEntity.getProfesseur().getIdProf();
 
             if (currentIdProfesseur == null || !currentIdProfesseur.equals(jourDto.getProfesseurDto().getIdProf())) {
-                ProfesseurEntity professeurEntity = professeurRepository.findById(jourDto.getProfesseurDto().getIdProf())
-                        .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est pas trouvé : " + jourDto.getProfesseurDto().getIdProf()));
+                ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(jourDto.getProfesseurDto().getIdProf());
                 jourEntity.setProfesseur(professeurEntity);
             }
         }
@@ -83,6 +81,7 @@ public class JourService {
     }
 
     public void deleteJour(Integer id) {
+        findJourEntityById(id);
         jourRepository.deleteById(id);
     }
 }

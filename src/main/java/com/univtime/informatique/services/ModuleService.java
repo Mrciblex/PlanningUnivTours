@@ -30,6 +30,7 @@ public class ModuleService {
     public ModuleDto findModuleDtoById(Integer id) {
         ModuleEntity moduleEntity = moduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le module avec l'id n'est pas trouvé : " + id));
+
         return ModuleMapper.toDto(moduleEntity);
     }
 
@@ -47,8 +48,7 @@ public class ModuleService {
     }
 
     public ModuleDto updateModule(ModuleDto moduleDto) {
-        ModuleEntity moduleEntity = moduleRepository.findById(moduleDto.getIdModule())
-                .orElseThrow(() -> new ResourceNotFoundException("Le module avec l'id n'est pas trouvé : " + moduleDto.getIdModule()));
+        ModuleEntity moduleEntity = findModuleEntityById(moduleDto.getIdModule());
 
         ModuleMapper.toEntity(moduleDto);
 
@@ -58,6 +58,7 @@ public class ModuleService {
     }
 
     public void deleteModuleById(Integer id) {
+        findModuleEntityById(id);
         moduleRepository.deleteById(id);
     }
 }

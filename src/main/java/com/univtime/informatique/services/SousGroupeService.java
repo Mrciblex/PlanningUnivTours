@@ -5,14 +5,12 @@ import com.univtime.informatique.entities.SousGroupeEntity;
 import com.univtime.informatique.entities.GroupeEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.SousGroupeMapper;
-import com.univtime.informatique.repositories.GroupeRepository;
 import com.univtime.informatique.repositories.SousGroupeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +20,7 @@ public class SousGroupeService {
     private SousGroupeRepository sousGroupeRepository;
     
     @Autowired
-    private GroupeRepository groupeRepository;
+    private GroupeService groupeService;
 
     public List<SousGroupeDto> findAllSousGroupes() {
         List<SousGroupeEntity> sousGroupeEntities = sousGroupeRepository.findAll();
@@ -33,11 +31,16 @@ public class SousGroupeService {
                 .collect(Collectors.toList());
     }
 
-    public SousGroupeDto findSousGroupeById(Integer id) {
+    public SousGroupeDto findSousGroupeDtoById(Integer id) {
         SousGroupeEntity sousGroupeEntity = sousGroupeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le sous groupe avec l'id n'est trouvé : " + id));
 
         return SousGroupeMapper.toDto(sousGroupeEntity);
+    }
+
+    public SousGroupeEntity findSousGroupeEntityById(Integer id) {
+        return sousGroupeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le sous groupe avec l'id n'est trouvé : " + id));
     }
 
     public SousGroupeDto createSousGroupe(SousGroupeDto sousGroupeDto) {
@@ -50,8 +53,7 @@ public class SousGroupeService {
 
         Integer idGroupeR = sousGroupeDto.getGroupeDto().getIdGroupe();
 
-        GroupeEntity groupeEntity = groupeRepository.findById(idGroupeR)
-                .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est pas trouvé : " + sousGroupeDto.getGroupeDto().getIdGroupe()));
+        GroupeEntity groupeEntity = groupeService.findGroupeEntityById(idGroupeR);
         groupeEntity.setIdGroupe(groupeEntity.getIdGroupe());
 
         SousGroupeEntity savedSousGroupe = sousGroupeRepository.save(sousGroupeEntity);
@@ -60,19 +62,15 @@ public class SousGroupeService {
     }
 
     public SousGroupeDto updateSousGroupe(SousGroupeDto sousGroupeDto) {
-        SousGroupeEntity sousGroupeEntity = sousGroupeRepository.findById(sousGroupeDto.getIdSousGroupe())
-                .orElseThrow(() -> new ResourceNotFoundException("Le sous groupe avec l'id n'est pas trouvé : " + sousGroupeDto.getIdSousGroupe()));
+        SousGroupeEntity sousGroupeEntity = findSousGroupeEntityById(sousGroupeDto.getIdSousGroupe());
 
         SousGroupeMapper.toEntity(sousGroupeDto);
 
         if (sousGroupeDto.getGroupeDto().getIdGroupe() != null) {
-            Integer currentIdGroupe = Optional.ofNullable(sousGroupeEntity.getGroupe().getIdGroupe())
-                    .map(GroupeEntity::getIdGroupe)
-                    .orElse(null);
+            Integer currentIdGroupe = sousGroupeEntity.getGroupe().getIdGroupe();
 
             if (currentIdGroupe == null || !currentIdGroupe.equals(sousGroupeDto.getGroupeDto().getIdGroupe())) {
-                GroupeEntity groupeEntity = groupeRepository.findById(sousGroupeDto.getGroupeDto().getIdGroupe())
-                        .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est pas trouvé : " + sousGroupeDto.getGroupeDto().getIdGroupe()));
+                GroupeEntity groupeEntity = groupeService.findGroupeEntityById(sousGroupeDto.getGroupeDto().getIdGroupe());
                 sousGroupeEntity.setGroupe(groupeEntity);
             }
         }
@@ -83,6 +81,7 @@ public class SousGroupeService {
     }
 
     public void deleteSousGroupe(Integer id) {
+        findSousGroupeEntityById(id);
         sousGroupeRepository.deleteById(id);
     }
 }
