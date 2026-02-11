@@ -32,18 +32,21 @@ set "PATH=%JAVA_HOME%\bin;%PATH%"
 :: ==========================================
 set "CONFIG_FILE=.launcherConfig"
 set "NEED_CREATE=0"
+
+:: Valeurs par defaut
 set "DEBUG_MODE=0"
 set "DEBUG_DB=0"
 set "BUILD=1"
+set "RESET_DB=0"
 
 :: 1. Verification de l'existence et lecture
 if not exist "%CONFIG_FILE%" (
     set "NEED_CREATE=1"
 ) else (
-    :: On initialise des variables temporaires pour verifier si le fichier est complet
     set "FOUND_DEBUG="
     set "FOUND_DB="
     set "FOUND_BUILD="
+    set "FOUND_RESET="
 
     for /f "tokens=1* delims==" %%A in (%CONFIG_FILE%) do (
         if "%%A"=="debug" (
@@ -58,12 +61,17 @@ if not exist "%CONFIG_FILE%" (
             set "BUILD=%%B"
             set "FOUND_BUILD=1"
         )
+        if "%%A"=="reset-db" (
+            set "RESET_DB=%%B"
+            set "FOUND_RESET=1"
+        )
     )
 
-    :: Si une des variables manque, on considere le fichier corrompu
+    :: Si une variable manque, on regenere le fichier
     if not defined FOUND_DEBUG set "NEED_CREATE=1"
     if not defined FOUND_DB set "NEED_CREATE=1"
     if not defined FOUND_BUILD set "NEED_CREATE=1"
+    if not defined FOUND_RESET set "NEED_CREATE=1"
 )
 
 :: 2. Creation ou Reparation du fichier
@@ -73,15 +81,47 @@ if "!NEED_CREATE!"=="1" (
         echo debug=0
         echo debug-db=0
         echo build=1
+        echo reset-db=0
     ) > "%CONFIG_FILE%"
 
-    :: On force les valeurs par defaut pour cette execution
     set "DEBUG_MODE=0"
     set "DEBUG_DB=0"
     set "BUILD=1"
+    set "RESET_DB=0"
 )
 
-:: 3. Affichage Infos Debug
+:: 3. Logique RESET-DB (Auto-Update SECURISE)
+set "DO_RESET=0"
+set "UPDATE_CONFIG=0"
+
+if "!RESET_DB!"=="1" (
+    echo [INFO] Commande RESET-DB detectee.
+    echo [INFO] -^> La base sera supprimee.
+    echo [INFO] -^> Mise a jour de .launcherConfig pour remettre reset-db a 0.
+
+    set "DO_RESET=1"
+    set "RESET_DB=0"
+    set "UPDATE_CONFIG=1"
+)
+
+:: Reecriture du fichier (Hors du bloc IF pour eviter le crash des parentheses)
+if "!UPDATE_CONFIG!"=="1" (
+    (
+        echo debug=!DEBUG_MODE!
+        echo debug-db=!DEBUG_DB!
+        echo build=!BUILD!
+        echo reset-db=0
+    ) > "%CONFIG_FILE%"
+)
+
+:: Verification des autres conditions de reset (Debug total)
+if "!DEBUG_MODE!"=="1" (
+    if "!DEBUG_DB!"=="1" (
+        set "DO_RESET=1"
+    )
+)
+
+:: 4. Affichage Infos
 if "!DEBUG_MODE!"=="1" (
     echo.
     echo ===================================================
@@ -91,18 +131,14 @@ if "!DEBUG_MODE!"=="1" (
     echo [INFO] Debug general : ON
 
     if "!DEBUG_DB!"=="1" (
-        echo [INFO] Debug DB      : ON
-        echo [ATTENTION] Ce mode RESET la base de donnees a chaque lancement.
-        echo             Les donnees de tests seront injectees via data.sql.
+        echo [INFO] Debug DB      : ON ^(Reset + Data^)
     ) else (
         echo [INFO] Debug DB      : OFF
     )
+)
 
-    if "!BUILD!"=="1" (
-        echo [INFO] Debug Build   : ON ^(Recompilation forcee^)
-    ) else (
-        echo [INFO] Debug Build   : OFF ^(Utilisation du Jar existant si possible^)
-    )
+if "!DO_RESET!"=="1" (
+    echo [ATTENTION] MODE RESET ACTIF : La base de donnees sera ecrasee.
 )
 
 :: ==========================================
@@ -232,19 +268,18 @@ if not exist ".dbpassword" (
 :DB_INIT
 echo [INFO] Verification de la base '%DBNAME%'...
 
-:: --- LOGIQUE DEBUG-DB (DROP DATABASE) ---
-if "!DEBUG_MODE!"=="1" (
-    if "!DEBUG_DB!"=="1" (
-        echo [DEBUG-DB] Nettoyage des connexions actives sur %DBNAME%...
+:: --- LOGIQUE DE SUPPRESSION (RESET) ---
+:: Active si DO_RESET=1 (soit via debug-db, soit via reset-db)
+if "!DO_RESET!"=="1" (
+    echo [RESET] Nettoyage des connexions actives sur %DBNAME%...
 
-        :: 1. On tue brutalement toutes les sessions connectees a cette base
-        set PGPASSWORD=!PGPASSWORD!
-        "%PGBIN%\psql.exe" -U !PGUSER! -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '%DBNAME%' AND pid <> pg_backend_pid();" >nul 2>&1
+    :: 1. On tue brutalement toutes les sessions connectees a cette base
+    set PGPASSWORD=!PGPASSWORD!
+    "%PGBIN%\psql.exe" -U !PGUSER! -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '%DBNAME%' AND pid <> pg_backend_pid();" >nul 2>&1
 
-        echo [DEBUG-DB] Suppression de la base existante...
-        :: 2. On supprime avec l'option -f (force) par securite supplementaire
-        "%PGBIN%\dropdb.exe" -U !PGUSER! --if-exists -f %DBNAME%
-    )
+    echo [RESET] Suppression de la base existante...
+    :: 2. On supprime
+    "%PGBIN%\dropdb.exe" -U !PGUSER! --if-exists -f %DBNAME%
 )
 
 "%PGBIN%\psql.exe" -U !PGUSER! -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='%DBNAME%'" | findstr "1" >nul
@@ -283,6 +318,8 @@ if exist "%SQL_FILE%" (
 :: ==========================================
 :: SCRIPT SQL : DATA (DEBUG ONLY)
 :: ==========================================
+:: L'injection de donnees de test ne se fait QUE si le mode DEBUG-DB est actif
+:: Si on a fait un "reset-db" pour la prod (sans debug), on n'injecte PAS les donnees.
 if "!DEBUG_MODE!"=="1" (
     if "!DEBUG_DB!"=="1" (
         echo.
@@ -300,11 +337,8 @@ if "!DEBUG_MODE!"=="1" (
             pushd "!DB_FOLDER!"
 
             echo [INFO] Injection en cours...
-
-            :: 2. CORRECTION ENCODAGE : On force PostgreSQL a lire en UTF-8
             set PGCLIENTENCODING=UTF8
 
-            :: 3. Execution
             "%PGBIN%\psql.exe" -q -U !PGUSER! -d %DBNAME% -f "data.sql"
 
             if !errorlevel! neq 0 (
@@ -312,10 +346,7 @@ if "!DEBUG_MODE!"=="1" (
             ) else (
                 echo [OK] Donnees injectees avec succes.
             )
-
-            :: 4. On revient au dossier initial
             popd
-
         ) else (
             echo [ATTENTION] Fichier data.sql introuvable dans !DB_FOLDER!
         )
