@@ -57,7 +57,7 @@ public class PromoService {
         return PromoMapper.toDto(savedPromo);
     }
 
-    public void deletePromo(Integer id) {
+    public void deletePromoById(Integer id) {
         findPromoEntityById(id);
         promoRepository.deleteById(id);
     }

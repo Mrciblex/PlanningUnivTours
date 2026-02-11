@@ -77,7 +77,7 @@ public class DisponibiliteService {
         return DisponibiliteMapper.toDto(updatedDisponibilite);
     }
 
-    public void deleteDisponibilite(Integer id) {
+    public void deleteDisponibiliteById(Integer id) {
         findDisponibiliteEntityById(id);
         disponibiliteRepository.deleteById(id);
     }
