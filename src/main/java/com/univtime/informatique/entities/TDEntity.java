@@ -4,7 +4,7 @@ import com.univtime.informatique.entities.ids.TDId;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tds")
+@Table(name = "TD")
 public class TDEntity {
     @EmbeddedId
     private TDId idTD;

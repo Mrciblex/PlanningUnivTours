@@ -9,14 +9,14 @@ import java.util.Set;
 @Table(name = "professeurs")
 public class ProfesseurEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idProf", nullable = false)
     private Integer idProf;
 
     @Column(name = "nomProf", nullable = false, length = 150)
     private String nomProf;
 
-    @Column(name = "premonProf", nullable = false, length = 150)
+    @Column(name = "prenomProf", nullable = false, length = 150)
     private String prenomProf;
 
     @Column(name = "intervenantExterieur", nullable = false)

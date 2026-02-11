@@ -124,7 +124,7 @@ public class SousGroupeMapper {
                 Composante
              */
             tp.setIdComposante(entity.getComposante().getIdComposante());
-            tp.setNomComposante(entity.getComposante().getNomCoposante());
+            tp.setNomComposante(entity.getComposante().getNomComposante());
             tp.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             tp.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             tp.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());

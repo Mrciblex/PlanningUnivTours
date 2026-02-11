@@ -134,7 +134,7 @@ public class PromoMapper {
                 Composante
              */
             cm.setIdComposante(entity.getComposante().getIdComposante());
-            cm.setNomComposante(entity.getComposante().getNomCoposante());
+            cm.setNomComposante(entity.getComposante().getNomComposante());
             cm.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             cm.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             cm.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());

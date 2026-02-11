@@ -12,8 +12,8 @@ public class ComposanteEntity {
     @Column(name = "idComposante", nullable = false)
     private Integer idComposante;
 
-    @Column(name = "nomCoposante", nullable = false, length = 150)
-    private String nomCoposante;
+    @Column(name = "nomComposante", nullable = false, length = 150)
+    private String nomComposante;
 
     @Column(name = "volumeHoraireTotal", nullable = false)
     private Integer volumeHoraireTotal;
@@ -63,12 +63,12 @@ public class ComposanteEntity {
         this.idComposante = idComposante;
     }
 
-    public String getNomCoposante() {
-        return nomCoposante;
+    public String getNomComposante() {
+        return nomComposante;
     }
 
-    public void setNomCoposante(String nomCoposante) {
-        this.nomCoposante = nomCoposante;
+    public void setNomComposante(String nomComposante) {
+        this.nomComposante = nomComposante;
     }
 
     public Integer getVolumeHoraireTotal() {
