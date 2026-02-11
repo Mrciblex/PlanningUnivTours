@@ -38,6 +38,19 @@ public class CoursDto {
         this.participeADto = participeADto;
     }
 
+    public CoursDto(
+            TypeCours typeCoursEnum,
+            ComposanteCoursDto composanteDto,
+            ProfesseurCoursDto professeurDto,
+            SalleCoursDto salleDto,
+            Set<ParticipeACoursDto> participeADto) {
+        this.typeCoursEnum = typeCoursEnum;
+        this.composanteDto = composanteDto;
+        this.professeurDto = professeurDto;
+        this.salleDto = salleDto;
+        this.participeADto = participeADto;
+    }
+
     // Getters et Setters
     public Integer getIdCours() {
         return idCours;

@@ -1,6 +1,8 @@
 package com.univtime.informatique.algorithme;
 
+import com.univtime.informatique.constants.TypeCours;
 import com.univtime.informatique.dto.cmDto.CMDto;
+import com.univtime.informatique.dto.composanteDto.CMComposanteDto;
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
@@ -131,12 +133,9 @@ public class GenerationAlgorithme {
         return isSlotAvailable;
     }
 
-    private static List<Slot> calcBestPlacement(Map<Integer, List<Slot>> slotsStorageWeek, CMDto cours){
+    private static List<Slot> calcBestPlacement(Semaine currentSemaine, CoursDto cours){
         List<Slot> bestPlacement = new ArrayList<>();
-        for (int i = 0; i < slotsStorageWeek.size(); i++){
-            List<Slot> slots = slotsStorageWeek.get(i); // Slot of the day
 
-        }
         return null;
     }
 
@@ -284,7 +283,8 @@ public class GenerationAlgorithme {
                     jours.add(new Jour(dayOffset + 1, slots));
 
                 }
-                semaines.add(new Semaine(currentWeek, jours));
+                Semaine currentSemaine = new Semaine(currentWeek, jours);
+                semaines.add(currentSemaine);
 
 
 
@@ -332,7 +332,7 @@ public class GenerationAlgorithme {
                     cms.stream()
                             .filter(cours -> cours.getProfesseurDto().getIdProf().equals(prof.getIdProf()))
                             .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
-                            .forEach(cours -> {
+                            .forEach(cour -> {
 
                                 // ----------------------- DEBUG -----------------------
                                 StringBuilder cmGroupes = new StringBuilder();
@@ -345,16 +345,24 @@ public class GenerationAlgorithme {
                                 }
                                 System.out.println(
                                         "CM " + cmGroupes + " | " +
-                                                cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
-                                                cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                                                cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " | " +
+                                                cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
                                 // ----------------------- FIN DEBUG -----------------------
+
+                                CoursDto courCreated = new CoursDto(
+                                        TypeCours.CM,
+                                        cour.getComposanteDto(),
+                                        cour.getProfesseurDto(),
+                                        null,
+                                        null
+                                );
 
                                 // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
                                 // Le cours à ajouter,
                                 // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
                                 // Après on re-fait juste la moyenne
 
-                               // calcBestPlacement(slotsStorage.get(currentWeek), cours);
+                                calcBestPlacement(currentSemaine, courCreated);
                             });
 
                     tds.stream()
