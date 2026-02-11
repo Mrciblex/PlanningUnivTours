@@ -25,10 +25,10 @@ public class ConsoleStartupListener implements ApplicationListener<ApplicationRe
 
         System.out.println();
         System.out.println("=================================================");
-        System.out.println("🚀 SERVEUR LANCÉ AVEC SUCCÈS !");
+        System.out.println("SERVEUR LANCÉ AVEC SUCCÈS !");
 
         // L'URL s'adapte automatiquement
-        System.out.println("👉 Accès : http://localhost:" + port + contextPath);
+        System.out.println("Accès : http://localhost:" + port + contextPath);
 
         System.out.println("=================================================");
         System.out.println();
