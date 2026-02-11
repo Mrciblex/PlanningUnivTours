@@ -27,11 +27,16 @@ public class SalleService {
                 .collect(Collectors.toList());
     }
 
-    public SalleDto findSalleById(Integer id) {
+    public SalleDto findSalleDtoById(Integer id) {
         SalleEntity salleEntity = salleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La salle avec l'id n'est pas trouvé : " + id));
 
         return SalleMapper.toDto(salleEntity);
+    }
+
+    public SalleEntity findSalleEntityById(Integer id) {
+        return salleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La salle avec l'id n'est trouvé : " + id));
     }
 
     public SalleDto createSalle(SalleDto salleDto) {
@@ -43,8 +48,7 @@ public class SalleService {
     }
 
     public SalleDto updateSalle(SalleDto salleDto) {
-        SalleEntity salleEntity = salleRepository.findById(salleDto.getIdSalle())
-                .orElseThrow(() -> new ResourceNotFoundException("La salle avec l'id n'est pas trouvé : " + salleDto.getIdSalle()));
+        SalleEntity salleEntity = findSalleEntityById(salleDto.getIdSalle());
 
         SalleMapper.toEntity(salleDto);
 
@@ -54,6 +58,7 @@ public class SalleService {
     }
 
     public void deleteSalleById(Integer id) {
+        findSalleEntityById(id);
         salleRepository.deleteById(id);
     }
 }

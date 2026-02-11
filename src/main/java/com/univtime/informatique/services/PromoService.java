@@ -27,11 +27,16 @@ public class PromoService {
                 .collect(Collectors.toList());
     }
 
-    public PromoDto findPromoById(Integer id) {
+    public PromoDto findPromoDtoById(Integer id) {
         PromoEntity promoEntity = promoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La promo avec l'id n'est trouvé : " + id));
 
         return PromoMapper.toDto(promoEntity);
+    }
+
+    public PromoEntity findPromoEntityById(Integer id) {
+        return promoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("La promo avec l'id n'est trouvé : " + id));
     }
 
     public PromoDto createPromo(PromoDto promoDto) {
@@ -43,8 +48,7 @@ public class PromoService {
     }
 
     public PromoDto updatePromo(PromoDto promoDto) {
-        PromoEntity promoEntity = promoRepository.findById(promoDto.getIdPromo())
-                .orElseThrow(() -> new ResourceNotFoundException("La promo avec l'id n'est trouvé : " + promoDto.getIdPromo()));
+        PromoEntity promoEntity = findPromoEntityById(promoDto.getIdPromo());
 
         PromoMapper.toEntity(promoDto);
 
@@ -54,6 +58,7 @@ public class PromoService {
     }
 
     public void deletePromo(Integer id) {
+        findPromoEntityById(id);
         promoRepository.deleteById(id);
     }
 }
