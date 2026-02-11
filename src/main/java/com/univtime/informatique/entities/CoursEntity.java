@@ -20,6 +20,7 @@ public class CoursEntity {
     @Column(name = "heureFinCours", nullable = false)
     private LocalDateTime heureFinCours;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "typeCours", nullable = false, length = 150)
     private TypeCours typeCours;
 

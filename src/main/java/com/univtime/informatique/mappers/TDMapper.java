@@ -130,7 +130,7 @@ public class TDMapper {
         ComposanteTDDto comp = new ComposanteTDDto();
         if (entity != null) {
             comp.setIdComposante(entity.getIdComposante());
-            comp.setNomComposante(entity.getNomCoposante());
+            comp.setNomComposante(entity.getNomComposante());
             comp.setVolumeHoraireTotal(entity.getVolumeHoraireTotal());
             comp.setVolumeHoraireCM(entity.getVolumeHoraireCM());
             comp.setVolumeHoraireTD(entity.getVolumeHoraireTD());

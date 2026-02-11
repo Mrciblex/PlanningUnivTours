@@ -5,7 +5,7 @@ import com.univtime.informatique.entities.ids.BesoinSalleId;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "besoinSalle")
+@Table(name = "BesoinSalle")
 public class BesoinSalleEntity {
     @EmbeddedId
     private BesoinSalleId idBesoinSalle;
@@ -20,6 +20,7 @@ public class BesoinSalleEntity {
     @JoinColumn(name = "idComposante", referencedColumnName = "idComposante", insertable = false, updatable = false)
     private ComposanteEntity composante;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "typeBesoin", nullable = false)
     private TypeBesoin typeBesoin;
 

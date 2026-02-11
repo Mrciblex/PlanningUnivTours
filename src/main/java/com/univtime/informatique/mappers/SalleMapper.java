@@ -79,7 +79,7 @@ public class SalleMapper {
                 Composante
              */
             besoin.setIdComposante(entity.getComposante().getIdComposante());
-            besoin.setNomComposante(entity.getComposante().getNomCoposante());
+            besoin.setNomComposante(entity.getComposante().getNomComposante());
             besoin.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             besoin.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             besoin.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());

@@ -81,7 +81,7 @@ public class ModuleMapper {
         ComposanteModuleDto composante = new ComposanteModuleDto();
         if (entity != null) {
             composante.setIdComposante(entity.getIdComposante());
-            composante.setNomComposante(entity.getNomCoposante());
+            composante.setNomComposante(entity.getNomComposante());
             composante.setVolumeHoraireTotal(entity.getVolumeHoraireTotal());
             composante.setVolumeHoraireCM(entity.getVolumeHoraireCM());
             composante.setVolumeHoraireTD(entity.getVolumeHoraireTD());
