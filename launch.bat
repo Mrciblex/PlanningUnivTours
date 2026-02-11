@@ -182,21 +182,7 @@ if %errorlevel% equ 0 (
 )
 
 :: ==========================================
-:: INITIALISATION BDD
-:: ==========================================
-:DB_INIT
-echo [INFO] Verification de la base '%DBNAME%'...
-"%PGBIN%\psql.exe" -U !PGUSER! -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='%DBNAME%'" | findstr "1" >nul
-
-if %errorlevel% equ 0 (
-    echo [OK] La base '%DBNAME%' existe deja.
-) else (
-    echo [INFO] Creation de la base '%DBNAME%'...
-    "%PGBIN%\createdb.exe" -U !PGUSER! -E UTF8 %DBNAME%
-)
-
-:: ==========================================
-:: EXECUTION SCRIPT SQL (NEW !)
+:: EXECUTION SCRIPT SQL
 :: ==========================================
 echo.
 echo ===================================================
@@ -243,7 +229,7 @@ call %MAVEN_CMD% clean package -DskipTests
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ERREUR] Compilation echouee.
+    echo [ERREUR] Compilation echouee. Lien Java 25.0.2 : https://jdk.java.net/25/
     pause
     exit /b
 )
