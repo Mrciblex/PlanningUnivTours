@@ -1,17 +1,16 @@
-CREATE TYPE type_cours AS ENUM (
-    'CM',
-    'TD',
-    'TP'
-);
+DO $$ BEGIN
+CREATE TYPE type_cours AS ENUM ('CM', 'TD', 'TP');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
-CREATE TYPE type_besoin AS ENUM (
-    'salle info',
-    'salle physique',
-    'salle normale'
-);
+DO $$ BEGIN
+CREATE TYPE type_besoin AS ENUM ('salle info', 'salle physique', 'salle normale');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
-CREATE TABLE Professeurs
-(
+CREATE TABLE IF NOT EXISTS Professeurs (
     idProf SERIAL,
     nomProf VARCHAR(150),
     prenomProf VARCHAR(150),
@@ -22,8 +21,7 @@ CREATE TABLE Professeurs
     CONSTRAINT pk_prof PRIMARY KEY (idProf)
 );
 
-CREATE TABLE Salles
-(
+CREATE TABLE IF NOT EXISTS Salles (
     idSalle SERIAL,
     nbPlace INT,
     salleMachine BOOLEAN,
@@ -33,16 +31,14 @@ CREATE TABLE Salles
     CONSTRAINT pk_salle PRIMARY KEY (idSalle)
 );
 
-CREATE TABLE Modules
-(
+CREATE TABLE IF NOT EXISTS Modules (
     idModule SERIAL,
     nomModule VARCHAR(150),
     CONSTRAINT chk_nom_module CHECK (nomModule IS NOT NULL),
     CONSTRAINT pk_module PRIMARY KEY (idModule)
-);
+    );
 
-CREATE TABLE Composantes
-(
+CREATE TABLE IF NOT EXISTS Composantes (
     idComposante SERIAL,
     nomComposante VARCHAR(150),
     volumeHoraireTotal INT,
@@ -58,8 +54,7 @@ CREATE TABLE Composantes
     CONSTRAINT fk_module FOREIGN KEY (idModule) REFERENCES Modules (idModule)
 );
 
-CREATE TABLE Promos
-(
+CREATE TABLE IF NOT EXISTS Promos (
     idPromo SERIAL,
     nomPromo VARCHAR(150),
     anneePromo INT,
@@ -70,9 +65,7 @@ CREATE TABLE Promos
     CONSTRAINT pk_promo PRIMARY KEY (idPromo)
 );
 
-
-CREATE TABLE Groupes
-(
+CREATE TABLE IF NOT EXISTS Groupes (
     idGroupe SERIAL,
     nomGroupe VARCHAR(150),
     nbEtuGroupe INT,
@@ -83,8 +76,7 @@ CREATE TABLE Groupes
     CONSTRAINT fk_promo FOREIGN KEY (idPromo) REFERENCES Promos (idPromo)
 );
 
-CREATE TABLE SousGroupes
-(
+CREATE TABLE IF NOT EXISTS SousGroupes (
     idSousGroupe SERIAL,
     nomSousGroupe VARCHAR(150),
     nbEtuSousGroupe INT,
@@ -95,8 +87,7 @@ CREATE TABLE SousGroupes
     CONSTRAINT fk_groupe FOREIGN KEY (idGroupe) REFERENCES Groupes (idGroupe)
 );
 
-CREATE TABLE Cours
-(
+CREATE TABLE IF NOT EXISTS Cours (
     idCours SERIAL,
     heureDebutCours TIMESTAMP,
     heureFinCours TIMESTAMP,
@@ -114,8 +105,7 @@ CREATE TABLE Cours
     CONSTRAINT fk_composante FOREIGN KEY (idComposante) REFERENCES Composantes (idComposante)
 );
 
-CREATE TABLE Jours
-(
+CREATE TABLE IF NOT EXISTS Jours (
     idJour SERIAL,
     jourSemaine INT,
     idProf INT,
@@ -124,8 +114,7 @@ CREATE TABLE Jours
     CONSTRAINT fk_prof FOREIGN KEY (idProf) REFERENCES Professeurs (idProf)
 );
 
-CREATE TABLE Disponibilites
-(
+CREATE TABLE IF NOT EXISTS Disponibilites (
     idDispo SERIAL,
     heureDebutDispo INT,
     heureFinDispo INT,
@@ -137,8 +126,7 @@ CREATE TABLE Disponibilites
     CONSTRAINT fk_jour FOREIGN KEY (idJour) REFERENCES Jours (idJour)
 );
 
-CREATE TABLE BesoinSalle
-(
+CREATE TABLE IF NOT EXISTS BesoinSalle (
     idSalle INT,
     idComposante INT,
     typeBesoin type_besoin,
@@ -148,8 +136,7 @@ CREATE TABLE BesoinSalle
     CONSTRAINT fk_composante FOREIGN KEY (idComposante) REFERENCES Composantes (idComposante)
 );
 
-CREATE TABLE RepartitionSemaine
-(
+CREATE TABLE IF NOT EXISTS RepartitionSemaine (
     idRepartitionSemaine SERIAL,
     numSemaine INT,
     qteTypeCours INT,
@@ -157,8 +144,7 @@ CREATE TABLE RepartitionSemaine
     CONSTRAINT pk_prof_composante PRIMARY KEY (idRepartitionSemaine)
 );
 
-CREATE TABLE PromoEstComposee
-(
+CREATE TABLE IF NOT EXISTS PromoEstComposee (
     idPromo INT,
     idModule INT,
     CONSTRAINT pk_promo_module PRIMARY KEY (idPromo, idModule),
@@ -166,8 +152,7 @@ CREATE TABLE PromoEstComposee
     CONSTRAINT fk_module FOREIGN KEY (idModule) REFERENCES Modules (idModule)
 );
 
-CREATE TABLE TD
-(
+CREATE TABLE IF NOT EXISTS TD (
     idProf INT,
     idGroupe INT,
     idComposante INT,
@@ -179,8 +164,7 @@ CREATE TABLE TD
     CONSTRAINT fk_repartition_semaine_td FOREIGN KEY (idRepartitionSemaine) REFERENCES RepartitionSemaine (idRepartitionSemaine)
 );
 
-CREATE TABLE CM
-(
+CREATE TABLE IF NOT EXISTS CM (
     idProf INT,
     idPromo INT,
     idComposante INT,
@@ -192,8 +176,7 @@ CREATE TABLE CM
     CONSTRAINT fk_repartition_semaine_cm FOREIGN KEY (idRepartitionSemaine) REFERENCES RepartitionSemaine (idRepartitionSemaine)
 );
 
-CREATE TABLE TP
-(
+CREATE TABLE IF NOT EXISTS TP (
     idProf INT,
     idSousGroupe INT,
     idComposante INT,
@@ -205,8 +188,7 @@ CREATE TABLE TP
     CONSTRAINT fk_repartition_semaine_tp FOREIGN KEY (idRepartitionSemaine) REFERENCES RepartitionSemaine (idRepartitionSemaine)
 );
 
-CREATE TABLE ParticipeA
-(
+CREATE TABLE IF NOT EXISTS ParticipeA (
     idSousGroupe INT,
     idCours INT,
     CONSTRAINT pk_promo_module_participe_a PRIMARY KEY (idSousGroupe, idCours),
