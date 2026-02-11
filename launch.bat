@@ -34,6 +34,7 @@ set "CONFIG_FILE=.launcherConfig"
 set "NEED_CREATE=0"
 set "DEBUG_MODE=0"
 set "DEBUG_DB=0"
+set "BUILD=1"
 
 :: 1. Verification de l'existence et lecture
 if not exist "%CONFIG_FILE%" (
@@ -42,6 +43,7 @@ if not exist "%CONFIG_FILE%" (
     :: On initialise des variables temporaires pour verifier si le fichier est complet
     set "FOUND_DEBUG="
     set "FOUND_DB="
+    set "FOUND_BUILD="
 
     for /f "tokens=1* delims==" %%A in (%CONFIG_FILE%) do (
         if "%%A"=="debug" (
@@ -52,11 +54,16 @@ if not exist "%CONFIG_FILE%" (
             set "DEBUG_DB=%%B"
             set "FOUND_DB=1"
         )
+        if "%%A"=="build" (
+            set "BUILD=%%B"
+            set "FOUND_BUILD=1"
+        )
     )
 
     :: Si une des variables manque, on considere le fichier corrompu
     if not defined FOUND_DEBUG set "NEED_CREATE=1"
     if not defined FOUND_DB set "NEED_CREATE=1"
+    if not defined FOUND_BUILD set "NEED_CREATE=1"
 )
 
 :: 2. Creation ou Reparation du fichier
@@ -65,11 +72,13 @@ if "!NEED_CREATE!"=="1" (
     (
         echo debug=0
         echo debug-db=0
+        echo build=1
     ) > "%CONFIG_FILE%"
 
     :: On force les valeurs par defaut pour cette execution
     set "DEBUG_MODE=0"
     set "DEBUG_DB=0"
+    set "BUILD=1"
 )
 
 :: 3. Affichage Infos Debug
@@ -87,6 +96,12 @@ if "!DEBUG_MODE!"=="1" (
         echo             Les donnees de tests seront injectees via data.sql.
     ) else (
         echo [INFO] Debug DB      : OFF
+    )
+
+    if "!BUILD!"=="1" (
+        echo [INFO] Debug Build   : ON ^(Recompilation forcee^)
+    ) else (
+        echo [INFO] Debug Build   : OFF ^(Utilisation du Jar existant si possible^)
     )
 )
 
@@ -319,13 +334,28 @@ echo.
 set MAVEN_CMD=mvn
 if exist "mvnw.cmd" set MAVEN_CMD=mvnw.cmd
 
-call %MAVEN_CMD% clean package -DskipTests
+set "DO_BUILD=1"
 
-if %errorlevel% neq 0 (
-    echo.
-    echo [ERREUR] Compilation echouee.
-    pause
-    exit /b
+:: Si build est a 0, on essaye de sauter le build
+if "!BUILD!"=="0" (
+    :: Verification si un jar existe deja
+    if exist "target\*.jar" (
+        echo [INFO] build=0 et JAR trouve. Le build est ignore.
+        set "DO_BUILD=0"
+    ) else (
+        echo [ATTENTION] build=0 mais aucun JAR trouve. Build force.
+    )
+)
+
+if "!DO_BUILD!"=="1" (
+    call %MAVEN_CMD% clean package -DskipTests
+
+    if !errorlevel! neq 0 (
+        echo.
+        echo [ERREUR] Compilation echouee.
+        pause
+        exit /b
+    )
 )
 
 echo.
@@ -338,7 +368,7 @@ cd target
 for /f "delims=" %%i in ('dir /b *.jar ^| findstr /v "original-"') do set JAR_NAME=%%i
 
 if not defined JAR_NAME (
-    echo [ERREUR] Jar introuvable.
+    echo [ERREUR] Jar introuvable dans target/
     pause
     exit /b
 )
@@ -348,6 +378,6 @@ echo [INFO] Lancement de : %JAR_NAME%...
 
 if %errorlevel% neq 0 (
     echo.
-    echo [ERREUR] Arret du serveur.
+    echo [ERREUR] Le serveur s'est arrete avec une erreur.
     pause
 )
