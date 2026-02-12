@@ -1,9 +1,12 @@
 HELP.md
-.dbpassword
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### UnivTime Launcher ###
+.dbpassword
+.launcherConfig
 
 ### STS ###
 .apt_generated
@@ -19,6 +22,7 @@ target/
 *.iws
 *.iml
 *.ipr
+.idea/misc.xml
 
 ### NetBeans ###
 /nbproject/private/

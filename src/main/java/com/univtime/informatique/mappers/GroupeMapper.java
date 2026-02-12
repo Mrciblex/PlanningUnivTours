@@ -133,7 +133,7 @@ public class GroupeMapper {
                 Composante
              */
             td.setIdComposante(entity.getComposante().getIdComposante());
-            td.setNomComposante(entity.getComposante().getNomCoposante());
+            td.setNomComposante(entity.getComposante().getNomComposante());
             td.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             td.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             td.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());

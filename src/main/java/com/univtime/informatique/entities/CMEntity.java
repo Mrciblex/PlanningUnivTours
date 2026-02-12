@@ -4,7 +4,7 @@ import com.univtime.informatique.entities.ids.CMId;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "cms")
+@Table(name = "CM")
 public class CMEntity {
     @EmbeddedId
     private CMId idCM;

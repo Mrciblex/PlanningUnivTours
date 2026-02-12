@@ -95,7 +95,7 @@ public class ProfesseurMapper {
                 Composante
              */
             cm.setIdComposante(entity.getComposante().getIdComposante());
-            cm.setNomComposante(entity.getComposante().getNomCoposante());
+            cm.setNomComposante(entity.getComposante().getNomComposante());
             cm.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             cm.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             cm.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());
@@ -224,7 +224,7 @@ public class ProfesseurMapper {
                 Composante
              */
             td.setIdComposante(entity.getComposante().getIdComposante());
-            td.setNomComposante(entity.getComposante().getNomCoposante());
+            td.setNomComposante(entity.getComposante().getNomComposante());
             td.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             td.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             td.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());
@@ -358,7 +358,7 @@ public class ProfesseurMapper {
                 Composante
              */
             tp.setIdComposante(entity.getComposante().getIdComposante());
-            tp.setNomComposante(entity.getComposante().getNomCoposante());
+            tp.setNomComposante(entity.getComposante().getNomComposante());
             tp.setVolumeHoraireTotalComposante(entity.getComposante().getVolumeHoraireTotal());
             tp.setVolumeHoraireCMComposante(entity.getComposante().getVolumeHoraireCM());
             tp.setVolumeHoraireTDComposante(entity.getComposante().getVolumeHoraireTD());

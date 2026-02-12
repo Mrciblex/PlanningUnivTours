@@ -16,7 +16,7 @@ public class ComposanteMapper {
         if (entity == null) return null;
         ComposanteDto dto = new ComposanteDto();
         dto.setIdComposante(entity.getIdComposante());
-        dto.setNomComposante(entity.getNomCoposante());
+        dto.setNomComposante(entity.getNomComposante());
         dto.setVolumeHoraireTotal(entity.getVolumeHoraireTotal());
         dto.setVolumeHoraireCM(entity.getVolumeHoraireCM());
         dto.setVolumeHoraireTD(entity.getVolumeHoraireTD());
@@ -54,7 +54,7 @@ public class ComposanteMapper {
         }
         ComposanteEntity entity = new ComposanteEntity();
         entity.setIdComposante(dto.getIdComposante());
-        entity.setNomCoposante(dto.getNomComposante());
+        entity.setNomComposante(dto.getNomComposante());
         entity.setVolumeHoraireTotal(dto.getVolumeHoraireTotal());
         entity.setVolumeHoraireCM(dto.getVolumeHoraireCM());
         entity.setVolumeHoraireTD(dto.getVolumeHoraireTD());
