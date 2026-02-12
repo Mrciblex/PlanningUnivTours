@@ -44,7 +44,7 @@ public class SalleService {
 
         SalleEntity savedSalle = salleRepository.save(salleEntity);
 
-        return SalleMapper.toDto(salleEntity);
+        return SalleMapper.toDto(savedSalle);
     }
 
     public SalleDto updateSalle(SalleDto salleDto) {

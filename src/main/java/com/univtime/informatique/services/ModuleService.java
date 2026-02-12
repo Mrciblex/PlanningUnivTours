@@ -44,7 +44,7 @@ public class ModuleService {
 
         ModuleEntity savedModule = moduleRepository.save(moduleEntity);
 
-        return ModuleMapper.toDto(moduleEntity);
+        return ModuleMapper.toDto(savedModule);
     }
 
     public ModuleDto updateModule(ModuleDto moduleDto) {

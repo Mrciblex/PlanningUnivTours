@@ -43,7 +43,7 @@ public class ProfesseurService {
 
         ProfesseurEntity savedProfesseur = professeurRepository.save(professeurEntity);
 
-        return ProfesseurMapper.toDto(professeurEntity);
+        return ProfesseurMapper.toDto(savedProfesseur);
     }
 
     public ProfesseurDto updateProfesseur(ProfesseurDto professeurDto) {

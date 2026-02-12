@@ -128,7 +128,7 @@ public class CoursService {
         return CoursMapper.toDto(updatedCours);
     }
 
-    public void deleteCours(Integer id) {
+    public void deleteCoursById(Integer id) {
         findCoursEntityById(id);
         coursRepository.deleteById(id);
     }

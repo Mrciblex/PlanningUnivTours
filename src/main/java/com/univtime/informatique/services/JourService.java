@@ -80,7 +80,7 @@ public class JourService {
         return JourMapper.toDto(updatedJour);
     }
 
-    public void deleteJour(Integer id) {
+    public void deleteJourById(Integer id) {
         findJourEntityById(id);
         jourRepository.deleteById(id);
     }

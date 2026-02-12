@@ -80,7 +80,7 @@ public class SousGroupeService {
         return SousGroupeMapper.toDto(updatedSousGroupe);
     }
 
-    public void deleteSousGroupe(Integer id) {
+    public void deleteSousGroupeById(Integer id) {
         findSousGroupeEntityById(id);
         sousGroupeRepository.deleteById(id);
     }

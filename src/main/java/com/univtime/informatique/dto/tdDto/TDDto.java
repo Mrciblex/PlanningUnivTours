@@ -1,5 +1,7 @@
 package com.univtime.informatique.dto.tdDto;
 
+import com.univtime.informatique.entities.ids.TDId;
+
 import java.util.Objects;
 
 public class TDDto {
@@ -52,6 +54,15 @@ public class TDDto {
 
     public void setRepartitionSemaineDto(RepartitionSemaineTDDto repartitionSemaineDto) {
         this.repartitionSemaineDto = repartitionSemaineDto;
+    }
+
+    public TDId getTDId() {
+        return new TDId(
+            professeurDto.getIdProf(),
+            groupeDto.getIdGroupe(),
+            composanteDto.getIdComposante(),
+            repartitionSemaineDto.getIdRepartitionSemaine()
+        );
     }
 
     @Override

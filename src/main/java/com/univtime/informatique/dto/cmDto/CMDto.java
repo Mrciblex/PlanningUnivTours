@@ -1,5 +1,7 @@
 package com.univtime.informatique.dto.cmDto;
 
+import com.univtime.informatique.entities.ids.CMId;
+
 import java.util.Objects;
 
 public class CMDto {
@@ -49,6 +51,15 @@ public class CMDto {
 
     public void setRepartitionSemaineDto(RepartitionSemaineCMDto repartitionSemaineDto) {
         this.repartitionSemaineDto = repartitionSemaineDto;
+    }
+
+    public CMId getCMId() {
+        return new CMId(
+                professeurDto.getIdProf(),
+                promoDto.getIdPromo(),
+                composanteDto.getIdComposante(),
+                repartitionSemaineDto.getIdRepartitionSemaine()
+        );
     }
 
     @Override

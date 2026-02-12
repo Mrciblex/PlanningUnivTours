@@ -80,7 +80,7 @@ public class GroupeService {
         return GroupeMapper.toDto(updatedGroupe);
     }
 
-    public void deleteGroupe(Integer id) {
+    public void deleteGroupeById(Integer id) {
         findGroupeEntityById(id);
         groupeRepository.deleteById(id);
     }
