@@ -2,13 +2,15 @@ package com.univtime.informatique.algorithme;
 
 import com.univtime.informatique.constants.TypeCours;
 import com.univtime.informatique.dto.cmDto.CMDto;
-import com.univtime.informatique.dto.composanteDto.CMComposanteDto;
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.dto.coursDto.ComposanteCoursDto;
 import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.coursDto.ParticipeACoursDto;
 import com.univtime.informatique.dto.coursDto.ProfesseurCoursDto;
+import com.univtime.informatique.dto.jourDto.DisponibiliteJourDto;
+import com.univtime.informatique.dto.jourDto.JourDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
+import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.dto.tdDto.TDDto;
 import com.univtime.informatique.dto.tpDto.TPDto;
@@ -22,7 +24,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -88,20 +89,24 @@ public class GenerationAlgorithme {
         return chargeCM + chargeTD + chargeTP;
     }
 
-    private static int getDisponibiliteMinutes(ProfesseurDto p) {
-        return 0;
+    private static int getTotalDisponibiliteMinutes(ProfesseurDto p) {
+        Integer idProf = p.getIdProf();
+
         /*
-        return p.getJourDto().stream()
-                .flatMap(jour -> jour.getDisponibiliteIds().stream())
-                .flatMap(disponibiliteIds -> )
-                .mapToInt(dispo -> dispo.heureFinDispo() - dispo.heureDebutDispo())
+            SELECT * FROM Jours WHERE idProf = 1;
+         */
+        // Permet d'avoir les disponibilités par jour du prof
+        List<JourDto> jours = new ArrayList<JourDto>();
+
+        return jours.stream()
+                .flatMap(jourDto -> jourDto.getDisponibiliteDto().stream())
+                .mapToInt(dispo -> dispo.getHeureFinDispo() - dispo.getHeureDebutDispo())
                 .sum();
-        */
     }
 
     private static double getProfTension(int weekOffset, ProfesseurDto p, List<CMDto> cms, List<TDDto> tds, List<TPDto> tps){
         int charge = getChargeTotaleMinutes(weekOffset, p, cms, tds, tps);
-        int dispo = getDisponibiliteMinutes(p);
+        int dispo = getTotalDisponibiliteMinutes(p);
 
         if (dispo == 0) return Double.MAX_VALUE; // Si aucune disponibilité, priorité maximale (juste pour éviter les bugs, ça n'a pas d'impact)
         return (double) charge / dispo;
@@ -132,28 +137,128 @@ public class GenerationAlgorithme {
             if (isSlotAvailable && start.isBefore(momentBanalise.fin()) && end.isAfter(momentBanalise.debut())) {
                 // Un chevauchement a été trouvé, donc le slot n'est pas disponible
                 isSlotAvailable = false;
-                break;
             }
         }
         return isSlotAvailable;
     }
 
-    private static Jour calcBestPlacement(Semaine currentSemaine, CoursDto cours){
-        Jour bestPlacement = null;
+    private record DateCours(
+            LocalDateTime heureDebutCours,
+            LocalDateTime heureFinCours
+    ){}
+
+    /**
+        Calcul les dates réelles de début et de fin pour un cours donné
+        en utilisant les index numSemaine et numJour par rapport à la structure du planning
+     */
+    private static DateCours getRealDateCours(){
+        return null;
+    }
+
+    private static boolean isProfDisponible(Slot slot, Set<DisponibiliteJourDto> dispos) {
+        for (DisponibiliteJourDto dispo : dispos) {
+            if (slot.getDebut() >= dispo.getHeureDebutDispo() &&
+                    slot.getFin() <= dispo.getHeureFinDispo()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isSameParticipants(Slot slot, CoursDto cours){
+        for (ParticipeACoursDto participantCandidat : cours.getParticipeADto()) {
+            for(CoursDto cour : slot.getUsedBy()){
+                for(ParticipeACoursDto participantActuel : cour.getParticipeADto()){
+                    if (participantCandidat.equals(participantActuel)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /*
+        ATTENTION A NE PAS FAIRE LA CONFUSION ENTRE "Jours" DE LA BASE DE DONNEES ET "Jour" L'OBJECT METIER (my bad...)
+     */
+    private static Jour getRandomBestPlacement(PromoDto promo, Semaine currentSemaine, CoursDto cours){
+        int dureeSemaine = currentSemaine.getJours().size();
+        Integer blocNecessaire = cours.getComposanteDto().getBlocHoraire(cours.getTypeCoursEnum());
+        int nbSlotNecessaire = (int) Math.ceil((double) blocNecessaire / slotStep);
+        List<Jour> bestPlacements = new ArrayList<Jour>();
+        Set<ParticipeACoursDto> participants = cours.getParticipeADto();
+
+        Integer idProf = cours.getProfesseurDto().getIdProf();
+
+        /*
+            SELECT * FROM Jours WHERE idProf = 1;
+         */
+        // Permet d'avoir les disponibilités par jour du prof
+        List<JourDto> jours = new ArrayList<JourDto>();
+
+        for (int i = 0; i < dureeSemaine; i++){
+            int currentDay = i;
+            Jour jour = currentSemaine.getJours().get(i);
+            Set<DisponibiliteJourDto> disponibiliteProf = jours.stream()
+                    .filter(j -> j.getJourSemaine() == currentDay + 1)
+                    .map(JourDto::getDisponibiliteDto)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toSet());
+
+            // Ca ne sert à rien de boucler sur les dernières heures si le bloc est plus gros que la place qu'il nous reste
+            outerloop:
+            for (int j = 0; j < jour.getSlots().size() - nbSlotNecessaire; j++){
+                List<Slot> slots = new ArrayList<>(); // Bloc du cours
+
+                for (int k = 0; k < nbSlotNecessaire; k++){
+                    int indexActuel = j + k;
+                    Slot slot = jour.getSlots().get(indexActuel);
+
+                    // On s'assure que les participants n'ont pas déjà cours dans ce slot
+                    if (isSameParticipants(slot, cours)){
+                        j = indexActuel; // Au reset de la boucle, j prends + 1 donc pas besoin de faire + 1 ici
+                        continue outerloop;
+                    }
+
+                    // On s'assure que le professeurs est dispo pour tout les créneau qu'on utilise pour placer le bloc de cours
+                    if(!isProfDisponible(slot, disponibiliteProf)){
+                        j = indexActuel; // Au reset de la boucle, j prends + 1 donc pas besoin de faire + 1 ici
+                        continue outerloop;
+                    }
+
+                    // On s'assure que les slots du bloc sont continu (pas de coupure au milieu du cours, en dehors des pauses de 15 min)
+                    // Si slots non continu (diff > 15 minutes), par exemple pause de midi, alors on reprends au premier slot dispo après
+                    if (k > 0){
+                        Slot slotPrecedent = jour.getSlots().get(indexActuel - 1);
+                        if (slot.getDebut() - slotPrecedent.getFin() > 15){
+                            j = indexActuel - 1; // Au reset de la boucle, j prends + 1 donc comme on veut l'index Actuel alors on fait -1 ici
+                            continue outerloop;
+                        }
+                    }
+                    slots.add(slot);
+                }
+
+                // Si on arrive ici, c'est que le inner loop (k) est allé au bout sans break/continue
+                // Donc le bloc est valide !
+                bestPlacements.add(new Jour(
+                        j + 1,
+                        slots
+                ));
+            }
+        }
+
+
 
         return null;
     }
 
-    public static List<CoursDto> generatePlanning(Integer idPromo, LocalDate debutSemestre, LocalDate finSemestre, List<MomentBanalise> momentBanalises) {
+    public static List<CoursDto> generatePlanning(Integer idPromo, Integer numSemestre, List<MomentBanalise> momentBanalises) {
             // INSERT TEST DATA
             /**
              * Paramètres globaux
              */
             // Hard coded (15 min)
             int slotStep = GenerationAlgorithme.getSlotStep();
-
-            // Dynamique (non lié à la BD -> saisie lors de la génération)
-            Semestre semestre = new Semestre(debutSemestre, finSemestre);
 
             // Dynamique (non lié à la BD -> saisie lors de la génération (ne pas oublier jours fériés proposés))
             List<MomentBanalise> pauses = momentBanalises;
@@ -170,6 +275,20 @@ public class GenerationAlgorithme {
             /**
              * Paramètres dynamiques de la base de données
              */
+
+            /*
+                SELECT * FROM Promos WHERE idPromo = 1;
+             */
+        PromoDto promoComplete = new PromoDto();
+
+        // Dynamique lié à la BD
+        Semestre semestre;
+        if (numSemestre == 1){
+            semestre = new Semestre(promoComplete.getDebutS1Promo(), promoComplete.getFinS1Promo());
+        }else{
+            semestre = new Semestre(promoComplete.getDebutS2Promo(), promoComplete.getFinS1Promo());
+        }
+
             // Tout les sous groupes de la promo actuelle selectionner (paramètre idPromo)
 
             /*
@@ -359,16 +478,26 @@ public class GenerationAlgorithme {
                                             sg.getIdSousGroupe(),
                                             sg.getNomSousGroupe(),
                                             sg.getNbEtuSousGroupe(),
-                                            sg.getGroupeDto().getIdGroupe(),
-                                            null,
-                                            null
+                                            sg.getGroupeDto().getIdGroupe()
                                     );
                                 }).collect(Collectors.toSet());
 
+                                ComposanteCoursDto composanteCoursDto = new ComposanteCoursDto(
+                                        cour.getComposanteDto().getIdComposante(),
+                                        cour.getComposanteDto().getBlocHoraireCM(),
+                                        cour.getComposanteDto().getBlocHoraireTD(),
+                                        cour.getComposanteDto().getBlocHoraireTP()
+                                );
+
+                                ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(
+                                        cour.getProfesseurDto().getIdProf(),
+                                        cour.getProfesseurDto().getJourIds()
+                                );
+
                                 CoursDto courCreated = new CoursDto(
                                         TypeCours.CM,
-                                        new ComposanteCoursDto(cour.getComposanteDto().getIdComposante()),
-                                        new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf()),
+                                        composanteCoursDto,
+                                        professeurCoursDto,
                                         null,
                                         participeACoursDto
                                 );
@@ -378,7 +507,7 @@ public class GenerationAlgorithme {
                                 // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
                                 // Après on re-fait juste la moyenne
 
-                                calcBestPlacement(currentSemaine, courCreated);
+                                getRandomBestPlacement(promoComplete, currentSemaine, courCreated);
                             });
 
                     tds.stream()

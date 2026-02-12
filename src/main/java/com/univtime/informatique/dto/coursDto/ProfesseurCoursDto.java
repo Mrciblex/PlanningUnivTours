@@ -23,8 +23,10 @@ public class ProfesseurCoursDto {
 
     }
 
-    public ProfesseurCoursDto(Integer idProf) {
+    public ProfesseurCoursDto(Integer idProf,
+                              Set<Integer> jourIds) {
         this.idProf = idProf;
+        this.jourIds = jourIds;
     }
 
     public ProfesseurCoursDto(Integer idProf,
