@@ -2,6 +2,7 @@ package com.univtime.informatique.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,18 @@ public class PromoEntity {
 
     @Column(name = "nbEtuPromo", nullable = false)
     private Integer nbEtuPromo;
+
+    @Column(name = "debutS1Promo", nullable = false)
+    private LocalDate debutS1Promo;
+
+    @Column(name = "finS1Promo", nullable = false)
+    private LocalDate finS1Promo;
+
+    @Column(name = "debutS2Promo", nullable = false)
+    private LocalDate debutS2Promo;
+
+    @Column(name = "finS2Promo", nullable = false)
+    private LocalDate finS2Promo;
 
     @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
     private Set<PromoEstComposeeEntity> promoEstComposeeEntities = new HashSet<>();
@@ -61,6 +74,38 @@ public class PromoEntity {
 
     public void setNbEtuPromo(Integer nbEtuPromo) {
         this.nbEtuPromo = nbEtuPromo;
+    }
+
+    public LocalDate getDebutS1Promo() {
+        return debutS1Promo;
+    }
+
+    public void setDebutS1Promo(LocalDate debutS1Promo) {
+        this.debutS1Promo = debutS1Promo;
+    }
+
+    public LocalDate getFinS1Promo() {
+        return finS1Promo;
+    }
+
+    public void setFinS1Promo(LocalDate finS1Promo) {
+        this.finS1Promo = finS1Promo;
+    }
+
+    public LocalDate getDebutS2Promo() {
+        return debutS2Promo;
+    }
+
+    public void setDebutS2Promo(LocalDate debutS2Promo) {
+        this.debutS2Promo = debutS2Promo;
+    }
+
+    public LocalDate getFinS2Promo() {
+        return finS2Promo;
+    }
+
+    public void setFinS2Promo(LocalDate finS2Promo) {
+        this.finS2Promo = finS2Promo;
     }
 
     public Set<PromoEstComposeeEntity> getPromoEstComposeeEntities() {

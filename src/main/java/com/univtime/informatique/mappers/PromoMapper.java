@@ -26,6 +26,10 @@ public class PromoMapper {
         dto.setNomPromo(entity.getNomPromo());
         dto.setAnneePromo(entity.getAnneePromo());
         dto.setNbEtuPromo(entity.getNbEtuPromo());
+        dto.setDebutS1Promo(entity.getDebutS1Promo());
+        dto.setFinS1Promo(entity.getFinS1Promo());
+        dto.setDebutS2Promo(entity.getDebutS2Promo());
+        dto.setFinS2Promo(entity.getFinS2Promo());
         dto.setPromoEstComposeeDto(entity.getPromoEstComposeeEntities()
                 .stream()
                 .map(PromoMapper::promoEstComposeeToDto)
@@ -50,6 +54,10 @@ public class PromoMapper {
         entity.setNomPromo(dto.getNomPromo());
         entity.setAnneePromo(dto.getAnneePromo());
         entity.setNbEtuPromo(dto.getNbEtuPromo());
+        entity.setDebutS1Promo(dto.getDebutS1Promo());
+        entity.setFinS1Promo(dto.getFinS1Promo());
+        entity.setDebutS2Promo(dto.getDebutS2Promo());
+        entity.setFinS2Promo(dto.getFinS2Promo());
         return entity;
     }
 

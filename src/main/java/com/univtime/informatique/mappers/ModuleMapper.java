@@ -49,6 +49,10 @@ public class ModuleMapper {
             promoEstComposee.setNomPromo(entity.getPromo().getNomPromo());
             promoEstComposee.setAnneePromo(entity.getPromo().getAnneePromo());
             promoEstComposee.setNbEtuPromo(entity.getPromo().getNbEtuPromo());
+            promoEstComposee.setDebutS1Promo(entity.getPromo().getDebutS1Promo());
+            promoEstComposee.setFinS1Promo(entity.getPromo().getFinS1Promo());
+            promoEstComposee.setDebutS2Promo(entity.getPromo().getDebutS2Promo());
+            promoEstComposee.setFinS2Promo(entity.getPromo().getFinS2Promo());
             promoEstComposee.setPromoEstComposeePromoIds(entity.getPromo().getPromoEstComposeeEntities()
                     .stream()
                     .map(promoEstComposeeEntity -> {
