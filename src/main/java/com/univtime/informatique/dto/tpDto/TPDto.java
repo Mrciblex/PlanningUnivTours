@@ -56,6 +56,15 @@ public class TPDto {
         this.repartitionSemaineDto = repartitionSemaineDto;
     }
 
+    public TPId getTPId() {
+        return new TPId(
+            professeurDto.getIdProf(),
+            sousGroupeDto.getIdSousGroupe(),
+            composanteDto.getIdComposante(),
+            repartitionSemaineDto.getIdRepartitionSemaine()
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

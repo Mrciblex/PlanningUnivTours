@@ -1,5 +1,7 @@
 package com.univtime.informatique.dto.promoEstComposeeDto;
 
+import com.univtime.informatique.entities.ids.PromoEstComposeeId;
+
 import java.util.Objects;
 
 public class PromoEstComposeeDto {
@@ -30,6 +32,13 @@ public class PromoEstComposeeDto {
 
     public void setModuleDto(ModulePromoEstComposeeDto moduleDto) {
         this.moduleDto = moduleDto;
+    }
+
+    public PromoEstComposeeId getPromoEstComposeeId() {
+        return new PromoEstComposeeId(
+                promoDto.getIdPromo(),
+                moduleDto.getIdModule()
+        );
     }
 
     @Override

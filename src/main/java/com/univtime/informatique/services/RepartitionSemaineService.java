@@ -43,7 +43,7 @@ public class RepartitionSemaineService {
 
         RepartitionSemaineEntity savedRepartitionSemaine = repartitionSemaineRepository.save(repartitionSemaineEntity);
 
-        return RepartitionSemaineMapper.toDto(repartitionSemaineEntity);
+        return RepartitionSemaineMapper.toDto(savedRepartitionSemaine);
     }
 
     public RepartitionSemaineDto updateRepartitionSemaine(RepartitionSemaineDto repartitionSemaineDto) {

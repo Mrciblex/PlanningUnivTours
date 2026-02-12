@@ -1,6 +1,7 @@
 package com.univtime.informatique.dto.besoinSalleDto;
 
 import com.univtime.informatique.constants.TypeBesoin;
+import com.univtime.informatique.entities.ids.BesoinSalleId;
 
 import java.util.Objects;
 
@@ -42,6 +43,13 @@ public class BesoinSalleDto {
 
     public void setTypeBesoin(TypeBesoin typeBesoin) {
         this.typeBesoin = typeBesoin;
+    }
+
+    public BesoinSalleId getBesoinSalleId() {
+        return new BesoinSalleId(
+                salleDto.getIdSalle(),
+                composanteDto.getIdComposante()
+        );
     }
 
     @Override

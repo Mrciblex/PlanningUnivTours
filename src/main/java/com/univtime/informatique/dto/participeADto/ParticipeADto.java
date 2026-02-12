@@ -1,5 +1,7 @@
 package com.univtime.informatique.dto.participeADto;
 
+import com.univtime.informatique.entities.ids.ParticipeAId;
+
 import java.util.Objects;
 
 public class ParticipeADto {
@@ -30,6 +32,13 @@ public class ParticipeADto {
 
     public void setCoursDto(CoursParticipeADto coursDto) {
         this.coursDto = coursDto;
+    }
+
+    public ParticipeAId getParticipeAId() {
+        return new ParticipeAId(
+                sousGroupeDto.getGroupeId(),
+                coursDto.getIdCours()
+        );
     }
 
     @Override
