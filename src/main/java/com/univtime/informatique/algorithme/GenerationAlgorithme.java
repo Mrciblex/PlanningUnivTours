@@ -4,7 +4,10 @@ import com.univtime.informatique.constants.TypeCours;
 import com.univtime.informatique.dto.cmDto.CMDto;
 import com.univtime.informatique.dto.composanteDto.CMComposanteDto;
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
+import com.univtime.informatique.dto.coursDto.ComposanteCoursDto;
 import com.univtime.informatique.dto.coursDto.CoursDto;
+import com.univtime.informatique.dto.coursDto.ParticipeACoursDto;
+import com.univtime.informatique.dto.coursDto.ProfesseurCoursDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.dto.tdDto.TDDto;
@@ -20,6 +23,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GenerationAlgorithme {
     private static int slotStep = 15;
@@ -133,8 +138,8 @@ public class GenerationAlgorithme {
         return isSlotAvailable;
     }
 
-    private static List<Slot> calcBestPlacement(Semaine currentSemaine, CoursDto cours){
-        List<Slot> bestPlacement = new ArrayList<>();
+    private static Jour calcBestPlacement(Semaine currentSemaine, CoursDto cours){
+        Jour bestPlacement = null;
 
         return null;
     }
@@ -349,12 +354,23 @@ public class GenerationAlgorithme {
                                                 cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
                                 // ----------------------- FIN DEBUG -----------------------
 
+                                Set<ParticipeACoursDto> participeACoursDto = promo.stream().map(sg -> {
+                                    return new ParticipeACoursDto(
+                                            sg.getIdSousGroupe(),
+                                            sg.getNomSousGroupe(),
+                                            sg.getNbEtuSousGroupe(),
+                                            sg.getGroupeDto().getIdGroupe(),
+                                            null,
+                                            null
+                                    );
+                                }).collect(Collectors.toSet());
+
                                 CoursDto courCreated = new CoursDto(
                                         TypeCours.CM,
-                                        cour.getComposanteDto(),
-                                        cour.getProfesseurDto(),
+                                        new ComposanteCoursDto(cour.getComposanteDto().getIdComposante()),
+                                        new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf()),
                                         null,
-                                        null
+                                        participeACoursDto
                                 );
 
                                 // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)

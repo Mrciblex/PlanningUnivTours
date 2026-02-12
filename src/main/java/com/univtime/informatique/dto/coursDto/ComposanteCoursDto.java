@@ -30,6 +30,10 @@ public class ComposanteCoursDto {
 
     }
 
+    public ComposanteCoursDto(Integer idComposante){
+        this.idComposante = idComposante;
+    }
+
     public ComposanteCoursDto(Integer idComposante,
                               String nomComposante,
                               Integer volumeHoraireTotal,

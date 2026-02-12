@@ -23,6 +23,10 @@ public class ProfesseurCoursDto {
 
     }
 
+    public ProfesseurCoursDto(Integer idProf) {
+        this.idProf = idProf;
+    }
+
     public ProfesseurCoursDto(Integer idProf,
                               String nomProf,
                               String prenomProf,
