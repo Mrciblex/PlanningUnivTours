@@ -7,6 +7,42 @@
         <title>UnivTime - Acceuil</title>
     </head>
     <body>
+        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
+        <div class="min-h-screen flex flex-col items-center justify-center p-8 pt-24">
+            <!-- Titre -->
+            <div class="text-center mb-16">
+                <h1>Acceuil de UnivTime</h1>
+            </div>
+
+            <!-- Les 2 cercles -->
+            <div class="flex gap-20 mb-12">
+                <!-- Cercle 1: Ancien EDT -->
+                <div>
+                    <button class="avatar-button">
+                        <div class="avatar-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="avatar-label" th:text="${lastPromo?.nom} ?: 'Ancien EDT'">Ancien EDT</div>
+                </div>
+
+                <!-- Cercle 2: Nouvel EDT -->
+                <div class="flex gap-20 mb-12">
+                    <button class="avatar-button">
+                        <div class="avatar-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="avatar-label">Nouvel EDT</div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
