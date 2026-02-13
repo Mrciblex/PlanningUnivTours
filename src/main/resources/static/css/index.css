@@ -1,0 +1,42 @@
+/* === 3. BOUTONS RONDS (Avatar) === */
+.avatar-button {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.avatar-button:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 20px 60px rgba(6, 182, 212, 0.3);
+}
+
+.avatar-content {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+/* Couleurs des boutons */
+.create-new {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.last-promo {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+/* Label sous les boutons */
+.avatar-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 16px;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
