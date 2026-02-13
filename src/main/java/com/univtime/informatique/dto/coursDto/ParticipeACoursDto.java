@@ -21,6 +21,16 @@ public class ParticipeACoursDto {
     public ParticipeACoursDto(Integer idSousGroupe,
                               String nomSousGroupe,
                               Integer nbEtuSousGroupe,
+                              Integer groupeSousGroupeId) {
+        this.idSousGroupe = idSousGroupe;
+        this.nomSousGroupe = nomSousGroupe;
+        this.nbEtuSousGroupe = nbEtuSousGroupe;
+        this.groupeSousGroupeId = groupeSousGroupeId;
+    }
+
+    public ParticipeACoursDto(Integer idSousGroupe,
+                              String nomSousGroupe,
+                              Integer nbEtuSousGroupe,
                               Integer groupeSousGroupeId,
                               Set<TPIdDto> tpSousGroupeIds,
                               Set<ParticipeAIdDto> participeASousGroupeIds) {

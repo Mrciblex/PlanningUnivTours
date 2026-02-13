@@ -54,6 +54,10 @@ public class PromoEstComposeeMapper {
             promo.setNomPromo(entity.getNomPromo());
             promo.setAnneePromo(entity.getAnneePromo());
             promo.setNbEtuPromo(entity.getNbEtuPromo());
+            promo.setDebutS1Promo(entity.getDebutS1Promo());
+            promo.setFinS1Promo(entity.getFinS1Promo());
+            promo.setDebutS2Promo(entity.getDebutS2Promo());
+            promo.setFinS2Promo(entity.getFinS2Promo());
             promo.setCmIds(entity.getCmEntities()
                     .stream()
                     .map(cmEntity -> {

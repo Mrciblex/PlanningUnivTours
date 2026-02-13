@@ -136,10 +136,10 @@ VALUES
 
 
 
-INSERT INTO Promos (nomPromo, anneePromo, nbEtuPromo)
-VALUES ('L2 Informatique', 2025, 72),
-       ('L3 Informatique', 2025, 60),
-       ('L3 Informatique', 2024, 64);
+INSERT INTO Promos (nomPromo, anneePromo, nbEtuPromo, debutS1Promo, finS1Promo, debutS2Promo, finS2Promo)
+VALUES ('L2 Informatique', 2025, 72, '2025-09-01', '2025-12-20', '2026-01-12', '2026-04-10'),
+       ('L3 Informatique', 2025, 60, '2025-09-01', '2025-12-20', '2026-01-12', '2026-04-10'),
+       ('L3 Informatique', 2024, 64, '2025-09-01', '2025-12-20', '2026-01-12', '2026-04-10');
 
 INSERT INTO Groupes (nomGroupe, nbEtuGroupe, idPromo)
 VALUES

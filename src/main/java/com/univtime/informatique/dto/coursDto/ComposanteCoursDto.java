@@ -1,5 +1,6 @@
 package com.univtime.informatique.dto.coursDto;
 
+import com.univtime.informatique.constants.TypeCours;
 import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
 import com.univtime.informatique.dto.idsDto.CMIdDto;
 import com.univtime.informatique.dto.idsDto.TDIdDto;
@@ -28,6 +29,16 @@ public class ComposanteCoursDto {
 
     public ComposanteCoursDto(){
 
+    }
+
+    public ComposanteCoursDto(Integer idComposante,
+                              Integer blocHoraireCM,
+                              Integer blocHoraireTD,
+                              Integer blocHoraireTP) {
+        this.idComposante = idComposante;
+        this.blocHoraireCM = blocHoraireCM;
+        this.blocHoraireTD = blocHoraireTD;
+        this.blocHoraireTP = blocHoraireTP;
     }
 
     public ComposanteCoursDto(Integer idComposante,
@@ -170,6 +181,15 @@ public class ComposanteCoursDto {
 
     public void setBesoinSalleIds(Set<BesoinSalleIdDto> besoinSalleIds) {
         this.besoinSalleIds = besoinSalleIds;
+    }
+
+    public Integer getBlocHoraire(TypeCours typeCours){
+        return switch (typeCours) {
+            case CM -> blocHoraireCM;
+            case TD -> blocHoraireTD;
+            case TP -> blocHoraireTP;
+            default -> 0;
+        };
     }
 
     @Override

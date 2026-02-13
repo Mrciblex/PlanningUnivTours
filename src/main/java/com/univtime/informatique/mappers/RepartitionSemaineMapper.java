@@ -104,13 +104,14 @@ public class RepartitionSemaineMapper {
             /*
                 Promo
              */
-            /*
-                Promo
-             */
             cm.setIdPromo(entity.getPromo().getIdPromo());
             cm.setNomPromo(entity.getPromo().getNomPromo());
             cm.setAnneePromo(entity.getPromo().getAnneePromo());
             cm.setNbEtuPromo(entity.getPromo().getNbEtuPromo());
+            cm.setDebutS1Promo(entity.getPromo().getDebutS1Promo());
+            cm.setFinS1Promo(entity.getPromo().getFinS1Promo());
+            cm.setDebutS2Promo(entity.getPromo().getDebutS2Promo());
+            cm.setFinS2Promo(entity.getPromo().getFinS2Promo());
             cm.setPromoEstComposeePromoIds(entity.getPromo().getPromoEstComposeeEntities()
                     .stream()
                     .map(promoEstComposeeEntity -> {

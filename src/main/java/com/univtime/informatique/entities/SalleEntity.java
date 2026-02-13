@@ -11,6 +11,7 @@ import java.util.Set;
 @Table(name = "Salles")
 public class SalleEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idSalle", nullable = false)
     private Integer idSalle;
 

@@ -9,6 +9,7 @@ import java.util.Set;
 @Table(name = "jours")
 public class JourEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idJour", nullable = false)
     private Integer idJour;
 

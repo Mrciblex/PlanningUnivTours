@@ -3,6 +3,7 @@ package com.univtime.informatique.dto.moduleDto;
 import com.univtime.informatique.dto.idsDto.CMIdDto;
 import com.univtime.informatique.dto.idsDto.PromoEstComposeeIdDto;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
@@ -11,6 +12,10 @@ public class PromoEstComposeeModuleDto {
     private String nomPromo;
     private Integer anneePromo;
     private Integer nbEtuPromo;
+    private LocalDate debutS1Promo;
+    private LocalDate finS1Promo;
+    private LocalDate debutS2Promo;
+    private LocalDate finS2Promo;
     private Set<PromoEstComposeeIdDto> promoEstComposeePromoIds;
     private Set<CMIdDto> cmPromoIds;
     private Set<Integer> groupePromoIds;
@@ -25,6 +30,10 @@ public class PromoEstComposeeModuleDto {
                                      String nomPromo,
                                      Integer anneePromo,
                                      Integer nbEtuPromo,
+                                     LocalDate debutS1Promo,
+                                     LocalDate finS1Promo,
+                                     LocalDate debutS2Promo,
+                                     LocalDate finS2Promo,
                                      Set<PromoEstComposeeIdDto> promoEstComposeePromoIds,
                                      Set<CMIdDto> cmPromoIds,
                                      Set<Integer> groupePromoIds) {
@@ -32,6 +41,10 @@ public class PromoEstComposeeModuleDto {
         this.nomPromo = nomPromo;
         this.anneePromo = anneePromo;
         this.nbEtuPromo = nbEtuPromo;
+        this.debutS1Promo = debutS1Promo;
+        this.finS1Promo = finS1Promo;
+        this.debutS2Promo = debutS2Promo;
+        this.finS2Promo = finS2Promo;
         this.promoEstComposeePromoIds = promoEstComposeePromoIds;
         this.cmPromoIds = cmPromoIds;
         this.groupePromoIds = groupePromoIds;
@@ -67,6 +80,38 @@ public class PromoEstComposeeModuleDto {
 
     public void setNbEtuPromo(Integer nbEtuPromo) {
         this.nbEtuPromo = nbEtuPromo;
+    }
+
+    public LocalDate getDebutS1Promo() {
+        return debutS1Promo;
+    }
+
+    public void setDebutS1Promo(LocalDate debutS1Promo) {
+        this.debutS1Promo = debutS1Promo;
+    }
+
+    public LocalDate getFinS1Promo() {
+        return finS1Promo;
+    }
+
+    public void setFinS1Promo(LocalDate finS1Promo) {
+        this.finS1Promo = finS1Promo;
+    }
+
+    public LocalDate getDebutS2Promo() {
+        return debutS2Promo;
+    }
+
+    public void setDebutS2Promo(LocalDate debutS2Promo) {
+        this.debutS2Promo = debutS2Promo;
+    }
+
+    public LocalDate getFinS2Promo() {
+        return finS2Promo;
+    }
+
+    public void setFinS2Promo(LocalDate finS2Promo) {
+        this.finS2Promo = finS2Promo;
     }
 
     public Set<PromoEstComposeeIdDto> getPromoEstComposeePromoIds() {
