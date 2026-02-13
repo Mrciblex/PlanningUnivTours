@@ -269,16 +269,12 @@ if not exist ".dbpassword" (
 echo [INFO] Verification de la base '%DBNAME%'...
 
 :: --- LOGIQUE DE SUPPRESSION (RESET) ---
-:: Active si DO_RESET=1 (soit via debug-db, soit via reset-db)
 if "!DO_RESET!"=="1" (
     echo [RESET] Nettoyage des connexions actives sur %DBNAME%...
-
-    :: 1. On tue brutalement toutes les sessions connectees a cette base
     set PGPASSWORD=!PGPASSWORD!
     "%PGBIN%\psql.exe" -U !PGUSER! -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '%DBNAME%' AND pid <> pg_backend_pid();" >nul 2>&1
 
     echo [RESET] Suppression de la base existante...
-    :: 2. On supprime
     "%PGBIN%\dropdb.exe" -U !PGUSER! --if-exists -f %DBNAME%
 )
 
@@ -318,8 +314,6 @@ if exist "%SQL_FILE%" (
 :: ==========================================
 :: SCRIPT SQL : DATA (DEBUG ONLY)
 :: ==========================================
-:: L'injection de donnees de test ne se fait QUE si le mode DEBUG-DB est actif
-:: Si on a fait un "reset-db" pour la prod (sans debug), on n'injecte PAS les donnees.
 if "!DEBUG_MODE!"=="1" (
     if "!DEBUG_DB!"=="1" (
         echo.
@@ -327,15 +321,11 @@ if "!DEBUG_MODE!"=="1" (
         echo [DEBUG-DB] Injection des donnees de test...
         echo ===================================================
 
-        :: On definit le dossier cible
         set "DB_FOLDER=src\main\resources\db"
 
         if exist "!DB_FOLDER!\data.sql" (
             echo [INFO] Fichier trouve.
-
-            :: 1. On se déplace dans le dossier
             pushd "!DB_FOLDER!"
-
             echo [INFO] Injection en cours...
             set PGCLIENTENCODING=UTF8
 
@@ -354,32 +344,22 @@ if "!DEBUG_MODE!"=="1" (
 )
 
 :: ==========================================
-:: BUILD ET LANCEMENT
+:: BUILD ET LANCEMENT (AVEC HOT RELOAD)
 :: ==========================================
 echo.
 echo ===================================================
-echo Construction du projet...
+echo Lancement du projet (Mode DevTools)...
 echo ===================================================
 echo.
 
-set MAVEN_CMD=mvn
-if exist "mvnw.cmd" set MAVEN_CMD=mvnw.cmd
+:: Choix dynamique de l'executable Maven (wrapper prioritaire)
+set "MAVEN_CMD=mvn"
+if exist "mvnw.cmd" set "MAVEN_CMD=mvnw.cmd"
 
-set "DO_BUILD=1"
-
-:: Si build est a 0, on essaye de sauter le build
-if "!BUILD!"=="0" (
-    :: Verification si un jar existe deja
-    if exist "target\*.jar" (
-        echo [INFO] build=0 et JAR trouve. Le build est ignore.
-        set "DO_BUILD=0"
-    ) else (
-        echo [ATTENTION] build=0 mais aucun JAR trouve. Build force.
-    )
-)
-
-if "!DO_BUILD!"=="1" (
-    call %MAVEN_CMD% clean package -DskipTests
+:: Compilation (remplace la creation du JAR)
+if "!BUILD!"=="1" (
+    echo [INFO] Compilation demandee ^(build=1^)...
+    call !MAVEN_CMD! clean compile
 
     if !errorlevel! neq 0 (
         echo.
@@ -387,27 +367,19 @@ if "!DO_BUILD!"=="1" (
         pause
         exit /b
     )
+) else (
+    echo [INFO] Demarrage rapide sans recompilation initiale ^(build=0^)...
 )
 
 echo.
-echo ===================================================
-echo Lancement manuel avec Java 25...
-echo ===================================================
+echo [INFO] Lancement du serveur avec Spring Boot Run...
+echo [INFO] Modifiez un fichier HTML ou Java dans votre IDE pour actualiser la page !
 echo.
 
-cd target
-for /f "delims=" %%i in ('dir /b *.jar ^| findstr /v "original-"') do set JAR_NAME=%%i
+:: Lancement via le plugin Spring Boot avec transmission des identifiants
+call !MAVEN_CMD! spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.password=!PGPASSWORD! --spring.datasource.username=!PGUSER! --app.debug-db=!DEBUG_DB!"
 
-if not defined JAR_NAME (
-    echo [ERREUR] Jar introuvable dans target/
-    pause
-    exit /b
-)
-
-echo [INFO] Lancement de : %JAR_NAME%...
-"%JAVA_HOME%\bin\java.exe" -jar "%JAR_NAME%" --spring.datasource.password=!PGPASSWORD! --spring.datasource.username=!PGUSER! --app.debug-db=!DEBUG_DB!
-
-if %errorlevel% neq 0 (
+if !errorlevel! neq 0 (
     echo.
     echo [ERREUR] Le serveur s'est arrete avec une erreur.
     pause

@@ -30,7 +30,6 @@ public class ComposanteService {
                 .map(ComposanteMapper::toDto)
                 .collect(Collectors.toList());
     }
-
     public ComposanteDto findComposanteDtoById(Integer id) {
         ComposanteEntity composanteEntity = composanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est trouvé : " + id));
