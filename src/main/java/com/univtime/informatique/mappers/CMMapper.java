@@ -34,38 +34,7 @@ public class CMMapper {
         }
         CMEntity entity = new CMEntity();
 
-        ProfesseurEntity prof = new ProfesseurEntity();
-        if (dto.getProfesseurDto() != null) {
-            prof.setIdProf(dto.getProfesseurDto().getIdProf());
-            entity.setProfesseur(prof);
-        }
-
-        PromoEntity promo = new PromoEntity();
-        if (dto.getPromoDto() != null) {
-            promo.setIdPromo(dto.getPromoDto().getIdPromo());
-            entity.setPromo(promo);
-        }
-
-        ComposanteEntity comp = new ComposanteEntity();
-        if (dto.getComposanteDto() != null) {
-            comp.setIdComposante(dto.getComposanteDto().getIdComposante());
-            entity.setComposante(comp);
-        }
-
-        RepartitionSemaineEntity rep = new RepartitionSemaineEntity();
-        if (dto.getRepartitionSemaineDto() != null) {
-            rep.setIdRepartitionSemaine(dto.getRepartitionSemaineDto().getIdRepartitionSemaine());
-            entity.setRepartitionSemaine(rep);
-        }
-
-        entity.setIdCM(
-                new CMId(
-                        prof.getIdProf(),
-                        promo.getIdPromo(),
-                        comp.getIdComposante(),
-                        rep.getIdRepartitionSemaine()
-                )
-        );
+        entity.setIdCM(dto.getCMId());
 
         return entity;
     }

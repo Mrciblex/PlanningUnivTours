@@ -6,9 +6,8 @@ import com.univtime.informatique.entities.ids.PromoEstComposeeId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.PromoEstComposeeMapper;
 import com.univtime.informatique.repositories.PromoEstComposeeRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,14 +15,19 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PromoEstComposeeService {
-    @Autowired
-    private PromoEstComposeeRepository promoEstComposeeRepository;
+    private final PromoEstComposeeRepository promoEstComposeeRepository;
 
-    @Autowired
-    private PromoService promoService;
+    private final PromoService promoService;
 
-    @Autowired
-    private ModuleService moduleService;
+    private final ModuleService moduleService;
+
+    public PromoEstComposeeService(PromoEstComposeeRepository promoEstComposeeRepository,
+                                   PromoService promoService,
+                                   ModuleService moduleService) {
+        this.promoEstComposeeRepository = promoEstComposeeRepository;
+        this.promoService = promoService;
+        this.moduleService = moduleService;
+    }
 
     public List<PromoEstComposeeDto> findAllPromoEstComposees() {
         List<PromoEstComposeeEntity> promoEstComposeeEntities = promoEstComposeeRepository.findAll();
@@ -68,11 +72,11 @@ public class PromoEstComposeeService {
     
     public PromoEstComposeeDto createPromoEstComposee(PromoEstComposeeDto promoEstComposeeDto) {
         // Vérifie la clé étrangère de promo et module
-        if (promoEstComposeeDto.getPromoDto().getIdPromo() == null) {
+        if (promoEstComposeeDto.getPromoDto() == null || promoEstComposeeDto.getPromoDto().getIdPromo() == null) {
             throw new ResourceNotFoundException("L'id de la promo est obligatoire");
         }
 
-        if (promoEstComposeeDto.getModuleDto().getIdModule() == null) {
+        if (promoEstComposeeDto.getModuleDto() == null || promoEstComposeeDto.getModuleDto().getIdModule() == null) {
             throw new ResourceNotFoundException("L'id du module est obligatoire");
         }
 
@@ -80,49 +84,26 @@ public class PromoEstComposeeService {
 
         // Promo
         Integer idPromoR = promoEstComposeeDto.getPromoDto().getIdPromo();
-
         PromoEntity promoEntity = promoService.findPromoEntityById(idPromoR);
-        promoEntity.setIdPromo(promoEntity.getIdPromo());
+        promoEstComposeeEntity.setPromo(promoEntity);
 
         // Module
         Integer idModuleR = promoEstComposeeDto.getModuleDto().getIdModule();
-
         ModuleEntity moduleEntity = moduleService.findModuleEntityById(idModuleR);
-        moduleEntity.setIdModule(moduleEntity.getIdModule());
+        promoEstComposeeEntity.setModule(moduleEntity);
 
         PromoEstComposeeEntity savedPromoEstComposee = promoEstComposeeRepository.save(promoEstComposeeEntity);
 
         return PromoEstComposeeMapper.toDto(savedPromoEstComposee);
     }
 
-    public PromoEstComposeeDto updatePromoEstComposee(PromoEstComposeeDto promoEstComposeeDto) {
-        PromoEstComposeeEntity promoEstComposeeEntity = findPromoEstComposeeEntityById(promoEstComposeeDto.getPromoEstComposeeId());
-        
-        PromoEstComposeeMapper.toEntity(promoEstComposeeDto);
-
-        // Promo
-        if (promoEstComposeeDto.getPromoDto().getIdPromo() != null) {
-            Integer currentIdPromo = promoEstComposeeDto.getPromoDto().getIdPromo();
-
-            if (currentIdPromo == null || !currentIdPromo.equals(promoEstComposeeDto.getPromoDto().getIdPromo())) {
-                PromoEntity promoEntity = promoService.findPromoEntityById(promoEstComposeeDto.getPromoDto().getIdPromo());
-                promoEstComposeeEntity.setPromo(promoEntity);
-            }
+    public PromoEstComposeeDto updatePromoEstComposee(PromoEstComposeeId oldPromoEstComposeeId, PromoEstComposeeDto newPromoEstComposeeDto) {
+        if (!oldPromoEstComposeeId.equals(newPromoEstComposeeDto.getPromoEstComposeeId())){
+            deletePromoEstComposeeById(oldPromoEstComposeeId);
+            return createPromoEstComposee(newPromoEstComposeeDto);
         }
 
-        // Module
-        if (promoEstComposeeDto.getModuleDto().getIdModule() != null) {
-            Integer currentIdModule = promoEstComposeeDto.getModuleDto().getIdModule();
-
-            if (currentIdModule == null || !currentIdModule.equals(promoEstComposeeDto.getModuleDto().getIdModule())) {
-                ModuleEntity moduleEntity = moduleService.findModuleEntityById(promoEstComposeeDto.getModuleDto().getIdModule());
-                promoEstComposeeEntity.setModule(moduleEntity);
-            }
-        }
-        
-        PromoEstComposeeEntity updatedPromoEstComposee = promoEstComposeeRepository.save(promoEstComposeeEntity);
-        
-        return PromoEstComposeeMapper.toDto(updatedPromoEstComposee);
+        return newPromoEstComposeeDto;
     }
 
     public void deletePromoEstComposeeById(PromoEstComposeeId promoEstComposeeId) {

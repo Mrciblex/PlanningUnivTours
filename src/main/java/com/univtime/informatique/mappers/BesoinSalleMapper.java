@@ -31,6 +31,7 @@ public class BesoinSalleMapper {
             return null;
         }
         BesoinSalleEntity entity = new BesoinSalleEntity();
+        entity.setIdBesoinSalle(dto.getBesoinSalleId());
         entity.setTypeBesoin(dto.getTypeBesoin());
         return entity;
     }

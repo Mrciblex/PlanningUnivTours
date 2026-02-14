@@ -32,24 +32,7 @@ public class ParticipeAMapper {
         }
         ParticipeAEntity entity = new ParticipeAEntity();
 
-        SousGroupeEntity sg = new SousGroupeEntity();
-        if (dto.getSousGroupeDto() != null) {
-            sg.setIdSousGroupe(dto.getSousGroupeDto().getIdSousGroupe());
-            entity.setSousGroupe(sg);
-        }
-
-        CoursEntity cours = new CoursEntity();
-        if (dto.getCoursDto() != null) {
-            cours.setIdCours(dto.getCoursDto().getIdCours());
-            entity.setCours(cours);
-        }
-
-        entity.setIdParticipeA(
-                new ParticipeAId(
-                        sg.getIdSousGroupe(),
-                        cours.getIdCours()
-                )
-        );
+        entity.setIdParticipeA(dto.getParticipeAId());
 
         return entity;
     }

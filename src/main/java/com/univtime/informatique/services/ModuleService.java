@@ -5,7 +5,6 @@ import com.univtime.informatique.entities.ModuleEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ModuleMapper;
 import com.univtime.informatique.repositories.ModuleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ModuleService {
-    @Autowired
-    private ModuleRepository moduleRepository;
+    private final ModuleRepository moduleRepository;
+
+    public ModuleService(ModuleRepository moduleRepository) {
+        this.moduleRepository = moduleRepository;
+    }
 
     public List<ModuleDto> findAllModules() {
         List<ModuleEntity> moduleEntities = moduleRepository.findAll();
@@ -50,7 +52,8 @@ public class ModuleService {
     public ModuleDto updateModule(ModuleDto moduleDto) {
         ModuleEntity moduleEntity = findModuleEntityById(moduleDto.getIdModule());
 
-        ModuleMapper.toEntity(moduleDto);
+        // ModuleMapper.toEntity(moduleDto);
+        moduleEntity.setNomModule(moduleDto.getNomModule());
 
         ModuleEntity updatedModule = moduleRepository.save(moduleEntity);
 

@@ -6,7 +6,6 @@ import com.univtime.informatique.entities.ids.TDId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.TDMapper;
 import com.univtime.informatique.repositories.TDRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +15,27 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TDService {
-    @Autowired
-    private TDRepository tdRepository;
+    private final TDRepository tdRepository;
 
-    @Autowired
-    private ProfesseurService professeurService;
+    private final ProfesseurService professeurService;
 
-    @Autowired
-    private GroupeService groupeService;
+    private final GroupeService groupeService;
 
-    @Autowired
-    private ComposanteService composanteService;
+    private final ComposanteService composanteService;
 
-    @Autowired
-    private RepartitionSemaineService repartitionSemaineService;
+    private final RepartitionSemaineService repartitionSemaineService;
+
+    public TDService(TDRepository tdRepository,
+                     ProfesseurService professeurService,
+                     GroupeService groupeService,
+                     ComposanteService composanteService,
+                     RepartitionSemaineService repartitionSemaineService) {
+        this.tdRepository = tdRepository;
+        this.professeurService = professeurService;
+        this.groupeService = groupeService;
+        this.composanteService = composanteService;
+        this.repartitionSemaineService = repartitionSemaineService;
+    }
 
     public List<TDDto> findAllTDs() {
         List<TDEntity> tdEntities = tdRepository.findAll();
@@ -86,19 +92,19 @@ public class TDService {
 
     public TDDto createTD(TDDto tdDto) {
         // Vérifie la clé étrangère de professeur, groupe, composante et répartition semaine
-        if (tdDto.getProfesseurDto().getIdProf() == null) {
+        if (tdDto.getProfesseurDto() != null ||tdDto.getProfesseurDto().getIdProf() == null) {
             throw new ResourceNotFoundException("L'id du professeur est obligatoire");
         }
 
-        if (tdDto.getGroupeDto().getIdGroupe() == null) {
+        if (tdDto.getGroupeDto() != null || tdDto.getGroupeDto().getIdGroupe() == null) {
             throw new ResourceNotFoundException("L'id du groupe est obligatoire");
         }
 
-        if (tdDto.getComposanteDto().getIdComposante() == null) {
+        if (tdDto.getComposanteDto() != null || tdDto.getComposanteDto().getIdComposante() == null) {
             throw new ResourceNotFoundException("L'id de la composante est obligatoire");
         }
 
-        if (tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
+        if (tdDto.getRepartitionSemaineDto() != null || tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
             throw new ResourceNotFoundException("L'id de la repartition semaine est obligatoire");
         }
 
@@ -106,81 +112,36 @@ public class TDService {
 
         // Professeur
         Integer idProfesseurR = tdDto.getProfesseurDto().getIdProf();
-
         ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(idProfesseurR);
-        professeurEntity.setIdProf(professeurEntity.getIdProf());
+        tdEntity.setProfesseur(professeurEntity);
 
         // Groupe
         Integer idGroupeR = tdDto.getGroupeDto().getIdGroupe();
-
         GroupeEntity groupeEntity = groupeService.findGroupeEntityById(idGroupeR);
-        groupeEntity.setIdGroupe(groupeEntity.getIdGroupe());
+        tdEntity.setGroupe(groupeEntity);
 
         // Composante
         Integer idComposanteR = tdDto.getComposanteDto().getIdComposante();
-
         ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(idComposanteR);
-        composanteEntity.setIdComposante(composanteEntity.getIdComposante());
+        tdEntity.setComposante(composanteEntity);
 
         // Repartition semaine
         Integer idRepartitionSemaineR = tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine();
-
         RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineService.findRepartitionSemaineEntityById(idRepartitionSemaineR);
-        repartitionSemaineEntity.setIdRepartitionSemaine(repartitionSemaineEntity.getIdRepartitionSemaine());
+        tdEntity.setRepartitionSemaine(repartitionSemaineEntity);
 
         TDEntity savedTD = tdRepository.save(tdEntity);
 
         return TDMapper.toDto(savedTD);
     }
 
-    public TDDto updateTD(TDDto tdDto) {
-        TDEntity tdEntity = findTDEntityById(tdDto.getTDId());
-
-        TDMapper.toEntity(tdDto);
-
-        // Professeur
-        if (tdDto.getProfesseurDto().getIdProf() != null) {
-            Integer currentIdProfesseur = tdDto.getProfesseurDto().getIdProf();
-
-            if (currentIdProfesseur == null || !currentIdProfesseur.equals(tdDto.getProfesseurDto().getIdProf())) {
-                ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(tdDto.getProfesseurDto().getIdProf());
-                tdEntity.setProfesseur(professeurEntity);
-            }
+    public TDDto updateTD(TDId oldTdId, TDDto newTdDto) {
+        if (!oldTdId.equals(newTdDto.getTDId())){
+            deleteTDById(oldTdId);
+            return createTD(newTdDto);
         }
 
-        // Groupe
-        if (tdDto.getGroupeDto().getIdGroupe() != null) {
-            Integer currentIdGroupe = tdDto.getGroupeDto().getIdGroupe();
-
-            if (currentIdGroupe == null || !currentIdGroupe.equals(tdDto.getGroupeDto().getIdGroupe())) {
-                GroupeEntity groupeEntity = groupeService.findGroupeEntityById(tdDto.getGroupeDto().getIdGroupe());
-                tdEntity.setGroupe(groupeEntity);
-            }
-        }
-
-        // Composante
-        if (tdDto.getComposanteDto().getIdComposante() != null) {
-            Integer currentIdComposante = tdDto.getComposanteDto().getIdComposante();
-
-            if (currentIdComposante == null || !currentIdComposante.equals(tdDto.getComposanteDto().getIdComposante())) {
-                ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(tdDto.getComposanteDto().getIdComposante());
-                tdEntity.setComposante(composanteEntity);
-            }
-        }
-
-        // Repartition Semaine
-        if (tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine() != null) {
-            Integer currentIdRepartitionSemaine = tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine();
-
-            if (currentIdRepartitionSemaine == null || !currentIdRepartitionSemaine.equals(tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine())) {
-                RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineService.findRepartitionSemaineEntityById(tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine());
-                tdEntity.setRepartitionSemaine(repartitionSemaineEntity);
-            }
-        }
-        
-        TDEntity savedTD = tdRepository.save(tdEntity);
-
-        return TDMapper.toDto(savedTD);
+        return newTdDto;
     }
 
     public void deleteTDById(TDId tdId) {

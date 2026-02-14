@@ -6,9 +6,8 @@ import com.univtime.informatique.entities.GroupeEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.SousGroupeMapper;
 import com.univtime.informatique.repositories.SousGroupeRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +15,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class SousGroupeService {
-    @Autowired
-    private SousGroupeRepository sousGroupeRepository;
+    private final SousGroupeRepository sousGroupeRepository;
     
-    @Autowired
-    private GroupeService groupeService;
+    private final GroupeService groupeService;
+
+    public SousGroupeService(SousGroupeRepository sousGroupeRepository,
+                             GroupeService groupeService) {
+        this.sousGroupeRepository = sousGroupeRepository;
+        this.groupeService = groupeService;
+    }
 
     public List<SousGroupeDto> findAllSousGroupes() {
         List<SousGroupeEntity> sousGroupeEntities = sousGroupeRepository.findAll();
@@ -53,16 +56,15 @@ public class SousGroupeService {
 
     public SousGroupeDto createSousGroupe(SousGroupeDto sousGroupeDto) {
         // Vérifie la clé étrangère de groupe
-        if (sousGroupeDto.getGroupeDto().getIdGroupe() == null) {
+        if (sousGroupeDto.getGroupeDto() == null ||sousGroupeDto.getGroupeDto().getIdGroupe() == null) {
             throw new ResourceNotFoundException("L'id du groupe est obligatoire");
         }
 
         SousGroupeEntity sousGroupeEntity = SousGroupeMapper.toEntity(sousGroupeDto);
 
         Integer idGroupeR = sousGroupeDto.getGroupeDto().getIdGroupe();
-
         GroupeEntity groupeEntity = groupeService.findGroupeEntityById(idGroupeR);
-        groupeEntity.setIdGroupe(groupeEntity.getIdGroupe());
+        sousGroupeEntity.setGroupe(groupeEntity);
 
         SousGroupeEntity savedSousGroupe = sousGroupeRepository.save(sousGroupeEntity);
 
@@ -72,13 +74,18 @@ public class SousGroupeService {
     public SousGroupeDto updateSousGroupe(SousGroupeDto sousGroupeDto) {
         SousGroupeEntity sousGroupeEntity = findSousGroupeEntityById(sousGroupeDto.getIdSousGroupe());
 
-        SousGroupeMapper.toEntity(sousGroupeDto);
+        // SousGroupeMapper.toEntity(sousGroupeDto);
+        sousGroupeEntity.setNomSousGroupe(sousGroupeDto.getNomSousGroupe());
+        sousGroupeEntity.setNbEtuSousGroupe(sousGroupeDto.getNbEtuSousGroupe());
 
-        if (sousGroupeDto.getGroupeDto().getIdGroupe() != null) {
-            Integer currentIdGroupe = sousGroupeEntity.getGroupe().getIdGroupe();
+        if (sousGroupeDto.getGroupeDto() != null && sousGroupeDto.getGroupeDto().getIdGroupe() != null) {
+            Integer newIdGroupe = sousGroupeDto.getGroupeDto().getIdGroupe();
 
-            if (currentIdGroupe == null || !currentIdGroupe.equals(sousGroupeDto.getGroupeDto().getIdGroupe())) {
-                GroupeEntity groupeEntity = groupeService.findGroupeEntityById(sousGroupeDto.getGroupeDto().getIdGroupe());
+            Integer currentIdGroupe = (sousGroupeEntity.getGroupe() != null) ?
+                    sousGroupeEntity.getGroupe().getIdGroupe() : null;
+
+            if (!newIdGroupe.equals(currentIdGroupe)) {
+                GroupeEntity groupeEntity = groupeService.findGroupeEntityById(newIdGroupe);
                 sousGroupeEntity.setGroupe(groupeEntity);
             }
         }

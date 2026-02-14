@@ -5,7 +5,6 @@ import com.univtime.informatique.entities.SalleEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.SalleMapper;
 import com.univtime.informatique.repositories.SalleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class SalleService {
-    @Autowired
-    private SalleRepository salleRepository;
+    private final SalleRepository salleRepository;
+
+    public SalleService(SalleRepository salleRepository) {
+        this.salleRepository = salleRepository;
+    }
 
     public List<SalleDto> findAllSalles() {
         List<SalleEntity> salleEntities = salleRepository.findAll();
@@ -50,7 +52,10 @@ public class SalleService {
     public SalleDto updateSalle(SalleDto salleDto) {
         SalleEntity salleEntity = findSalleEntityById(salleDto.getIdSalle());
 
-        SalleMapper.toEntity(salleDto);
+        // SalleMapper.toEntity(salleDto);
+        salleEntity.setNbPlace(salleDto.getNbPlace());
+        salleEntity.setSalleMachine(salleDto.isSalleMachine());
+        salleEntity.setNbPC(salleDto.getNbPC());
 
         SalleEntity updatedSalle = salleRepository.save(salleEntity);
 

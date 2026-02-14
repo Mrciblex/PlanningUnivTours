@@ -5,7 +5,6 @@ import com.univtime.informatique.entities.RepartitionSemaineEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.RepartitionSemaineMapper;
 import com.univtime.informatique.repositories.RepartitionSemaineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +14,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class RepartitionSemaineService {
-    @Autowired
-    private RepartitionSemaineRepository repartitionSemaineRepository;
+    private final RepartitionSemaineRepository repartitionSemaineRepository;
+
+    public RepartitionSemaineService(RepartitionSemaineRepository repartitionSemaineRepository) {
+        this.repartitionSemaineRepository = repartitionSemaineRepository;
+    }
 
     public List<RepartitionSemaineDto> findAllRepartitionSemaines() {
         List<RepartitionSemaineEntity> repartitionSemaineEntities = repartitionSemaineRepository.findAll();
@@ -49,7 +51,9 @@ public class RepartitionSemaineService {
     public RepartitionSemaineDto updateRepartitionSemaine(RepartitionSemaineDto repartitionSemaineDto) {
         RepartitionSemaineEntity repartitionSemaineEntity = findRepartitionSemaineEntityById(repartitionSemaineDto.getIdRepartitionSemaine());
 
-        RepartitionSemaineMapper.toEntity(repartitionSemaineDto);
+        // RepartitionSemaineMapper.toEntity(repartitionSemaineDto);
+        repartitionSemaineEntity.setNumSemaine(repartitionSemaineDto.getNumSemaine());
+        repartitionSemaineEntity.setQteTypeCours(repartitionSemaineDto.getQteTypeCours());
 
         RepartitionSemaineEntity updatedRepartitionSemaine = repartitionSemaineRepository.save(repartitionSemaineEntity);
 

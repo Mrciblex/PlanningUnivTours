@@ -5,9 +5,8 @@ import com.univtime.informatique.entities.ProfesseurEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ProfesseurMapper;
 import com.univtime.informatique.repositories.ProfesseurRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,8 +14,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ProfesseurService {
-    @Autowired
-    private ProfesseurRepository professeurRepository;
+    private final ProfesseurRepository professeurRepository;
+
+    public ProfesseurService(ProfesseurRepository professeurRepository) {
+        this.professeurRepository = professeurRepository;
+    }
 
     public List<ProfesseurDto> findAllProfesseurs() {
         List<ProfesseurEntity> professeurEntities = professeurRepository.findAll();
@@ -56,7 +58,10 @@ public class ProfesseurService {
     public ProfesseurDto updateProfesseur(ProfesseurDto professeurDto) {
         ProfesseurEntity professeurEntity = findProfesseurEntityById(professeurDto.getIdProf());
 
-        ProfesseurMapper.toEntity(professeurDto);
+        // ProfesseurMapper.toEntity(professeurDto);
+        professeurEntity.setNomProf(professeurDto.getNomProf());
+        professeurEntity.setPrenomProf(professeurDto.getPrenomProf());
+        professeurEntity.setIntervenantExterieur(professeurDto.isIntervenantExterieur());
 
         ProfesseurEntity updatedProfesseur = professeurRepository.save(professeurEntity);
 

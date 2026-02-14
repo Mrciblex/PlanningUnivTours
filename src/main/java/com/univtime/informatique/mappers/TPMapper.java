@@ -32,36 +32,7 @@ public class TPMapper {
         }
         TPEntity entity = new TPEntity();
 
-        ProfesseurEntity prof = new ProfesseurEntity();
-        if (dto.getProfesseurDto() != null) {
-            prof.setIdProf(dto.getProfesseurDto().getIdProf());
-            entity.setProfesseur(prof);
-        }
-
-        SousGroupeEntity sg = new SousGroupeEntity();
-        if (dto.getSousGroupeDto() != null) {
-            sg.setIdSousGroupe(dto.getSousGroupeDto().getIdSousGroupe());
-            entity.setSousGroupe(sg);
-        }
-
-        ComposanteEntity comp = new ComposanteEntity();
-        if (dto.getComposanteDto() != null) {
-            comp.setIdComposante(dto.getComposanteDto().getIdComposante());
-            entity.setComposante(comp);
-        }
-
-        RepartitionSemaineEntity rep = new RepartitionSemaineEntity();
-        if (dto.getRepartitionSemaineDto() != null) {
-            rep.setIdRepartitionSemaine(dto.getRepartitionSemaineDto().getIdRepartitionSemaine());
-            entity.setRepartitionSemaine(rep);
-        }
-
-        entity.setIdTP(
-                new TPId(
-                        prof.getIdProf(),
-                        sg.getIdSousGroupe(),
-                        comp.getIdComposante(),
-                        rep.getIdRepartitionSemaine()));
+        entity.setIdTP(dto.getTPId());
 
         return entity;
     }

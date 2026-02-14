@@ -6,7 +6,6 @@ import com.univtime.informatique.entities.ProfesseurEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.JourMapper;
 import com.univtime.informatique.repositories.JourRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +15,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class JourService {
-    @Autowired
-    private JourRepository jourRepository;
+    private final JourRepository jourRepository;
 
-    @Autowired
-    private ProfesseurService professeurService;
+    private final ProfesseurService professeurService;
+
+    public JourService(JourRepository jourRepository,
+                       ProfesseurService professeurService) {
+        this.jourRepository = jourRepository;
+        this.professeurService = professeurService;
+    }
 
     public List<JourDto> findAllJours() {
         List<JourEntity> jourEntities = jourRepository.findAll();
@@ -54,16 +57,15 @@ public class JourService {
 
     public JourDto createJour(JourDto jourDto) {
         // Vérifie la clé étrangère de professeur
-        if (jourDto.getProfesseurDto().getIdProf() == null) {
+        if (jourDto.getProfesseurDto() == null || jourDto.getProfesseurDto().getIdProf() == null) {
             throw new ResourceNotFoundException("L'id du professeur est obligatoire");
         }
 
         JourEntity jourEntity = JourMapper.toEntity(jourDto);
 
         Integer idProfesseurR = jourDto.getProfesseurDto().getIdProf();
-
         ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(idProfesseurR);
-        professeurEntity.setIdProf(professeurEntity.getIdProf());
+        jourEntity.setProfesseur(professeurEntity);
 
         JourEntity savedJour = jourRepository.save(jourEntity);
 
@@ -73,13 +75,18 @@ public class JourService {
     public JourDto updateJour(JourDto jourDto) {
         JourEntity jourEntity = findJourEntityById(jourDto.getIdJour());
 
-        JourMapper.toEntity(jourDto);
+        // JourMapper.toEntity(jourDto);
+        jourEntity.setJourSemaine(jourDto.getJourSemaine());
 
-        if (jourDto.getProfesseurDto().getIdProf() != null) {
-            Integer currentIdProfesseur = jourEntity.getProfesseur().getIdProf();
+        // Professeur
+        if (jourDto.getProfesseurDto() != null && jourDto.getProfesseurDto().getIdProf() != null) {
+            Integer newIdProfesseur = jourDto.getProfesseurDto().getIdProf();
 
-            if (currentIdProfesseur == null || !currentIdProfesseur.equals(jourDto.getProfesseurDto().getIdProf())) {
-                ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(jourDto.getProfesseurDto().getIdProf());
+            Integer currentIdProfesseur = (jourEntity.getProfesseur() != null) ?
+                    jourEntity.getProfesseur().getIdProf() : null;
+
+            if (!newIdProfesseur.equals(currentIdProfesseur)) {
+                ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(newIdProfesseur);
                 jourEntity.setProfesseur(professeurEntity);
             }
         }

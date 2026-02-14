@@ -8,9 +8,8 @@ import com.univtime.informatique.entities.ids.BesoinSalleId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.BesoinSalleMapper;
 import com.univtime.informatique.repositories.BesoinSalleRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,14 +17,22 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class BesoinSalleService {
-    @Autowired
+    final
     BesoinSalleRepository besoinSalleRepository;
 
-    @Autowired
+    final
     SalleService salleService;
 
-    @Autowired
+    final
     ComposanteService composanteService;
+
+    public BesoinSalleService(BesoinSalleRepository besoinSalleRepository,
+                              SalleService salleService,
+                              ComposanteService composanteService) {
+        this.besoinSalleRepository = besoinSalleRepository;
+        this.salleService = salleService;
+        this.composanteService = composanteService;
+    }
 
     public List<BesoinSalleDto> findAllBesoinSalles() {
         List<BesoinSalleEntity>  besoinSalleEntities = besoinSalleRepository.findAll();
@@ -69,62 +76,37 @@ public class BesoinSalleService {
     }
 
     public BesoinSalleDto createBesoinSalle(BesoinSalleDto besoinSalleDto) {
-        // Vérifie la clé étrangère de salle et composante
-        if (besoinSalleDto.getSalleDto().getIdSalle() == null) {
+        if (besoinSalleDto.getSalleDto() == null || besoinSalleDto.getSalleDto().getIdSalle() == null) {
             throw new ResourceNotFoundException("L'id de la salle est obligatoire");
         }
 
-        if (besoinSalleDto.getComposanteDto().getIdComposante() == null) {
+        if (besoinSalleDto.getComposanteDto() == null || besoinSalleDto.getComposanteDto().getIdComposante() == null) {
             throw new ResourceNotFoundException("L'id de la composante est obligatoire");
         }
 
+        SalleEntity salleEntity = salleService.findSalleEntityById(besoinSalleDto.getSalleDto().getIdSalle());
+        ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(besoinSalleDto.getComposanteDto().getIdComposante());
+
         BesoinSalleEntity besoinSalleEntity = BesoinSalleMapper.toEntity(besoinSalleDto);
 
-        // Salle
-        Integer idSalleR = besoinSalleDto.getSalleDto().getIdSalle();
-
-        SalleEntity salleEntity = salleService.findSalleEntityById(idSalleR);
-        salleEntity.setIdSalle(salleEntity.getIdSalle());
-
-        // Composante
-        Integer idComposanteR = besoinSalleDto.getComposanteDto().getIdComposante();
-
-        ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(idComposanteR);
-        composanteEntity.setIdComposante(composanteEntity.getIdComposante());
+        besoinSalleEntity.setSalle(salleEntity);
+        besoinSalleEntity.setComposante(composanteEntity);
 
         BesoinSalleEntity savedBesoinSalle = besoinSalleRepository.save(besoinSalleEntity);
 
         return BesoinSalleMapper.toDto(savedBesoinSalle);
     }
 
-    public BesoinSalleDto updateBesoinSalle(BesoinSalleDto besoinSalleDto) {
-        BesoinSalleEntity besoinSalleEntity = findBesoinSalleEntityById(besoinSalleDto.getBesoinSalleId());
-
-        BesoinSalleMapper.toEntity(besoinSalleDto);
-
-        // Salle
-        if (besoinSalleDto.getSalleDto().getIdSalle() != null) {
-            Integer currentIdSalle = besoinSalleDto.getSalleDto().getIdSalle();
-
-            if (currentIdSalle == null || !currentIdSalle.equals(besoinSalleDto.getSalleDto().getIdSalle())) {
-                SalleEntity salleEntity = salleService.findSalleEntityById(besoinSalleDto.getSalleDto().getIdSalle());
-                besoinSalleEntity.setSalle(salleEntity);
-            }
+    public BesoinSalleDto updateBesoinSalle(BesoinSalleId oldId, BesoinSalleDto newDto) {
+        if (!oldId.equals(newDto.getBesoinSalleId())) {
+            deleteBesoinSalleById(oldId);
+            return createBesoinSalle(newDto);
         }
 
-        // Composante
-        if (besoinSalleDto.getComposanteDto().getIdComposante() != null) {
-            Integer currentIdComposante = besoinSalleDto.getComposanteDto().getIdComposante();
+        BesoinSalleEntity entity = findBesoinSalleEntityById(oldId);
+        entity.setTypeBesoin(newDto.getTypeBesoin());
 
-            if (currentIdComposante == null || !currentIdComposante.equals(besoinSalleDto.getComposanteDto().getIdComposante())) {
-                ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(besoinSalleDto.getComposanteDto().getIdComposante());
-                besoinSalleEntity.setComposante(composanteEntity);
-            }
-        }
-
-        BesoinSalleEntity updatedBesoinSalle = besoinSalleRepository.save(besoinSalleEntity);
-
-        return BesoinSalleMapper.toDto(updatedBesoinSalle);
+        return BesoinSalleMapper.toDto(besoinSalleRepository.save(entity));
     }
 
     public void deleteBesoinSalleById(BesoinSalleId besoinSalleId) {
