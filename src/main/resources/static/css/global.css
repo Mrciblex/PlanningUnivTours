@@ -1,6 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
 * {
     margin: 0;
-    padding: 0;
+    padding: 0;}
 }
 
 body {
@@ -10,4 +16,15 @@ body {
 h1 {
     font-family: Arial, sans-serif;
     font-weight: 800;
+    font-size: 4em;
+}
+
+h2 {
+    font-family: Arial, sans-serif;
+    font-weight: 800;
+    font-size: 3em;
+}
+
+.animate-in {
+    animation: fadeInUp 0.8s ease forwards;
 }

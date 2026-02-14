@@ -1,3 +1,10 @@
 <th:block th:fragment="defaultHeader">
-    <th:p>UnivTime</th:p>
+    <header class="fixed top-0 left-0 z-50 right-0 bg-[#00A99B]">
+        <nav class="container mx-auto px-25 py-2 flex items-center justify-between">
+            <th:p>UnivTime</th:p>
+            <a th:href="@{/index}">Acceuil</a>
+            <a th:href="@{/gestionnaire_promos}">Gestionnaire</a>
+            <a th:href="@{/gestionnaire_edt/edt}">EDT</a>
+        </nav>
+    </header>
 </th:block>
