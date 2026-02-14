@@ -38,6 +38,15 @@ public class JourService {
         return JourMapper.toDto(jourEntity);
     }
 
+    public List<JourDto> findJoursDtoByIdProf(Integer idProf) {
+        List<JourEntity> jourEntities = jourRepository.findByProfesseurIdProf(idProf);
+
+        return jourEntities
+                .stream()
+                .map(JourMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public JourEntity findJourEntityById(Integer id) {
         return jourRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le jour avec l'id n'est trouvé : " + id));

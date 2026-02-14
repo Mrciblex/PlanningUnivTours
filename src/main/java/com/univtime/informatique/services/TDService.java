@@ -60,6 +60,14 @@ public class TDService {
         return TDMapper.toDto(tdEntity);
     }
 
+    public List<TDDto> findTDDtoByIdPromo(Integer idPromo) {
+        List<TDEntity> tdEntity = tdRepository.findByIdPromo(idPromo);
+
+        return tdEntity.stream()
+                .map(TDMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public TDEntity findTDEntityById(Integer idProfesseur, Integer idGroupe, Integer idComposante, Integer idRepartitionSemaine) {
         TDId id = new TDId(
                 idProfesseur,

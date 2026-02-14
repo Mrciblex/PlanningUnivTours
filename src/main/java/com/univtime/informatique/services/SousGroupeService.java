@@ -38,6 +38,14 @@ public class SousGroupeService {
         return SousGroupeMapper.toDto(sousGroupeEntity);
     }
 
+    public List<SousGroupeDto> findSousGroupesDtoByIdPromo(Integer idPromo) {
+        List<SousGroupeEntity> sousGroupeEntity = sousGroupeRepository.findByIdPromo(idPromo);
+
+        return sousGroupeEntity.stream()
+                .map(SousGroupeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public SousGroupeEntity findSousGroupeEntityById(Integer id) {
         return sousGroupeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le sous groupe avec l'id n'est trouvé : " + id));

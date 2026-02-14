@@ -60,6 +60,14 @@ public class CMService {
         return CMMapper.toDto(cmEntity);
     }
 
+    public List<CMDto> findCMDtoByIdPromo(Integer idPromo) {
+        List<CMEntity> cmEntity = cmRepository.findByIdPromo(idPromo);
+
+        return cmEntity.stream()
+                .map(CMMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public CMEntity findCMEntityById(Integer idProfesseur, Integer idPromo, Integer idComposante, Integer idRepartitionSemaine) {
         CMId id = new CMId(
                 idProfesseur,

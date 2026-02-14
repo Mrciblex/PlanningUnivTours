@@ -5,7 +5,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
-CREATE TYPE type_besoin AS ENUM ('salle info', 'salle physique', 'salle normale');
+CREATE TYPE type_besoin AS ENUM ('SALLE_INFORMATIQUE', 'SALLE_PHYSIQUE', 'SALLE_NORMALE');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;

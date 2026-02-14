@@ -37,6 +37,14 @@ public class ComposanteService {
         return ComposanteMapper.toDto(composanteEntity);
     }
 
+    public List<ComposanteDto> findComposantesDtoByIdPromo(Integer idPromo) {
+        List<ComposanteEntity> composanteEntity = composanteRepository.findByIdPromo(idPromo);
+
+        return composanteEntity.stream()
+                .map(ComposanteMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public ComposanteEntity findComposanteEntityById(Integer id) {
         return composanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est trouvé : " + id));

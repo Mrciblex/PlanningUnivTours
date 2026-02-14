@@ -64,6 +64,14 @@ public class TPService {
         return TPMapper.toDto(tpEntity);
     }
 
+    public List<TPDto> findTPDtoByIdPromo(Integer idPromo) {
+        List<TPEntity> tpEntity = tpRepository.findByIdPromo(idPromo);
+
+        return tpEntity.stream()
+                .map(TPMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public TPEntity findTPEntityById(Integer idProfesseur, Integer idSousGroupe, Integer idComposante, Integer idRepartitionSemaine) {
         TPId id = new TPId(
                 idProfesseur,
