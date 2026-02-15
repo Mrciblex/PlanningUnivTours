@@ -4,106 +4,138 @@ import com.univtime.informatique.dto.coursDto.CoursDto;
 
 import java.util.List;
 
-// MIN -10, 0 MAX
-// Chaque placement part avec 100 pts
+// MIN 0, 1 MAX
 public class WeightConfig {
+    /**
+     * Critère 1 : Un cours à 8h (donc premier slot du jour)
+     */
+    private static Double placementPlusTotPossible = 1.;
+
     /**
      * Si le slot créer un trou
      */
-    private static int placementTrou = 0;
+    private static Double placementTrou = 0.;
 
     /**
      * Si le slot est utilisé et est tard (coef plus c'est tard = plus score fait mal)
      */
-    private static int placementFinTard = 0;
+    private static Double placementFinTard = 0.;
 
     /**
      * Si le slot est utilisé et n'est le matin avant 12h15
      */
-    private static int placementMatin = 0;
-
-    /**
-     * Si le slot est utilisé et n'est pas à 8h
-     */
-    private static int placementDebutJour = 0;
+    private static Double placementMatin = 0.;
 
     /**
      * Si le slot est utilisé et ne correspond pas au cours de la semaine 1
      * (attention, s'il y a 1 cours S1 puis 2 cours S2 dans le même slot, si le cours S1 est quand même là il ne faut pas de pénalité)
      */
-    private static int placementReference = 0;
+    private static Double placementReference = 0.;
 
     /**
      * Si le slot est utilisé et le cours est à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
      */
-    private static int placementArrondit = 0;
+    private static Double placementArrondit = 0.;
 
     /**
      * Si les slots ont le même cours mais avec une séparation entre les slots (donc 2 fois le cours dans la journée)
      */
-    private static int repetitionCoursDansJournee = 0;
+    private static Double repetitionCoursDansJournee = 0.;
 
-    public static int getPlacementTrou() {
+    public static Double getPlacementTrou() {
         return placementTrou;
     }
 
-    public static void setPlacementTrou(int placementTrou) {
+    public static void setPlacementTrou(Double placementTrou) {
         WeightConfig.placementTrou = placementTrou;
     }
 
-    public static int getPlacementFinTard() {
+    public static Double getPlacementFinTard() {
         return placementFinTard;
     }
 
-    public static void setPlacementFinTard(int placementFinTard) {
+    public static void setPlacementFinTard(Double placementFinTard) {
         WeightConfig.placementFinTard = placementFinTard;
     }
 
-    public static int getPlacementMatin() {
+    public static Double getPlacementMatin() {
         return placementMatin;
     }
 
-    public static void setPlacementMatin(int placementMatin) {
+    public static void setPlacementMatin(Double placementMatin) {
         WeightConfig.placementMatin = placementMatin;
     }
 
-    public static int getPlacementDebutJour() {
-        return placementDebutJour;
+    public static Double getPlacementPlusTotPossible() {
+        return placementPlusTotPossible;
     }
 
-    public static void setPlacementDebutJour(int placementDebutJour) {
-        WeightConfig.placementDebutJour = placementDebutJour;
+    public static void setPlacementPlusTotPossible(Double placementPlusTotPossible) {
+        WeightConfig.placementPlusTotPossible = placementPlusTotPossible;
     }
 
-    public static int getPlacementReference() {
+    public static Double getPlacementReference() {
         return placementReference;
     }
 
-    public static void setPlacementReference(int placementReference) {
+    public static void setPlacementReference(Double placementReference) {
         WeightConfig.placementReference = placementReference;
     }
 
-    public static int getPlacementArrondit() {
+    public static Double getPlacementArrondit() {
         return placementArrondit;
     }
 
-    public static void setPlacementArrondit(int placementArrondit) {
+    public static void setPlacementArrondit(Double placementArrondit) {
         WeightConfig.placementArrondit = placementArrondit;
     }
 
-    public static int getRepetitionCoursDansJournee() {
+    public static Double getRepetitionCoursDansJournee() {
         return repetitionCoursDansJournee;
     }
 
-    public static void setRepetitionCoursDansJournee(int repetitionCoursDansJournee) {
+    public static void setRepetitionCoursDansJournee(Double repetitionCoursDansJournee) {
         WeightConfig.repetitionCoursDansJournee = repetitionCoursDansJournee;
     }
 
-    public static int calcScore(CoursDto cours, List<Slot> jour) {
-        int score = 100;
-        if (cours != null && !jour.isEmpty()) {
-            // Retirer ou pas des points pour chaque placement
+    /**
+     * Calcule le score d'un critère selon s'il est respecté ou non.
+     */
+    private static double calculerScore(boolean evenementSeProduit, double poids) {
+        if (evenementSeProduit) {
+            return poids;
+        } else {
+            return 1.0 - poids;
         }
-        return score;
+    }
+
+    private static double calculerMoyenne(double... valeurs){
+        double somme = 0.0;
+        for (double valeur : valeurs) {
+            somme += valeur;
+        }
+        return somme / valeurs.length;
+    }
+
+    public static void evaluationPlacements(Jour jour) {
+        if (jour != null) {
+            jour.getSlots().forEach(slot -> {
+                Double scoreActuel = slot.getScore();
+
+                // ---------------------------------------------------------
+                // Critère 1 : Un cours à 8h (donc premier slot du jour)
+                // ---------------------------------------------------------
+                boolean isDebutJour = slot.getDebut().equals(60 * 8) && !slot.getUsedBy().isEmpty();
+                Double score1 = WeightConfig.calculerScore(isDebutJour, WeightConfig.getPlacementPlusTotPossible());
+
+                // ---------------------------------------------------------
+                // Critère 2 :
+                // ---------------------------------------------------------
+
+
+                // Calcul moyenne après tout les scores calculer :
+                slot.setScore(calculerMoyenne(scoreActuel, score1));
+            });
+        }
     }
 }

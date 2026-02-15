@@ -12,6 +12,7 @@ public class Jour {
                 List<Slot> slots) {
         this.numJour = numJour;
         this.slots = slots;
+        this.score = slots.stream().mapToDouble(Slot::getScore).average().orElse(0.0);
     }
 
     public Jour(Integer numJour,
@@ -22,6 +23,7 @@ public class Jour {
     }
 
     public Double getScore(){
+        this.score = slots.stream().mapToDouble(Slot::getScore).average().orElse(0.0);
         return score;
     }
 
@@ -38,7 +40,6 @@ public class Jour {
     }
 
     public void setSlots(List<Slot> slots) {
-        this.score = slots.stream().mapToDouble(Slot::getScore).average().orElse(0.0);
         this.slots = slots;
     }
 }

@@ -1,31 +1,32 @@
 package com.univtime.informatique.algorithme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Semaine {
     private Integer numSemaine;
-    private List<Jour> jours;
+    private HashMap<Integer, Jour> jours;
     private Double score;
 
     public Semaine(
             Integer numSemaine
             ){
         this.numSemaine = numSemaine;
-        this.jours = new ArrayList<Jour>();
-        this.score = 0.0;
+        this.jours = new HashMap<>();
+        this.score = 1.0;
     }
 
     public Semaine(
             Integer numSemaine,
-            List<Jour> jours){
+            HashMap<Integer, Jour> jours){
         this.numSemaine = numSemaine;
         this.jours = jours;
-        this.score = jours.stream().mapToDouble(Jour::getScore).average().orElse(0.0);
+        this.score = jours.values().stream().mapToDouble(Jour::getScore).average().orElse(0.0);
     }
 
     public Semaine(Integer numSemaine,
-                   List<Jour> jours,
+                   HashMap<Integer, Jour> jours,
                    Double score) {
         this.numSemaine = numSemaine;
         this.jours = jours;
@@ -40,12 +41,12 @@ public class Semaine {
         this.numSemaine = numSemaine;
     }
 
-    public List<Jour> getJours() {
+    public HashMap<Integer, Jour> getJours() {
         return jours;
     }
 
-    public void setJours(List<Jour> jours) {
-        this.score = jours.stream().mapToDouble(Jour::getScore).average().orElse(0.0);
+    public void setJours(HashMap<Integer, Jour> jours) {
+        this.score = jours.values().stream().mapToDouble(Jour::getScore).average().orElse(0.0);
         this.jours = jours;
     }
 

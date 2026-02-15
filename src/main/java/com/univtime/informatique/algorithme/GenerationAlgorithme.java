@@ -25,10 +25,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -77,6 +74,7 @@ public class GenerationAlgorithme {
         this.tdService = tdService;
         this.tpService = tpService;
     }
+
     public GenerationAlgorithme() {
 
     }
@@ -178,20 +176,6 @@ public class GenerationAlgorithme {
         return isSlotAvailable;
     }
 
-    private record DateCours(
-            LocalDateTime heureDebutCours,
-            LocalDateTime heureFinCours
-    ) {
-    }
-
-    /**
-     * Calcul les dates réelles de début et de fin pour un cours donné
-     * en utilisant les index numSemaine et numJour par rapport à la structure du planning
-     */
-    private DateCours getRealDateCours() {
-        return null;
-    }
-
     private boolean isProfDisponible(Slot slot,
                                      Set<DisponibiliteJourDto> dispos) {
         for (DisponibiliteJourDto dispo : dispos) {
@@ -217,17 +201,58 @@ public class GenerationAlgorithme {
         return false;
     }
 
+    private Jour getRandomJour(List<Jour> bestPlacements) {
+        int index = (int) (Math.random() * bestPlacements.size());
+        return bestPlacements.get(index);
+    }
+
+
+    private record CoursInjection(
+            CoursDto cours,
+            Jour jour
+    ) {
+    }
+
+    /**
+     * Calcul les dates réelles de début et de fin pour un cours donné
+     * en utilisant les index numSemaine et numJour par rapport à la structure du planning
+     */
+    private CoursDto getRealDateCours(CoursDto coursDto,
+                                      Semestre semestre,
+                                      int numSemaine,
+                                      int numJour,
+                                      int minutesDebut,
+                                      int minutesFin) {
+        LocalDate debutSemestre = semestre.firstWeek();
+
+        // Si numSemaine = 1 et numJour = 1 (Lundi), on ajoute 0 semaine et 0 jour -> on reste sur le premierLundi
+        LocalDate dateDuCours = debutSemestre
+                .plusWeeks(numSemaine - 1)
+                .plusDays(numJour - 1);
+
+        LocalTime heureDebut = LocalTime.of(minutesDebut / 60, minutesDebut % 60);
+        LocalTime heureFin = LocalTime.of(minutesFin / 60, minutesFin % 60);
+
+        LocalDateTime dateHeureDebut = LocalDateTime.of(dateDuCours, heureDebut);
+        LocalDateTime dateHeureFin = LocalDateTime.of(dateDuCours, heureFin);
+
+        coursDto.setHeureDebutCours(dateHeureDebut);
+        coursDto.setHeureFinCours(dateHeureFin);
+
+        return coursDto;
+    }
+
     /*
         ATTENTION A NE PAS FAIRE LA CONFUSION ENTRE "Jours" DE LA BASE DE DONNEES ET "Jour" L'OBJECT METIER (my bad...)
      */
-    private Jour getRandomBestPlacement(PromoDto promo,
+    private Jour getRandomBestPlacement(Semestre semestre,
                                         Semaine currentSemaine,
                                         CoursDto cours,
                                         List<JourDto> joursDuProf) {
         int dureeSemaine = currentSemaine.getJours().size();
         Integer blocNecessaire = cours.getComposanteDto().getBlocHoraire(cours.getTypeCoursEnum());
         int nbSlotNecessaire = (int) Math.ceil((double) blocNecessaire / slotStep);
-        List<Jour> bestPlacements = new ArrayList<Jour>();
+        List<Jour> bestPlacements = new ArrayList<>();
 
         for (int i = 0; i < dureeSemaine; i++) {
             int currentDay = i;
@@ -241,7 +266,7 @@ public class GenerationAlgorithme {
 
             // Ca ne sert à rien de boucler sur les dernières heures si le bloc est plus gros que la place qu'il nous reste
             outerloop:
-            for (int j = 0; j < jour.getSlots().size() - nbSlotNecessaire; j++) {
+            for (int j = 0; j <= jour.getSlots().size() - nbSlotNecessaire; j++) {
                 List<Slot> slots = new ArrayList<>(); // Bloc du cours
 
                 for (int k = 0; k < nbSlotNecessaire; k++) {
@@ -270,7 +295,6 @@ public class GenerationAlgorithme {
                         }
                     }
 
-
                     slots.add(slot);
                 }
 
@@ -282,7 +306,14 @@ public class GenerationAlgorithme {
                 ));
             }
         }
-        System.out.println("MEILLEUR PLACEMENT POSSIBLE POUR LES CMS");
+
+        // Cours impossible à placer cette semaine
+        if (bestPlacements.isEmpty()) {
+            return null;
+        }
+
+        // ----------------------- DEBUG -----------------------
+        System.out.println("PLACEMENTS POSSIBLE");
         bestPlacements.forEach(jour -> {
             int j = jour.getNumJour().getValue();
             int debut = jour.getSlots().getFirst().getDebut();
@@ -296,8 +327,92 @@ public class GenerationAlgorithme {
             );
 
         });
+        // ----------------------- FIN DEBUG -----------------------
 
-        return null;
+        // On reconstruit tout les jours par rapports à la semaine actuelle pour voir avec le score lesquelles sont les meilleures
+        List<Jour> allSimulations = bestPlacements.stream()
+                .map(placement -> {
+                    // Récupération du vrai jour source
+                    Jour vraiJourActuel = currentSemaine.getJours().get(placement.getNumJour().getValue() - 1);
+
+                    // Extraction des débuts de slots pour le filtre
+                    Set<Integer> debutsChoisis = placement.getSlots().stream()
+                            .map(Slot::getDebut)
+                            .collect(Collectors.toSet());
+
+                    // Création de la copie
+                    List<Slot> slotsCopies = vraiJourActuel.getSlots().stream()
+                            .map(vraiSlot -> {
+                                Slot slotSimule = new Slot(
+                                        vraiSlot.getDebut(),
+                                        vraiSlot.getFin(),
+                                        new ArrayList<>(vraiSlot.getUsedBy()),
+                                        vraiSlot.getScore()
+                                );
+
+                                if (debutsChoisis.contains(slotSimule.getDebut())) {
+                                    slotSimule.addUsedBy(cours);
+                                }
+                                return slotSimule;
+                            })
+                            .toList();
+
+                    // Création du jour simulé (le constructeur calcule déjà la moyenne des scores des slots)
+                    Jour jourSimule = new Jour(vraiJourActuel.getNumJour().getValue(), slotsCopies);
+
+                    // Calcul des scores (met à jour les scores des slots/jour)
+                    WeightConfig.evaluationPlacements(jourSimule);
+
+                    return jourSimule;
+                }).collect(Collectors.toList());
+
+        // On mélange la liste pour éviter une linéarité si deux scores égaux pendant le tri
+        Collections.shuffle(allSimulations);
+
+        // Tri décroissant sur le score calculé pour tout les jours
+        List<Jour> top5Placements = allSimulations.stream()
+                .sorted((j1, j2) -> Double.compare(j2.getScore(), j1.getScore()))
+                // On garde les 5 meilleurs
+                .limit(5) // (Hard codé)
+                .toList();
+
+        // ----------------------- DEBUG -----------------------
+        System.out.println("MEILLEURS PLACEMENTS POSSIBLE");
+        top5Placements.forEach(jour -> {
+            int j = jour.getNumJour().getValue();
+            List<Slot> slotDuCour = jour.getSlots().stream()
+                    .filter(s -> s.getUsedBy().contains(cours))
+                    .toList();
+            int debut = slotDuCour.getFirst().getDebut();
+            int fin = slotDuCour.getLast().getFin();
+
+            String debutFormatte = String.format("%02d:%02d", debut / 60, debut % 60);
+            String finFormatte = String.format("%02d:%02d", fin / 60, fin % 60);
+
+            System.out.println(
+                    "Jour " + j + " (M du jour=" + jour.getScore() + ") | de " + debutFormatte + " à " + finFormatte
+            );
+
+        });
+        // ----------------------- FIN DEBUG -----------------------
+
+        Jour jourGagnant = getRandomJour(top5Placements);
+
+        int numSemaine = currentSemaine.getNumSemaine();
+        int numJour = jourGagnant.getNumJour().getValue();
+        int minutesDebut = jourGagnant.getSlots().getFirst().getDebut();
+        int minutesFin = jourGagnant.getSlots().getLast().getFin();
+
+        CoursDto updatedCours = getRealDateCours(cours, semestre, numSemaine, numJour, minutesDebut, minutesFin);
+
+        jourGagnant.getSlots().stream()
+                .filter(s -> s.getDebut() >= minutesDebut && s.getFin() <= minutesFin)
+                .forEach(s -> {
+                    s.getUsedBy().remove(cours); // On enlève le DTO temporaire
+                    s.getUsedBy().add(updatedCours); // On met le DTO final avec les dates
+                });
+
+        return jourGagnant;
     }
 
     public List<CoursDto> generatePlanning(Integer idPromo,
@@ -312,7 +427,7 @@ public class GenerationAlgorithme {
 
         // Dynamique (non lié à la BD -> saisie lors de la génération (ne pas oublier jours fériés proposés))
         List<MomentBanalise> pauses = new ArrayList<>();
-        if (momentBanalises != null){
+        if (momentBanalises != null) {
             pauses = momentBanalises;
         }
 
@@ -415,6 +530,7 @@ public class GenerationAlgorithme {
          */
         long nbSemaine = semestre.nbSemaines();
         List<Semaine> semaines = new ArrayList<>();
+        List<CoursDto> coursImpossibles = new ArrayList<>();
 
         for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++) {
             // Début et fin de la semaine du calendrier
@@ -433,7 +549,7 @@ public class GenerationAlgorithme {
 
             int currentWeek = weekOffset + 1;
 
-            List<Jour> jours = new ArrayList<Jour>();
+            HashMap<Integer, Jour> jours = new HashMap<>();
             for (int dayOffset = weekStart.getDayOfWeek().getValue() - 1; dayOffset < weekEnd.getDayOfWeek().getValue(); dayOffset++) {
                 LocalDate actualDay = semestre.debut().plusWeeks(weekOffset).plusDays(dayOffset);
                 if (this.isExcludeDay(actualDay, excludedDays)) {
@@ -467,7 +583,7 @@ public class GenerationAlgorithme {
                         slots.add(slot);
                     }
                 }
-                jours.add(new Jour(dayOffset + 1, slots));
+                jours.put(dayOffset, new Jour(dayOffset + 1, slots));
 
             }
             Semaine currentSemaine = new Semaine(currentWeek, jours);
@@ -564,7 +680,7 @@ public class GenerationAlgorithme {
                                     TypeCours.CM,
                                     composanteCoursDto,
                                     professeurCoursDto,
-                                    null,
+                                    null, // Rempli manuellement après
                                     participeACoursDto
                             );
 
@@ -573,8 +689,13 @@ public class GenerationAlgorithme {
                             // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
                             // Après on re-fait juste la moyenne
 
-                            for(int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++){
-                                getRandomBestPlacement(promoComplete, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
+                            for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
+                                Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
+                                if (jourGagnant == null) {
+                                    coursImpossibles.add(courCreated);
+                                } else {
+                                    currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
+                                }
                             }
                         });
 
