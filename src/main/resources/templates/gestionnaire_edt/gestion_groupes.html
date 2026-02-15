@@ -21,40 +21,33 @@
                     <table class="data-table">
                         <thead>
                         <tr>
-                            <th>Nom</th>
-                            <th>Année</th>
-                            <th>Semestre 1</th>
-                            <th>Semestre 2</th>
-                            <th>EDT</th>
+                            <th>Groupe</th>
+                            <th>Nombre Groupe</th>
+                            <th>Sous Groupe</th>
+                            <th>Nombre Sous Groupe</th>
+                            <th>Promo</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="promo : ${promotions}">
-                            <td class="font-semibold text-tours-green-light" th:text="${promo.nom}">Licence 3 Informatique</td>
-                            <td th:text="${promo.annee}">2024-2025</td>
-                            <td>
-                                <span th:text="${promo.dateDebutS1 != null ? #temporals.format(promo.dateDebutS1, 'dd/MM/yyyy') : '-'}">01/09/2024</span>
-                                <span class="text-slate-400"> - </span>
-                                <span th:text="${promo.dateFinS1 != null ? #temporals.format(promo.dateFinS1, 'dd/MM/yyyy') : '-'}">31/01/2025</span>
+                        <tr th:each="prof : ${professeurs}">
+                            <td class="font-semibold text-tours-green-light" th:text="${prof.nom}"></td>
+                            <td th:text="${prof.nom}"></td>
+                            <td th:text="${prof.prenom}"></td>
+                            <td th:text="${promo.intervenantExterieur == true ? OUI : NON}"></span>
                             </td>
                             <td>
-                                <span th:text="${promo.dateDebutS2 != null ? #temporals.format(promo.dateDebutS2, 'dd/MM/yyyy') : '-'}">01/02/2025</span>
-                                <span class="text-slate-400"> - </span>
-                                <span th:text="${promo.dateFinS2 != null ? #temporals.format(promo.dateFinS2, 'dd/MM/yyyy') : '-'}">30/06/2025</span>
-                            </td>
-                            <td>
-                                <button th:onclick="|goToEDT('${promo.id}', 1)|" class="btn-semester mr-2">S1</button>
-                                <button th:onclick="|goToEDT('${promo.id}', 2)|" class="btn-semester">S2</button>
-                            </td>
-                            <td>
-                                <button th:onclick="|editPromo('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
-                                <button th:onclick="|deletePromo('${promo.id}', '${promo.nom}')|" class="btn-delete">Supprimer</button>
+                                <button th:onclick="|editComposante('${prof.id}',
+                                                                    '${prof.nom}',
+                                                                    '${prof.prenom}',
+                                                                    '${prof.intervenantExterieur}
+                                                        )|" class="btn-edit mr-2">Modifier</button>
+                                <button th:onclick="|deleteProfesseur('${prof.id}', '${prof.nom}')|" class="btn-delete">Supprimer</button>
                             </td>
                         </tr>
 
-                        <tr th:if="${#lists.isEmpty(promotions)}">
-                            <td colspan="6" class="text-center text-red-700 font-bold">Aucune promotion</td>
+                        <tr th:if="${#lists.isEmpty(professeurs)}">
+                            <td colspan="6" class="text-center text-red-700 font-bold">Aucun professeur</td>
                         </tr>
                         </tbody>
                     </table>

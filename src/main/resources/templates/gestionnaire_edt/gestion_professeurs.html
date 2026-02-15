@@ -22,39 +22,30 @@
                         <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Année</th>
-                            <th>Semestre 1</th>
-                            <th>Semestre 2</th>
-                            <th>EDT</th>
+                            <th>Prénom</th>
+                            <th>Intervenant Extérieur</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="promo : ${promotions}">
-                            <td class="font-semibold text-tours-green-light" th:text="${promo.nom}">Licence 3 Informatique</td>
-                            <td th:text="${promo.annee}">2024-2025</td>
-                            <td>
-                                <span th:text="${promo.dateDebutS1 != null ? #temporals.format(promo.dateDebutS1, 'dd/MM/yyyy') : '-'}">01/09/2024</span>
-                                <span class="text-slate-400"> - </span>
-                                <span th:text="${promo.dateFinS1 != null ? #temporals.format(promo.dateFinS1, 'dd/MM/yyyy') : '-'}">31/01/2025</span>
+                        <tr th:each="prof : ${professeurs}">
+                            <td class="font-semibold text-tours-green-light" th:text="${prof.nom}"></td>
+                            <td th:text="${prof.nom}"></td>
+                            <td th:text="${prof.prenom}"></td>
+                            <td th:text="${promo.intervenantExterieur == true ? OUI : NON}"></span>
                             </td>
                             <td>
-                                <span th:text="${promo.dateDebutS2 != null ? #temporals.format(promo.dateDebutS2, 'dd/MM/yyyy') : '-'}">01/02/2025</span>
-                                <span class="text-slate-400"> - </span>
-                                <span th:text="${promo.dateFinS2 != null ? #temporals.format(promo.dateFinS2, 'dd/MM/yyyy') : '-'}">30/06/2025</span>
-                            </td>
-                            <td>
-                                <button th:onclick="|goToEDT('${promo.id}', 1)|" class="btn-semester mr-2">S1</button>
-                                <button th:onclick="|goToEDT('${promo.id}', 2)|" class="btn-semester">S2</button>
-                            </td>
-                            <td>
-                                <button th:onclick="|editPromo('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
-                                <button th:onclick="|deletePromo('${promo.id}', '${promo.nom}')|" class="btn-delete">Supprimer</button>
+                                <button th:onclick="|editComposante('${prof.id}',
+                                                                    '${prof.nom}',
+                                                                    '${prof.prenom}',
+                                                                    '${prof.intervenantExterieur}
+                                                        )|" class="btn-edit mr-2">Modifier</button>
+                                <button th:onclick="|deleteProfesseur('${prof.id}', '${prof.nom}')|" class="btn-delete">Supprimer</button>
                             </td>
                         </tr>
 
-                        <tr th:if="${#lists.isEmpty(promotions)}">
-                            <td colspan="6" class="text-center text-red-700 font-bold">Aucune promotion</td>
+                        <tr th:if="${#lists.isEmpty(professeurs)}">
+                            <td colspan="6" class="text-center text-red-700 font-bold">Aucun professeur</td>
                         </tr>
                         </tbody>
                     </table>
@@ -64,49 +55,27 @@
         </div>
 
         <!-- Pop Up Ajouter/Modfier -->
-        <div id="promoModal" class="modal">
+        <div id="profModal" class="modal">
             <div class="modal-content">
-                <p id="modalTitle" class="text-2xl font-bold mb-6 text-white">Ajouter une promotion</p>
+                <p id="modalTitle" class="text-2xl font-bold mb-6 text-white">Ajouter un professeur</p>
 
-                <form th:action="@{/promo/save}" method="post">
-                    <input type="hidden" id="promoId" name="id">
+                <form th:action="@{/professeur/save}" method="post">
+                    <input type="hidden" id="profId" name="id">
 
                     <div class="form-group">
                         <label>Nom *</label>
-                        <input type="text" id="nom" name="nom" required placeholder="Ex: Licence 3 Informatique">
+                        <input type="text" id="nom" name="nom" required placeholder="Ex: DESPORT">
                     </div>
 
                     <div class="form-group">
-                        <label>Année *</label>
-                        <input type="text" id="annee" name="annee" required placeholder="Ex: 2024-2025">
+                        <label>Prénom *</label>
+                        <input type="text" id="prenom" name="prenom" required placeholder="Ex: Pierre">
                     </div>
 
                     <div class="form-group">
-                        <label>Semestre 1</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS1" name="dateDebutS1">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS1" name="dateFinS1">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Semestre 2</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS2" name="dateDebutS2">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS2" name="dateFinS2">
-                            </div>
-                        </div>
+                        <label>Intervenant Extérieur *</label>
+                        <input th:type="radio" >
+                        <input type="text" id="intervenantE" name="intervenantE" required placeholder="Ex: Pierre">
                     </div>
 
                     <div class="flex gap-3 mt-6">
@@ -116,7 +85,7 @@
                 </form>
             </div>
 
-            <!-- Pop Up Ajouter/Modfier -->
+            <!-- Pop Up Supprimer -->
         </div>
     </body>
 </html>
