@@ -181,10 +181,10 @@ if %errorlevel% neq 0 (
     echo [ATTENTION] Le port 5432 n'est pas actif.
     echo [INFO] Recherche du service...
     set "PG_SERVICE="
-    for /f "tokens=2 delims=:" %%A in ('sc query state^= all ^| findstr /i "SERVICE_NAME: postgresql"') do (
-        set "PG_SERVICE=%%A"
-        set "PG_SERVICE=!PG_SERVICE: =!"
-    )
+        for /f "tokens=2 delims=:" %%A in ('sc query state^= all ^| findstr /i "postgresql" ^| findstr /i /v "DISPLAY NOM_AFFICHAGE"') do (
+            set "PG_SERVICE=%%A"
+            set "PG_SERVICE=!PG_SERVICE: =!"
+        )
 
     if defined PG_SERVICE (
         echo [INFO] Service trouve : !PG_SERVICE!

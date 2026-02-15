@@ -12,6 +12,11 @@ public class WeightConfig {
     private static Double placementPlusTotPossible = 1.;
 
     /**
+     * Critère 2 : Un cours à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
+     */
+    private static Double placementArrondit = 1.;
+
+    /**
      * Si le slot créer un trou
      */
     private static Double placementTrou = 0.;
@@ -31,11 +36,6 @@ public class WeightConfig {
      * (attention, s'il y a 1 cours S1 puis 2 cours S2 dans le même slot, si le cours S1 est quand même là il ne faut pas de pénalité)
      */
     private static Double placementReference = 0.;
-
-    /**
-     * Si le slot est utilisé et le cours est à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
-     */
-    private static Double placementArrondit = 0.;
 
     /**
      * Si les slots ont le même cours mais avec une séparation entre les slots (donc 2 fois le cours dans la journée)
@@ -119,7 +119,14 @@ public class WeightConfig {
 
     public static void evaluationPlacements(Jour jour) {
         if (jour != null) {
-            jour.getSlots().forEach(slot -> {
+            for (int index = 0; index < jour.getSlots().size(); index++){
+                Slot slot = jour.getSlots().get(index);
+
+                Slot precedentSlot = null;
+                if (index > 0){
+                    precedentSlot = jour.getSlots().get(index - 1);
+                }
+
                 Double scoreActuel = slot.getScore();
 
                 // ---------------------------------------------------------
@@ -129,13 +136,35 @@ public class WeightConfig {
                 Double score1 = WeightConfig.calculerScore(isDebutJour, WeightConfig.getPlacementPlusTotPossible());
 
                 // ---------------------------------------------------------
-                // Critère 2 :
+                // Critère 2 : Un cours à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
                 // ---------------------------------------------------------
+                boolean isHeureFixe = (slot.getDebut().equals(60 * 8)
+                        || slot.getDebut().equals(60 * 10 + 15)
+                        || slot.getDebut().equals(13 * 60 + 30)
+                        || slot.getDebut().equals(15 * 60 + 45)
+                        || slot.getDebut().equals(18 * 60));
 
+                // Si le slot actuel est une heure fixe et que ce n'est pas le premier slot de la liste (du jour)
+                double score2Sum = 0.;
+                for (int i = 0; i < slot.getUsedBy().size(); i++){
+                    boolean isCoursAtHeureFixe;
+                    // Si true, alors le cours en question démarre à l'heure fixe
+                    if (isHeureFixe && precedentSlot != null && !slot.getUsedBy().isEmpty()){
+                        isCoursAtHeureFixe = !precedentSlot.getUsedBy().contains(slot.getUsedBy().get(i));
+                    }else if (isHeureFixe && precedentSlot == null && !slot.getUsedBy().isEmpty()){
+                        isCoursAtHeureFixe = true;
+                    }else {
+                        isCoursAtHeureFixe = false;
+                    }
+                    score2Sum += WeightConfig.calculerScore(isCoursAtHeureFixe, WeightConfig.getPlacementArrondit());
+                }
+                double score2 = slot.getUsedBy().isEmpty()
+                        ? WeightConfig.calculerScore(false, WeightConfig.getPlacementArrondit())
+                        : score2Sum / (double) slot.getUsedBy().size();
 
                 // Calcul moyenne après tout les scores calculer :
-                slot.setScore(calculerMoyenne(scoreActuel, score1));
-            });
+                slot.setScore(calculerMoyenne(scoreActuel, score1, score2));
+            }
         }
     }
 }

@@ -32,29 +32,21 @@ import java.util.stream.Collectors;
 public class GenerationAlgorithme {
     private int slotStep = 15;
 
-    @Autowired
-    private JourService jourService;
+    private final JourService jourService;
 
-    @Autowired
-    private PromoService promoService;
+    private final PromoService promoService;
 
-    @Autowired
-    private SousGroupeService sousGroupeService;
+    private final SousGroupeService sousGroupeService;
 
-    @Autowired
-    private ComposanteService composanteService;
+    private final ComposanteService composanteService;
 
-    @Autowired
-    private ProfesseurService professeurService;
+    private final ProfesseurService professeurService;
 
-    @Autowired
-    private CMService cmService;
+    private final CMService cmService;
 
-    @Autowired
-    private TDService tdService;
+    private final TDService tdService;
 
-    @Autowired
-    private TPService tpService;
+    private final TPService tpService;
 
     public GenerationAlgorithme(JourService jourService,
                                 PromoService promoService,
@@ -63,8 +55,8 @@ public class GenerationAlgorithme {
                                 ProfesseurService professeurService,
                                 CMService cmService,
                                 TDService tdService,
-                                TPService tpService
-    ) {
+                                TPService tpService) {
+
         this.jourService = jourService;
         this.promoService = promoService;
         this.sousGroupeService = sousGroupeService;
@@ -73,10 +65,6 @@ public class GenerationAlgorithme {
         this.cmService = cmService;
         this.tdService = tdService;
         this.tpService = tpService;
-    }
-
-    public GenerationAlgorithme() {
-
     }
 
     public int getSlotStep() {

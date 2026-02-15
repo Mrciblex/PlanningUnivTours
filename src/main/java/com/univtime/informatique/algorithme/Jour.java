@@ -6,7 +6,7 @@ import java.util.List;
 public class Jour {
     private DayOfWeek numJour;
     private List<Slot> slots;
-    private Double score;
+    private double score;
 
     public Jour(DayOfWeek numJour,
                 List<Slot> slots) {
@@ -22,7 +22,7 @@ public class Jour {
         this.score = slots.stream().mapToDouble(Slot::getScore).average().orElse(0.0);
     }
 
-    public Double getScore(){
+    public double getScore(){
         this.score = slots.stream().mapToDouble(Slot::getScore).average().orElse(0.0);
         return score;
     }
