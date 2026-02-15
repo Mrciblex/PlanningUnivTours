@@ -6,7 +6,6 @@ import com.univtime.informatique.entities.ModuleEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ComposanteMapper;
 import com.univtime.informatique.repositories.ComposanteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +15,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ComposanteService {
-    @Autowired
-    private ComposanteRepository composanteRepository;
+    private final ComposanteRepository composanteRepository;
 
-    @Autowired
-    private ModuleService moduleService;
+    private final ModuleService moduleService;
+
+    public ComposanteService(ComposanteRepository composanteRepository,
+                             ModuleService moduleService) {
+        this.composanteRepository = composanteRepository;
+        this.moduleService = moduleService;
+    }
 
     public List<ComposanteDto> findAllComposantes() {
         List<ComposanteEntity> composanteEntities = composanteRepository.findAll();
@@ -37,14 +40,21 @@ public class ComposanteService {
         return ComposanteMapper.toDto(composanteEntity);
     }
 
+    public List<ComposanteDto> findComposantesDtoByIdPromo(Integer idPromo) {
+        List<ComposanteEntity> composanteEntity = composanteRepository.findByIdPromo(idPromo);
+
+        return composanteEntity.stream()
+                .map(ComposanteMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public ComposanteEntity findComposanteEntityById(Integer id) {
         return composanteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("La composante avec l'id n'est trouvé : " + id));
     }
 
     public ComposanteDto createComposante(ComposanteDto composanteDto) {
-        // Vérifie la clé étrangère de module
-        if (composanteDto.getModuleDto().getIdModule() == null) {
+        if (composanteDto.getModuleDto() == null || composanteDto.getModuleDto().getIdModule() == null) {
             throw new ResourceNotFoundException("L'id du module est obligatoire");
         }
 
@@ -53,8 +63,7 @@ public class ComposanteService {
         Integer idModuleR = composanteDto.getModuleDto().getIdModule();
 
         ModuleEntity moduleEntity = moduleService.findModuleEntityById(idModuleR);
-        moduleEntity.setIdModule(moduleEntity.getIdModule());
-
+        composanteEntity.setModule(moduleEntity);
         ComposanteEntity savedComposante = composanteRepository.save(composanteEntity);
 
         return ComposanteMapper.toDto(savedComposante);
@@ -63,13 +72,24 @@ public class ComposanteService {
     public ComposanteDto updateComposante(ComposanteDto composanteDto) {
         ComposanteEntity composanteEntity = findComposanteEntityById(composanteDto.getIdComposante());
 
-        ComposanteMapper.toEntity(composanteDto);
+        // ComposanteMapper.toEntity(composanteDto);
+        composanteEntity.setNomComposante(composanteDto.getNomComposante());
+        composanteEntity.setVolumeHoraireTotal(composanteDto.getVolumeHoraireTotal());
+        composanteEntity.setVolumeHoraireCM(composanteDto.getVolumeHoraireCM());
+        composanteEntity.setVolumeHoraireTD(composanteDto.getVolumeHoraireTD());
+        composanteEntity.setVolumeHoraireTP(composanteDto.getVolumeHoraireTP());
+        composanteEntity.setBlocHoraireCM(composanteDto.getBlocHoraireCM());
+        composanteEntity.setBlocHoraireTD(composanteDto.getBlocHoraireTD());
+        composanteEntity.setBlocHoraireTP(composanteDto.getBlocHoraireTP());
 
-        if (composanteDto.getModuleDto().getIdModule() != null) {
-            Integer currentIdModule = composanteEntity.getModule().getIdModule();
+        if (composanteDto.getModuleDto() != null && composanteDto.getModuleDto().getIdModule() != null) {
+            Integer newIdModule = composanteDto.getModuleDto().getIdModule();
+            Integer currentIdModule = (composanteEntity.getModule() != null)
+                    ? composanteEntity.getModule().getIdModule()
+                    : null;
 
-            if (currentIdModule == null || !currentIdModule.equals(composanteDto.getModuleDto().getIdModule())) {
-                ModuleEntity moduleEntity = moduleService.findModuleEntityById(composanteDto.getModuleDto().getIdModule());
+            if (!newIdModule.equals(currentIdModule)) {
+                ModuleEntity moduleEntity = moduleService.findModuleEntityById(newIdModule);
                 composanteEntity.setModule(moduleEntity);
             }
         }

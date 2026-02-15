@@ -20,10 +20,22 @@ public class Slot {
     Slot(Integer debut, Integer fin) {
         this.debut = debut;
         this.fin = fin;
-        this.score = 10.0;
+        this.score = 1.0;
     }
 
-    Slot(Integer debut, Integer fin, List<CoursDto> usedBy, Double score) {
+    public Slot(Integer debut,
+                Integer fin,
+                List<CoursDto> usedBy) {
+        this.debut = debut;
+        this.fin = fin;
+        this.usedBy = usedBy;
+        this.score = 1.0;
+    }
+
+    Slot(Integer debut,
+         Integer fin,
+         List<CoursDto> usedBy,
+         Double score) {
         this.debut = debut;
         this.fin = fin;
         this.usedBy = usedBy;

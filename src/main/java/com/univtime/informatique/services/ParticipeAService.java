@@ -7,9 +7,8 @@ import com.univtime.informatique.entities.ids.ParticipeAId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ParticipeAMapper;
 import com.univtime.informatique.repositories.ParticipeARepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,14 +16,19 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ParticipeAService {
-    @Autowired
-    private ParticipeARepository participeARepository;
+    private final ParticipeARepository participeARepository;
 
-    @Autowired
-    private SousGroupeService sousGroupeService;
+    private final SousGroupeService sousGroupeService;
 
-    @Autowired
-    private CoursService coursService;
+    private final CoursService coursService;
+
+    public ParticipeAService(ParticipeARepository participeARepository,
+                             SousGroupeService sousGroupeService,
+                             CoursService coursService) {
+        this.participeARepository = participeARepository;
+        this.sousGroupeService = sousGroupeService;
+        this.coursService = coursService;
+    }
 
     public List<ParticipeADto> findAllParticipeAs() {
         List<ParticipeAEntity> participeAEntities = participeARepository.findAll();
@@ -69,11 +73,11 @@ public class ParticipeAService {
     
     public ParticipeADto createParticipeA(ParticipeADto participeADto) {
         // Vérifie la clé étrangère de sousGroupe et cours
-        if (participeADto.getSousGroupeDto().getIdSousGroupe() == null) {
+        if (participeADto.getSousGroupeDto() == null || participeADto.getSousGroupeDto().getIdSousGroupe() == null) {
             throw new ResourceNotFoundException("L'id du sous groupe est obligatoire");
         }
 
-        if (participeADto.getCoursDto().getIdCours() == null) {
+        if (participeADto.getCoursDto() == null || participeADto.getCoursDto().getIdCours() == null) {
             throw new ResourceNotFoundException("L'id du cours est obligatoire");
         }
 
@@ -81,49 +85,26 @@ public class ParticipeAService {
 
         // SousGroupe
         Integer idSousGroupeR = participeADto.getSousGroupeDto().getIdSousGroupe();
-
         SousGroupeEntity sousGroupeEntity = sousGroupeService.findSousGroupeEntityById(idSousGroupeR);
-        sousGroupeEntity.setIdSousGroupe(sousGroupeEntity.getIdSousGroupe());
+        participeAEntity.setSousGroupe(sousGroupeEntity);
 
         // Cours
         Integer idCoursR = participeADto.getCoursDto().getIdCours();
-
         CoursEntity coursEntity = coursService.findCoursEntityById(idCoursR);
-        coursEntity.setIdCours(coursEntity.getIdCours());
+        participeAEntity.setCours(coursEntity);
 
         ParticipeAEntity savedParticipeA = participeARepository.save(participeAEntity);
 
         return ParticipeAMapper.toDto(savedParticipeA);
     }
     
-    public ParticipeADto updateParticipeA(ParticipeADto participeADto) {
-        ParticipeAEntity participeAEntity = findParticipeAEntityById(participeADto.getParticipeAId());
-
-        ParticipeAMapper.toEntity(participeADto);
-
-        // SousGroupe
-        if (participeADto.getSousGroupeDto().getIdSousGroupe() != null) {
-            Integer currentIdSousGroupe = participeADto.getSousGroupeDto().getIdSousGroupe();
-
-            if (currentIdSousGroupe == null || !currentIdSousGroupe.equals(participeADto.getSousGroupeDto().getIdSousGroupe())) {
-                SousGroupeEntity sousGroupeEntity = sousGroupeService.findSousGroupeEntityById(participeADto.getSousGroupeDto().getIdSousGroupe());
-                participeAEntity.setSousGroupe(sousGroupeEntity);
-            }
+    public ParticipeADto updateParticipeA(ParticipeAId oldParticipeAId, ParticipeADto newParticipeADto) {
+        if (!oldParticipeAId.equals(newParticipeADto.getParticipeAId())){
+            deleteParticipeAById(oldParticipeAId);
+            return createParticipeA(newParticipeADto);
         }
 
-        // Cours
-        if (participeADto.getCoursDto().getIdCours() != null) {
-            Integer currentIdCours = participeADto.getCoursDto().getIdCours();
-
-            if (currentIdCours == null || !currentIdCours.equals(participeADto.getCoursDto().getIdCours())) {
-                CoursEntity coursEntity = coursService.findCoursEntityById(participeADto.getCoursDto().getIdCours());
-                participeAEntity.setCours(coursEntity);
-            }
-        }
-        
-        ParticipeAEntity updatedParticipeA = participeARepository.save(participeAEntity);
-
-        return ParticipeAMapper.toDto(updatedParticipeA);
+        return newParticipeADto;
     }
 
     public void deleteParticipeAById(ParticipeAId participeAId) {

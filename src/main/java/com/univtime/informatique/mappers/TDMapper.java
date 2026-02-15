@@ -34,38 +34,7 @@ public class TDMapper {
         }
         TDEntity entity = new TDEntity();
 
-        ProfesseurEntity prof = new ProfesseurEntity();
-        if (dto.getProfesseurDto() != null) {
-            prof.setIdProf(dto.getProfesseurDto().getIdProf());
-            entity.setProfesseur(prof);
-        }
-
-        GroupeEntity groupe = new GroupeEntity();
-        if (dto.getGroupeDto() != null) {
-            groupe.setIdGroupe(dto.getGroupeDto().getIdGroupe());
-            entity.setGroupe(groupe);
-        }
-
-        ComposanteEntity comp = new ComposanteEntity();
-        if (dto.getComposanteDto() != null) {
-            comp.setIdComposante(dto.getComposanteDto().getIdComposante());
-            entity.setComposante(comp);
-        }
-
-        RepartitionSemaineEntity rep = new RepartitionSemaineEntity();
-        if (dto.getRepartitionSemaineDto() != null) {
-            rep.setIdRepartitionSemaine(dto.getRepartitionSemaineDto().getIdRepartitionSemaine());
-            entity.setRepartitionSemaine(rep);
-        }
-
-        entity.setIdTD(
-                new TDId(
-                        prof.getIdProf(),
-                        groupe.getIdGroupe(),
-                        comp.getIdComposante(),
-                        rep.getIdRepartitionSemaine()
-                )
-        );
+        entity.setIdTD(dto.getTDId());
 
         return entity;
     }

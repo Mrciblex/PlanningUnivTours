@@ -61,6 +61,7 @@ public class PromoMapper {
         return entity;
     }
 
+
     private static PromoEstComposeePromoDto promoEstComposeeToDto(PromoEstComposeeEntity entity) {
         PromoEstComposeePromoDto promoEstComposee = new PromoEstComposeePromoDto();
         if (entity != null) {

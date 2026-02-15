@@ -30,19 +30,7 @@ public class PromoEstComposeeMapper {
         }
         PromoEstComposeeEntity entity = new PromoEstComposeeEntity();
 
-        PromoEntity promo = new PromoEntity();
-        if (dto.getPromoDto() != null) {
-            promo.setIdPromo(dto.getPromoDto().getIdPromo());
-            entity.setPromo(promo);
-        }
-
-        ModuleEntity module = new ModuleEntity();
-        if (dto.getModuleDto() != null) {
-            module.setIdModule(dto.getModuleDto().getIdModule());
-            entity.setModule(module);
-        }
-
-        entity.setIdPromoEstComposee(new PromoEstComposeeId(promo.getIdPromo(), module.getIdModule()));
+        entity.setIdPromoEstComposee(dto.getPromoEstComposeeId());
 
         return entity;
     }

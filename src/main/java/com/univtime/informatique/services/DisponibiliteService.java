@@ -6,19 +6,24 @@ import com.univtime.informatique.entities.JourEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.DisponibiliteMapper;
 import com.univtime.informatique.repositories.DisponibiliteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DisponibiliteService {
-    @Autowired
-    private DisponibiliteRepository disponibiliteRepository;
+    private final DisponibiliteRepository disponibiliteRepository;
 
-    @Autowired
-    private JourService jourService;
+    private final JourService jourService;
+
+    public DisponibiliteService(DisponibiliteRepository disponibiliteRepository,
+                                JourService jourService) {
+        this.disponibiliteRepository = disponibiliteRepository;
+        this.jourService = jourService;
+    }
 
     public List<DisponibiliteDto> findAllDisponibilites() {
         List<DisponibiliteEntity> disponibiliteEntities = disponibiliteRepository.findAll();
@@ -43,16 +48,15 @@ public class DisponibiliteService {
 
     public DisponibiliteDto createDisponibilite(DisponibiliteDto disponibiliteDto) {
         // Vérifie la clé étrangère de jour
-        if (disponibiliteDto.getJourDto().getIdJour() == null) {
+        if (disponibiliteDto.getJourDto() == null || disponibiliteDto.getJourDto().getIdJour() == null) {
             throw new ResourceNotFoundException("L'id du jour est obligatoire");
         }
 
         DisponibiliteEntity disponibiliteEntity = DisponibiliteMapper.toEntity(disponibiliteDto);
 
         Integer idJourR = disponibiliteDto.getJourDto().getIdJour();
-
         JourEntity jourEntity = jourService.findJourEntityById(idJourR);
-        jourEntity.setIdJour(jourEntity.getIdJour());
+        disponibiliteEntity.setJour(jourEntity);
 
         DisponibiliteEntity savedDisponibilite = disponibiliteRepository.save(disponibiliteEntity);
 
@@ -61,13 +65,20 @@ public class DisponibiliteService {
 
     public DisponibiliteDto updateDisponibilite(DisponibiliteDto disponibiliteDto) {
         DisponibiliteEntity disponibiliteEntity = findDisponibiliteEntityById(disponibiliteDto.getIdDispo());
-        DisponibiliteMapper.toEntity(disponibiliteDto);
 
-        if (disponibiliteDto.getJourDto().getIdJour() != null) {
-            Integer currentIdJour = disponibiliteEntity.getJour().getIdJour();
+        // DisponibiliteMapper.toEntity(disponibiliteDto);
+        disponibiliteEntity.setHeureDebutDispo(disponibiliteDto.getHeureDebutDispo());
+        disponibiliteEntity.setHeureFinDispo(disponibiliteDto.getHeureFinDispo());
 
-            if (currentIdJour == null || !currentIdJour.equals(disponibiliteDto.getJourDto().getIdJour())) {
-                JourEntity jourEntity = jourService.findJourEntityById(disponibiliteDto.getJourDto().getIdJour());
+
+        // Jour
+        if (disponibiliteDto.getJourDto() != null && disponibiliteDto.getJourDto().getIdJour() != null) {
+            Integer newIdJour = disponibiliteDto.getJourDto().getIdJour();
+            Integer currentIdJour = (disponibiliteEntity.getJour() != null) ?
+                    disponibiliteEntity.getJour().getIdJour() : null;
+
+            if (!newIdJour.equals(currentIdJour)) {
+                JourEntity jourEntity = jourService.findJourEntityById(newIdJour);
                 disponibiliteEntity.setJour(jourEntity);
             }
         }

@@ -6,9 +6,8 @@ import com.univtime.informatique.entities.ids.CMId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.CMMapper;
 import com.univtime.informatique.repositories.CMRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,20 +15,27 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CMService {
-    @Autowired
-    private CMRepository cmRepository;
+    private final CMRepository cmRepository;
 
-    @Autowired
-    private ProfesseurService professeurService;
+    private final ProfesseurService professeurService;
 
-    @Autowired
-    private PromoService promoService;
+    private final PromoService promoService;
 
-    @Autowired
-    private ComposanteService composanteService;
+    private final ComposanteService composanteService;
 
-    @Autowired
-    private RepartitionSemaineService repartitionSemaineService;
+    private final RepartitionSemaineService repartitionSemaineService;
+
+    public CMService(CMRepository cmRepository,
+                     ProfesseurService professeurService,
+                     PromoService promoService,
+                     ComposanteService composanteService,
+                     RepartitionSemaineService repartitionSemaineService) {
+        this.cmRepository = cmRepository;
+        this.professeurService = professeurService;
+        this.promoService = promoService;
+        this.composanteService = composanteService;
+        this.repartitionSemaineService = repartitionSemaineService;
+    }
 
     public List<CMDto> findAllCMs() {
         List<CMEntity> cmEntities = cmRepository.findAll();
@@ -60,6 +66,14 @@ public class CMService {
         return CMMapper.toDto(cmEntity);
     }
 
+    public List<CMDto> findCMDtoByIdPromo(Integer idPromo) {
+        List<CMEntity> cmEntity = cmRepository.findByIdPromo(idPromo);
+
+        return cmEntity.stream()
+                .map(CMMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public CMEntity findCMEntityById(Integer idProfesseur, Integer idPromo, Integer idComposante, Integer idRepartitionSemaine) {
         CMId id = new CMId(
                 idProfesseur,
@@ -78,19 +92,19 @@ public class CMService {
 
     public CMDto createCM(CMDto cmDto) {
         // Vérifie la clé étrangère de professeur, promo, composante et répartition semaine
-        if (cmDto.getProfesseurDto().getIdProf() == null) {
+        if (cmDto.getProfesseurDto() == null || cmDto.getProfesseurDto().getIdProf() == null) {
             throw new ResourceNotFoundException("L'id du professeur est obligatoire");
         }
 
-        if (cmDto.getPromoDto().getIdPromo() == null) {
+        if (cmDto.getPromoDto() == null || cmDto.getPromoDto().getIdPromo() == null) {
             throw new ResourceNotFoundException("L'id de la promo est obligatoire");
         }
 
-        if (cmDto.getComposanteDto().getIdComposante() == null) {
+        if (cmDto.getComposanteDto() == null || cmDto.getComposanteDto().getIdComposante() == null) {
             throw new ResourceNotFoundException("L'id de la composante est obligatoire");
         }
 
-        if (cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
+        if (cmDto.getRepartitionSemaineDto() == null || cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
             throw new ResourceNotFoundException("L'id de la repartition semaine est obligatoire");
         }
 
@@ -98,81 +112,36 @@ public class CMService {
 
         // Professeur
         Integer idProfesseurR = cmDto.getProfesseurDto().getIdProf();
-
         ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(idProfesseurR);
-        professeurEntity.setIdProf(professeurEntity.getIdProf());
+        cmEntity.setProfesseur(professeurEntity);
 
         // Promo
         Integer idPromoR = cmDto.getPromoDto().getIdPromo();
-
         PromoEntity promoEntity = promoService.findPromoEntityById(idPromoR);
-        promoEntity.setIdPromo(promoEntity.getIdPromo());
+        cmEntity.setPromo(promoEntity);
 
         // Composante
         Integer idComposanteR = cmDto.getComposanteDto().getIdComposante();
-
         ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(idComposanteR);
-        composanteEntity.setIdComposante(composanteEntity.getIdComposante());
+        cmEntity.setComposante(composanteEntity);
 
         // Repartition semaine
         Integer idRepartitionSemaineR = cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine();
-
         RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineService.findRepartitionSemaineEntityById(idRepartitionSemaineR);
-        repartitionSemaineEntity.setIdRepartitionSemaine(repartitionSemaineEntity.getIdRepartitionSemaine());
+        cmEntity.setRepartitionSemaine(repartitionSemaineEntity);
 
         CMEntity savedCM = cmRepository.save(cmEntity);
 
         return CMMapper.toDto(savedCM);
     }
 
-    public CMDto updateCM(CMDto cmDto) {
-        CMEntity cmEntity = findCMEntityById(cmDto.getCMId());
-
-        CMMapper.toEntity(cmDto);
-
-        // Professeur
-        if (cmDto.getProfesseurDto().getIdProf() != null) {
-            Integer currentIdProfesseur = cmDto.getProfesseurDto().getIdProf();
-
-            if (currentIdProfesseur == null || !currentIdProfesseur.equals(cmDto.getProfesseurDto().getIdProf())) {
-                ProfesseurEntity professeurEntity = professeurService.findProfesseurEntityById(cmDto.getProfesseurDto().getIdProf());
-                cmEntity.setProfesseur(professeurEntity);
-            }
+    public CMDto updateCM(CMId oldCmId, CMDto newCmDto) {
+        if (!oldCmId.equals(newCmDto.getCMId())) {
+            deleteCMById(oldCmId);
+            return createCM(newCmDto);
         }
 
-        // Promo
-        if (cmDto.getPromoDto().getIdPromo() != null) {
-            Integer currentIdPromo = cmDto.getPromoDto().getIdPromo();
-
-            if (currentIdPromo == null || !currentIdPromo.equals(cmDto.getPromoDto().getIdPromo())) {
-                PromoEntity promoEntity = promoService.findPromoEntityById(cmDto.getPromoDto().getIdPromo());
-                cmEntity.setPromo(promoEntity);
-            }
-        }
-
-        // Composante
-        if (cmDto.getComposanteDto().getIdComposante() != null) {
-            Integer currentIdComposante = cmDto.getComposanteDto().getIdComposante();
-
-            if (currentIdComposante == null || !currentIdComposante.equals(cmDto.getComposanteDto().getIdComposante())) {
-                ComposanteEntity composanteEntity = composanteService.findComposanteEntityById(cmDto.getComposanteDto().getIdComposante());
-                cmEntity.setComposante(composanteEntity);
-            }
-        }
-
-        // Repartition Semaine
-        if (cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine() != null) {
-            Integer currentIdRepartitionSemaine = cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine();
-
-            if (currentIdRepartitionSemaine == null || !currentIdRepartitionSemaine.equals(cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine())) {
-                RepartitionSemaineEntity repartitionSemaineEntity = repartitionSemaineService.findRepartitionSemaineEntityById(cmDto.getRepartitionSemaineDto().getIdRepartitionSemaine());
-                cmEntity.setRepartitionSemaine(repartitionSemaineEntity);
-            }
-        }
-
-        CMEntity updatedCM = cmRepository.save(cmEntity);
-
-        return CMMapper.toDto(updatedCM);
+        return newCmDto;
     }
 
     public void deleteCMById(CMId cmId) {

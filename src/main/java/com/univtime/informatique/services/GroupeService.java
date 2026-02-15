@@ -6,7 +6,6 @@ import com.univtime.informatique.entities.PromoEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.GroupeMapper;
 import com.univtime.informatique.repositories.GroupeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +15,15 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class GroupeService {
-    @Autowired
-    private GroupeRepository groupeRepository;
+    private final GroupeRepository groupeRepository;
 
-    @Autowired
-    private PromoService promoService;
+    private final PromoService promoService;
+
+    public GroupeService(GroupeRepository groupeRepository,
+                         PromoService promoService) {
+        this.groupeRepository = groupeRepository;
+        this.promoService = promoService;
+    }
 
     public List<GroupeDto> findAllGroupe() {
         List<GroupeEntity> groupeEntities = groupeRepository.findAll();
@@ -45,16 +48,15 @@ public class GroupeService {
 
     public GroupeDto createGroupe(GroupeDto groupeDto) {
         // Vérifie la clé étrangère de promo
-        if (groupeDto.getPromoDto().getIdPromo() == null) {
+        if (groupeDto.getPromoDto() == null || groupeDto.getPromoDto().getIdPromo() == null) {
             throw new ResourceNotFoundException("L'id de la promo est obligatoire");
         }
 
         GroupeEntity groupeEntity = GroupeMapper.toEntity(groupeDto);
 
         Integer idPromoR = groupeDto.getPromoDto().getIdPromo();
-
         PromoEntity promoEntity = promoService.findPromoEntityById(idPromoR);
-        promoEntity.setIdPromo(promoEntity.getIdPromo());
+        groupeEntity.setPromo(promoEntity);
 
         GroupeEntity savedGroupe = groupeRepository.save(groupeEntity);
 
@@ -64,13 +66,19 @@ public class GroupeService {
     public GroupeDto updateGroupe(GroupeDto groupeDto) {
         GroupeEntity groupeEntity = findGroupeEntityById(groupeDto.getIdGroupe());
 
-        GroupeMapper.toEntity(groupeDto);
+        // GroupeMapper.toEntity(groupeDto);
+        groupeEntity.setNomGroupe(groupeDto.getNomGroupe());
+        groupeEntity.setNbEtuGroupe(groupeDto.getNbEtuGroupe());
 
-        if (groupeDto.getPromoDto().getIdPromo() != null) {
-            Integer currentIdPromo = groupeEntity.getPromo().getIdPromo();
+        // Promo
+        if (groupeDto.getPromoDto() != null && groupeDto.getPromoDto().getIdPromo() != null) {
+            Integer newIdPromo = groupeDto.getPromoDto().getIdPromo();
 
-            if (currentIdPromo == null || !currentIdPromo.equals(groupeDto.getPromoDto().getIdPromo())) {
-                PromoEntity promoEntity = promoService.findPromoEntityById(groupeDto.getPromoDto().getIdPromo());
+            Integer currentIdPromo = (groupeEntity.getPromo() != null) ?
+                    groupeEntity.getPromo().getIdPromo() : null;
+
+            if (!newIdPromo.equals(currentIdPromo)) {
+                PromoEntity promoEntity = promoService.findPromoEntityById(newIdPromo);
                 promoEntity.setIdPromo(promoEntity.getIdPromo());
             }
         }
