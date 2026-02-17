@@ -9,7 +9,7 @@ public class WeightConfig {
     /**
      * Critère 1 : Un cours à 8h (donc premier slot du jour)
      */
-    private static Double placementPlusTotPossible = 1.;
+    private static Double placementPlusTotPossible = .0;
 
     /**
      * Critère 2 : Un cours à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
@@ -20,6 +20,11 @@ public class WeightConfig {
      * Si le slot créer un trou
      */
     private static Double placementTrou = 0.;
+
+    /**
+     * Si le cours passe par un temps de pause
+     */
+    private static Double passeParSlotPause = 0.;
 
     /**
      * Si le slot est utilisé et est tard (coef plus c'est tard = plus score fait mal)
@@ -138,11 +143,13 @@ public class WeightConfig {
                 // ---------------------------------------------------------
                 // Critère 2 : Un cours à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
                 // ---------------------------------------------------------
-                boolean isHeureFixe = (slot.getDebut().equals(60 * 8)
-                        || slot.getDebut().equals(60 * 10 + 15)
-                        || slot.getDebut().equals(13 * 60 + 30)
-                        || slot.getDebut().equals(15 * 60 + 45)
-                        || slot.getDebut().equals(18 * 60));
+                boolean isHeureFixe = (slot.getDebut().equals(60 * 8) // 8h
+                        || slot.getDebut().equals(60 * 8 + 30) // 8h30
+                        || slot.getDebut().equals(60 * 10 + 15) // 10h15
+                        || slot.getDebut().equals(13 * 60 + 30) // 13h30
+                        || slot.getDebut().equals(60 * 14) // 14h00
+                        || slot.getDebut().equals(15 * 60 + 45) // 15h45
+                        || slot.getDebut().equals(18 * 60)); // 18h
 
                 // Si le slot actuel est une heure fixe et que ce n'est pas le premier slot de la liste (du jour)
                 double score2Sum = 0.;
