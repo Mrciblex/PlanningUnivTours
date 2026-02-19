@@ -29,13 +29,13 @@ public class ProfesseurService {
                 .collect(Collectors.toList());
     }
 
-    public ProfesseurDto findProfesseursDtoById(Integer id) {
+    public ProfesseurDto findProfesseurDtoById(Integer id) {
         ProfesseurEntity professeurEntity = professeurRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le professeur avec l'id n'est pas trouvé : " + id));
         return ProfesseurMapper.toDto(professeurEntity);
     }
 
-    public List<ProfesseurDto> findProfesseursDtoByIdPromo(Integer idPromo) {
+    public List<ProfesseurDto> findProfesseurDtoByIdPromo(Integer idPromo) {
         List<ProfesseurEntity> professeurEntity = professeurRepository.findByIdPromo(idPromo);
         return professeurEntity.stream()
                 .map(ProfesseurMapper::toDto)

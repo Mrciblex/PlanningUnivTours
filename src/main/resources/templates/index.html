@@ -9,10 +9,10 @@
     <body class="bg-[#2F3E47]">
         <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <div class="min-h-screen flex flex-col items-center justify-center">
+        <div th:class="min-h-screen flex flex-col items-center justify-center">
             <!-- Titre -->
-            <div class="text-center mb-20 animate-in">
-                <h1 class="text-white">Acceuil de UnivTime</h1>
+            <div th:class="text-center mb-20 animate-in">
+                <h1 th:class="text-white">Acceuil de UnivTime</h1>
             </div>
 
             <!-- Les 2 cercles -->
@@ -41,6 +41,51 @@
                         </div>
                     </button>
                     <div class="avatar-label text-center">Nouveau EDT</div>
+                </div>
+
+                <!-- Sélection des promotions les plus récentes -->
+                <div class="w-full max-w-2xl animate-in">
+                    <div id="selection_promo_recente" class="dropdown-container">
+                        <h3 class="text-xl font-bold mb-4">Tous les EDTs</h3>
+                        <div class="custom-scrollbar overflow-y-auto">
+                            <!-- Affichage de 1 à 3 promotions : les dernières ouvertes -->
+                            <div th:each="promo, iterStat : ${promotions}"
+                                 th:classappend="${iterStat.index % 4 == 0} ? 'bg-gradient-to-r from-cyan-600 to-cyan-700' :
+                                                 ${iterStat.index % 4 == 1} ? 'bg-gradient-to-r from-purple-600 to-purple-700' :
+                                                 ${iterStat.index % 4 == 2} ? 'bg-gradient-to-r from-pink-600 to-pink-700' :
+                                    'bg-gradient-to-r from-indigo-600 to-indigo-700'"
+                                    class="promo-item"
+                                 th:onclick="'accessPromo(\'' + ${promo.id} + '\')'">
+                                <div class="promo-icon"
+                                     th:classappend="${iterStat.index % 4 == 0} ? 'bg-cyan-500' :
+                                                     ${iterStat.index % 4 == 1} ? 'bg-purple-500' :
+                                                     ${iterStat.index % 4 == 2} ? 'bg-pink-500' :
+                                        'bg-indigo-500'">
+                                    <span th:text="${promo.code}">L3</span>
+                                </div>
+                                <div class="promo-info">
+                                    <div class="promo-name" th:text="${promo.nom}">Licence 3 Informatique</div>
+                                    <div class="promo-meta">
+                                        <span th:text="${promo.nbEtudiants}">45</span> étudiants
+                                        <p> • </p>
+                                        <span th:text="${promo.annee}">2024-2025</span>
+                                    </div>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+
+                            <!-- Si il n'y pas de promotions -->
+                            <div th:if="${promotions == null or promotions.isEmpty()}" class="text-center py-8 opacity-60">
+                                <p>Aucun EDT disponible</p>
+                            </div>
+                        </div>
+
+                        <div class="scroll-indicator" th:if="${promotions != null and promotions.size() > 4}">
+                            Cliqué ici pour voir plus
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

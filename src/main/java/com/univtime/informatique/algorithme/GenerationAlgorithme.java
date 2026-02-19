@@ -472,7 +472,7 @@ public class GenerationAlgorithme {
                 WHERE pr.idPromo = 1;
 
              */
-        List<ProfesseurDto> professeurs = professeurService.findProfesseursDtoByIdPromo(idPromo);
+        List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
         java.util.Map<Integer, List<JourDto>> disposParProf = new java.util.HashMap<>();
         for (ProfesseurDto prof : professeurs) {
             disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));

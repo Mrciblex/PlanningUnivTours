@@ -1,4 +1,4 @@
-/* === 3. BOUTONS RONDS (Avatar) === */
+/* Bouton en général  */
 .avatar-button {
     width: 9em;
     height: 9em;
@@ -23,7 +23,14 @@
     font-weight: 700;
 }
 
-/* Couleurs des boutons - Charte Univ Tours */
+.avatar-label {
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 2em;
+    text-transform: uppercase;
+}
+
+/* Bouton spécifique */
 .new-edt {
     background: linear-gradient(135deg, #fff 0%, #00A99B 100%);
 }
@@ -32,10 +39,3 @@
     background: linear-gradient(135deg, #fff 0%, #00A99B 100%);
 }
 
-/* Label sous les boutons */
-.avatar-label {
-    font-size: 1em;
-    font-weight: 600;
-    margin-top: 2em;
-    text-transform: uppercase;
-}
