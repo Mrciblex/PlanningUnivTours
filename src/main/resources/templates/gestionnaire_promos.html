@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="promo : ${promotions}">
+                            <tr th:each="promo : ${promos}" th:if="${promo != null}">
                                 <td class="font-semibold text-tours-green-light" th:text="${promo.nom}">Licence 3 Informatique</td>
                                 <td th:text="${promo.annee}">2024-2025</td>
                                 <td>
@@ -53,13 +53,36 @@
                                 </td>
                             </tr>
 
+                            <!-- Static -->
+                            <tr>
+                                <td>Licence 3 Informatique</td>
+                                <td>2024-2025</td>
+                                <td>
+                                    <span>01/09/2024</span>
+                                    <span> - </span>
+                                    <span>31/01/2025</span>
+                                </td>
+                                <td>
+                                    <span>01/02/2025</span>
+                                    <span> - </span>
+                                    <span>30/06/2025</span>
+                                </td>
+                                <td>
+                                    <button onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S1</button>
+                                    <button onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S2</button>
+                                </td>
+                                <td>
+                                    <button th:onclick="|editPromo('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
+                                    <button th:onclick="|deletePromo('${promo.id}', '${promo.nom}')|" class="btn-delete">Supprimer</button>
+                                </td>
+                            </tr>
+
                             <tr th:if="${#lists.isEmpty(promotions)}">
                                 <td colspan="6" class="text-center text-red-700 font-bold">Aucune promotion</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
 
