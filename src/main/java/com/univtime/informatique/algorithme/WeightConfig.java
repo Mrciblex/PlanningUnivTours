@@ -9,7 +9,7 @@ public class WeightConfig {
     /**
      * Critère 1 : Un cours à 8h (donc premier slot du jour)
      */
-    private static Double placementPlusTotPossible = .0;
+    private static Double placementPlusTotPossible = 1.;
 
     /**
      * Critère 2 : Un cours à une heure fixe (8h, 10h15, 13h30, 15h45, 18h)
