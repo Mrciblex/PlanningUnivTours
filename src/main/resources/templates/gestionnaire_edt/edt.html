@@ -9,7 +9,7 @@
     <body>
         <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <div class="edt-container">
+        <div class="min-h-screen edt-container">
             <!-- Main Calendar -->
             <div class="calendar-area">
                 <!-- Header -->
@@ -77,7 +77,7 @@
 
             <!-- Menu à droite -->
             <div class="sidebar">
-                <button class="sidebar-btn calendar-btn" onclick="goToCalendar()">
+                <button class="sidebar-btn calendar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
                     EDT
                 </button>
 
@@ -85,11 +85,15 @@
                      + Ajouter un cours
                 </button>
 
-                <button class="sidebar-btn" onclick="manageTeachers()">
+                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
+                    + Composantes
+                </button>
+
+                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
                     + Enseignants
                 </button>
 
-                <button class="sidebar-btn" onclick="manageGroups()">
+                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_groupes'">
                     + Groupes
                 </button>
 

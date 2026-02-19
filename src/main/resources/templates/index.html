@@ -4,7 +4,7 @@
         <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
         <link rel="stylesheet" th:href="@{/css/index.css}">
 
-        <title>UnivTime - Acceuil</title>
+        <title>UnivTime - Accueil</title>
     </head>
     <body class="bg-[#2F3E47]">
         <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
@@ -12,7 +12,7 @@
         <div class="min-h-screen flex flex-col items-center justify-center">
             <!-- Titre -->
             <div class="text-center mb-20 animate-in">
-                <h1 class="text-white">Acceuil de UnivTime</h1>
+                <h1 class="text-white">Accueil de UnivTime</h1>
             </div>
 
             <!-- Les 2 cercles -->
@@ -67,7 +67,7 @@
                     </div>
 
                     <!-- Static -->
-                    <div class="promo-item" th:href="@{/gestionnaire_promos}">
+                    <div class="promo-item" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
                         <div class="promo-icon">L3</div>
                         <div class="promo-info">
                             <div class="promo-name">Licence 3 Informatique</div>
@@ -80,7 +80,7 @@
                         </div>
                     </div>
 
-                    <div class="promo-item" onclick="accessPromo('2')">
+                    <div class="promo-item" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
                         <div class="promo-icon">M1</div>
                         <div class="promo-info">
                             <div class="promo-name">Master 1 Data Science</div>
@@ -91,6 +91,10 @@
                                 <polyline points="9 18 15 12 9 6"></polyline>
                             </svg>
                         </div>
+                    </div>
+
+                    <div class="text-center text-slate-400 scroll-indicator" onclick="window.location.href='/univtime/gestion-promos'">
+                        Ici pour voir +
                     </div>
 
                     <!-- Empty state -->

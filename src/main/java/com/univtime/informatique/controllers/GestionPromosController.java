@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -20,6 +21,9 @@ public class GestionPromosController {
 
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
+        if (promos == null) {
+            promos = new ArrayList<>();
+        }
         model.addAttribute("promos", promos);
         return "gestion_promos";
     }
