@@ -36,11 +36,7 @@ public class GestionPromosController {
         return "redirect:/gestion_promos";
     }
 
-    @GetMapping("/{id}/delete")
-    public String deletePromo(@PathVariable Integer id) {
-        promoService.deletePromoById(id);
-        return "redirect:/gestion_promos";
-    }
+
 
 }
 
