@@ -44,8 +44,8 @@
                                     <span th:text="${promo.dateFinS2 != null ? #temporals.format(promo.dateFinS2, 'dd/MM/yyyy') : '-'}">30/06/2025</span>
                                 </td>
                                 <td>
-                                    <button th:onclick="|goToEDT('${promo.id}', 1)|" class="btn-semester mr-2">S1</button>
-                                    <button th:onclick="|goToEDT('${promo.id}', 2)|" class="btn-semester">S2</button>
+                                    <button >S1</button>
+                                    <button >S2</button>
                                 </td>
                                 <td>
                                     <button th:onclick="|editPromo('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
@@ -55,25 +55,25 @@
 
                             <!-- Static -->
                             <tr>
-                                <td>Licence 3 Informatique</td>
-                                <td>2024-2025</td>
+                                <td class="text-white">Licence 3 Informatique</td>
+                                <td class="text-white">2024-2025</td>
                                 <td>
-                                    <span>01/09/2024</span>
-                                    <span> - </span>
-                                    <span>31/01/2025</span>
+                                    <span class="text-white">01/09/2024</span>
+                                    <span class="text-white"> - </span>
+                                    <span class="text-white">31/01/2025</span>
                                 </td>
                                 <td>
-                                    <span>01/02/2025</span>
-                                    <span> - </span>
-                                    <span>30/06/2025</span>
+                                    <span class="text-white">01/02/2025</span>
+                                    <span class="text-white"> - </span>
+                                    <span class="text-white">30/06/2025</span>
                                 </td>
                                 <td>
-                                    <button onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S1</button>
-                                    <button onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S2</button>
+                                    <button class="btn-semester mr-2" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S1</button>
+                                    <button class="btn-semester mr-2" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S2</button>
                                 </td>
                                 <td>
-                                    <button th:onclick="|editPromo('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
-                                    <button th:onclick="|deletePromo('${promo.id}', '${promo.nom}')|" class="btn-delete">Supprimer</button>
+                                    <button class="btn-edit mr-2">Modifier</button>
+                                    <button class="btn-delete">Supprimer</button>
                                 </td>
                             </tr>
 
@@ -98,7 +98,6 @@
                         <label>Nom *</label>
                         <input type="text" id="nom" name="nom" required placeholder="Ex: Licence 3 Informatique">
                     </div>
-
 
                     <div class="form-group">
                         <label>Année *</label>
