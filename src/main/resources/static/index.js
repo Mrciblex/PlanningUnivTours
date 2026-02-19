@@ -1,10 +1,56 @@
-
 // Index
-function ancienMenu() {
-    const dropdown = document.getElementById('ancienMenu');
-    dropdown.classList.toggle('active');
-}
 
+// Make functions global
+window.toggleDropdown = function() {
+    console.log('Toggle dropdown called');
+    const dropdown = document.getElementById('selection_promo_recente');
+    console.log('Dropdown element:', dropdown);
+    console.log('Current classes:', dropdown.className);
+    dropdown.classList.toggle('active');
+    console.log('New classes:', dropdown.className);
+};
+
+window.createNewEDT = function() {
+    window.location.href = '/edt/create';
+};
+
+window.accessPromo = function(promoId) {
+    window.location.href = '/edt/promo/' + promoId;
+};
+
+// Setup event listeners when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    const ancienBtn = document.getElementById('ancienEdtBtn');
+    const nouvelBtn = document.getElementById('nouvelEdtBtn');
+    const dropdown = document.getElementById('selection_promo_recente');
+
+    console.log('DOM loaded, elements:', ancienBtn, nouvelBtn, dropdown);
+
+    // Ancien EDT - toggle dropdown
+    ancienBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('Ancien EDT clicked');
+        toggleDropdown();
+    });
+
+    // Nouvel EDT - redirect
+    nouvelBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        console.log('Nouvel EDT clicked');
+        createNewEDT();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!dropdown.contains(event.target) &&
+            !ancienBtn.contains(event.target) &&
+            !nouvelBtn.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+});
+
+/*
 // Gestionnaire de promo
 document.getElementById('promoModal')
     .addEventListener(
@@ -15,7 +61,7 @@ document.getElementById('promoModal')
             }
         }
     );
-
+*/
 function openAddModal() {
     document.getElementById('modalTitle').textContent = 'Ajouter une promotion';
     document.getElementById('promoId').value = '';
