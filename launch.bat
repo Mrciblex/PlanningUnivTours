@@ -379,8 +379,21 @@ echo.
 :: Lancement via le plugin Spring Boot avec transmission des identifiants
 call !MAVEN_CMD! spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.password=!PGPASSWORD! --spring.datasource.username=!PGUSER! --app.debug-db=!DEBUG_DB!"
 
+:: On verifie s'il y a eu une erreur reconnue par Maven
 if !errorlevel! neq 0 (
     echo.
-    echo [ERREUR] Le serveur s'est arrete avec une erreur.
-    pause
+    echo ===================================================
+    echo [ERREUR CRITIQUE] Le serveur a plante ou s'est arrete avec une erreur !
+    echo Code d'erreur : !errorlevel!
+    echo ===================================================
+) else (
+    echo.
+    echo ===================================================
+    echo [INFO] Le serveur s'est arrete.
+    echo ===================================================
 )
+
+:: Pause inconditionnelle pour empêcher la fermeture de la fenêtre
+echo.
+echo Appuyez sur une touche pour fermer le terminal et lire les logs ci-dessus...
+pause >nul
