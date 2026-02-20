@@ -361,7 +361,7 @@ public class GenerationAlgorithme {
         List<Jour> top5Placements = allSimulations.stream()
                 .sorted((j1, j2) -> Double.compare(j2.getScore(), j1.getScore()))
                 // On garde les 5 meilleurs
-                .limit(5) // (Hard codé)
+                //.limit(5) // (Hard codé)
                 .toList();
 
         // ----------------------- DEBUG -----------------------
