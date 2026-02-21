@@ -85,20 +85,11 @@ public class GenerationAlgorithme {
                                        List<TDDto> profTds,
                                        List<TPDto> profTps) {
 
-        int chargeCM = profCms.stream()
-                .filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset))
-                .mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireCM())
-                .sum();
+        int chargeCM = profCms.stream().filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset)).mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireCM()).sum();
 
-        int chargeTD = profTds.stream()
-                .filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset))
-                .mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireTD())
-                .sum();
+        int chargeTD = profTds.stream().filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset)).mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireTD()).sum();
 
-        int chargeTP = profTps.stream()
-                .filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset))
-                .mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireTP())
-                .sum();
+        int chargeTP = profTps.stream().filter(c -> c.getRepartitionSemaineDto().getNumSemaine().equals(weekOffset)).mapToInt(c -> c.getRepartitionSemaineDto().getQteTypeCours() * c.getComposanteDto().getBlocHoraireTP()).sum();
 
         return chargeCM + chargeTD + chargeTP;
     }
@@ -106,10 +97,7 @@ public class GenerationAlgorithme {
     private int getTotalDisponibiliteMinutes(List<JourDto> joursDuProf) {
         if (joursDuProf == null) return 0; // Sécurité
 
-        return joursDuProf.stream()
-                .flatMap(jourDto -> jourDto.getDisponibiliteDto().stream())
-                .mapToInt(dispo -> dispo.getHeureFinDispo() - dispo.getHeureDebutDispo())
-                .sum();
+        return joursDuProf.stream().flatMap(jourDto -> jourDto.getDisponibiliteDto().stream()).mapToInt(dispo -> dispo.getHeureFinDispo() - dispo.getHeureDebutDispo()).sum();
     }
 
     private double getProfTension(int weekOffset,
@@ -119,15 +107,10 @@ public class GenerationAlgorithme {
                                   Map<Integer, List<TDDto>> tdsParProf,
                                   Map<Integer, List<TPDto>> tpsParProf) {
         // Dans getProfTension :
-        int charge = getChargeTotaleMinutes(weekOffset,
-                cmsParProf.getOrDefault(p.getIdProf(), new ArrayList<>()),
-                tdsParProf.getOrDefault(p.getIdProf(), new ArrayList<>()),
-                tpsParProf.getOrDefault(p.getIdProf(), new ArrayList<>())
-        );
+        int charge = getChargeTotaleMinutes(weekOffset, cmsParProf.getOrDefault(p.getIdProf(), new ArrayList<>()), tdsParProf.getOrDefault(p.getIdProf(), new ArrayList<>()), tpsParProf.getOrDefault(p.getIdProf(), new ArrayList<>()));
         int dispo = getTotalDisponibiliteMinutes(joursDuProf); // Utilise la mémoire !
 
-        if (dispo == 0)
-            return Double.MAX_VALUE;
+        if (dispo == 0) return Double.MAX_VALUE;
         return (double) charge / dispo;
     }
 
@@ -167,8 +150,7 @@ public class GenerationAlgorithme {
     private boolean isProfDisponible(Slot slot,
                                      Set<DisponibiliteJourDto> dispos) {
         for (DisponibiliteJourDto dispo : dispos) {
-            if (slot.getDebut() >= dispo.getHeureDebutDispo() &&
-                    slot.getFin() <= dispo.getHeureFinDispo()) {
+            if (slot.getDebut() >= dispo.getHeureDebutDispo() && slot.getFin() <= dispo.getHeureFinDispo()) {
                 return true;
             }
         }
@@ -195,10 +177,7 @@ public class GenerationAlgorithme {
     }
 
 
-    private record CoursInjection(
-            CoursDto cours,
-            Jour jour
-    ) {
+    private record CoursInjection(CoursDto cours, Jour jour) {
     }
 
     /**
@@ -214,9 +193,7 @@ public class GenerationAlgorithme {
         LocalDate debutSemestre = semestre.firstWeek();
 
         // Si numSemaine = 1 et numJour = 1 (Lundi), on ajoute 0 semaine et 0 jour -> on reste sur le premierLundi
-        LocalDate dateDuCours = debutSemestre
-                .plusWeeks(numSemaine - 1)
-                .plusDays(numJour - 1);
+        LocalDate dateDuCours = debutSemestre.plusWeeks(numSemaine - 1).plusDays(numJour - 1);
 
         LocalTime heureDebut = LocalTime.of(minutesDebut / 60, minutesDebut % 60);
         LocalTime heureFin = LocalTime.of(minutesFin / 60, minutesFin % 60);
@@ -246,11 +223,7 @@ public class GenerationAlgorithme {
             int currentDay = i;
             Jour jour = currentSemaine.getJours().get(i);
 
-            Set<DisponibiliteJourDto> disponibiliteProf = joursDuProf.stream()
-                    .filter(j -> j.getJourSemaine() == currentDay + 1)
-                    .map(JourDto::getDisponibiliteDto)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toSet());
+            Set<DisponibiliteJourDto> disponibiliteProf = joursDuProf.stream().filter(j -> j.getJourSemaine() == currentDay + 1).map(JourDto::getDisponibiliteDto).flatMap(Set::stream).collect(Collectors.toSet());
 
             // Ca ne sert à rien de boucler sur les dernières heures si le bloc est plus gros que la place qu'il nous reste
             outerloop:
@@ -260,6 +233,35 @@ public class GenerationAlgorithme {
                 for (int k = 0; k < nbSlotNecessaire; k++) {
                     int indexActuel = j + k;
                     Slot slot = jour.getSlots().get(indexActuel);
+
+                    /**
+                     * Transformer des critères en contraintes
+                     * Placement à des heures pas fixe impossible
+                     */
+
+                    /*
+                                            boolean isHeureFixe = (slot.getDebut().equals(60 * 8) // 8h
+                                || slot.getDebut().equals(60 * 8 + 30) // 8h30
+                                || slot.getDebut().equals(60 * 10 + 15) // 10h15
+                                || slot.getDebut().equals(13 * 60 + 30) // 13h30
+                                || slot.getDebut().equals(60 * 14) // 14h00
+                                || slot.getDebut().equals(15 * 60 + 45) // 15h45
+                                || slot.getDebut().equals(18 * 60)); // 18h
+                     */
+
+                    // Si premier slot du cours
+                    if (k == 0) {
+                        // Vérifier si c'est à une heure fixe pour 2h et heure fixe pour 1h sinon, passer ces slots
+                        if (blocNecessaire == 2 * 60 && (slot.getDebut().equals(60 * 8) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60))) {
+
+                        } else if (blocNecessaire == 60 + 30 && (slot.getDebut().equals(60 * 8 + 30) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(60 * 14) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60))
+
+                        ) {
+
+                        } else {
+
+                        }
+                    }
 
                     // On s'assure que les participants n'ont pas déjà cours dans ce slot
                     if (isSameParticipants(slot, cours)) {
@@ -273,11 +275,11 @@ public class GenerationAlgorithme {
                         continue outerloop;
                     }
 
-                    // On s'assure que les slots du bloc sont continu (pas de coupure au milieu du cours, en dehors des pauses de 15 min)
-                    // Si slots non continu (diff > 15 minutes), par exemple pause de midi, alors on reprends au premier slot dispo après
+                    // On s'assure que les slots du bloc sont continu (pas de coupure au milieu du cours)
+                    // Si slots non continu, par exemple pause de midi, alors on reprends au premier slot dispo après
                     if (k > 0) {
                         Slot slotPrecedent = jour.getSlots().get(indexActuel - 1);
-                        if (slot.getDebut() - slotPrecedent.getFin() > 15) {
+                        if (!slot.getDebut().equals(slotPrecedent.getFin())) {
                             j = indexActuel - 1; // Au reset de la boucle, j prends + 1 donc comme on veut l'index Actuel alors on fait -1 ici
                             continue outerloop;
                         }
@@ -288,10 +290,7 @@ public class GenerationAlgorithme {
 
                 // Si on arrive ici, c'est que le inner loop (k) est allé au bout sans break/continue
                 // Donc le bloc est valide !
-                bestPlacements.add(new Jour(
-                        i + 1,
-                        slots
-                ));
+                bestPlacements.add(new Jour(i + 1, slots));
             }
         }
 
@@ -310,76 +309,59 @@ public class GenerationAlgorithme {
             String debutFormatte = String.format("%02d:%02d", debut / 60, debut % 60);
             String finFormatte = String.format("%02d:%02d", fin / 60, fin % 60);
 
-            System.out.println(
-                    "Jour " + j + " | de " + debutFormatte + " à " + finFormatte
-            );
+            System.out.println("Jour " + j + " | de " + debutFormatte + " à " + finFormatte);
 
         });
         // ----------------------- FIN DEBUG -----------------------
 
         // On reconstruit tout les jours par rapports à la semaine actuelle pour voir avec le score lesquelles sont les meilleures
-        List<Jour> allSimulations = bestPlacements.stream()
-                .map(placement -> {
-                    // Récupération du vrai jour source
-                    Jour vraiJourActuel = currentSemaine.getJours().get(placement.getNumJour().getValue() - 1);
+        List<Jour> allSimulations = bestPlacements.stream().map(placement -> {
+            // Récupération du vrai jour source
+            Jour vraiJourActuel = currentSemaine.getJours().get(placement.getNumJour().getValue() - 1);
 
-                    // Extraction des débuts de slots pour le filtre
-                    Set<Integer> debutsChoisis = placement.getSlots().stream()
-                            .map(Slot::getDebut)
-                            .collect(Collectors.toSet());
+            // Extraction des débuts de slots pour le filtre
+            Set<Integer> debutsChoisis = placement.getSlots().stream().map(Slot::getDebut).collect(Collectors.toSet());
 
-                    // Création de la copie
-                    List<Slot> slotsCopies = vraiJourActuel.getSlots().stream()
-                            .map(vraiSlot -> {
-                                Slot slotSimule = new Slot(
-                                        vraiSlot.getDebut(),
-                                        vraiSlot.getFin(),
-                                        new ArrayList<>(vraiSlot.getUsedBy()),
-                                        vraiSlot.getScore()
-                                );
+            // Création de la copie
+            List<Slot> slotsCopies = vraiJourActuel.getSlots().stream().map(vraiSlot -> {
+                Slot slotSimule = new Slot(vraiSlot.getDebut(), vraiSlot.getFin(), new ArrayList<>(vraiSlot.getUsedBy()), vraiSlot.getScore());
 
-                                if (debutsChoisis.contains(slotSimule.getDebut())) {
-                                    slotSimule.addUsedBy(cours);
-                                }
-                                return slotSimule;
-                            })
-                            .toList();
+                if (debutsChoisis.contains(slotSimule.getDebut())) {
+                    slotSimule.addUsedBy(cours);
+                }
+                return slotSimule;
+            }).toList();
 
-                    // Création du jour simulé (le constructeur calcule déjà la moyenne des scores des slots)
-                    Jour jourSimule = new Jour(vraiJourActuel.getNumJour().getValue(), slotsCopies);
+            // Création du jour simulé (le constructeur calcule déjà la moyenne des scores des slots)
+            Jour jourSimule = new Jour(vraiJourActuel.getNumJour().getValue(), slotsCopies);
 
-                    // Calcul des scores (met à jour les scores des slots/jour)
-                    WeightConfig.evaluationPlacements(jourSimule);
+            // Calcul des scores (met à jour les scores des slots/jour)
+            WeightConfig.evaluationPlacements(jourSimule);
 
-                    return jourSimule;
-                }).collect(Collectors.toList());
+            return jourSimule;
+        }).collect(Collectors.toList());
 
         // On mélange la liste pour éviter une linéarité si deux scores égaux pendant le tri
         Collections.shuffle(allSimulations);
 
         // Tri décroissant sur le score calculé pour tout les jours
-        List<Jour> top5Placements = allSimulations.stream()
-                .sorted((j1, j2) -> Double.compare(j2.getScore(), j1.getScore()))
+        List<Jour> top5Placements = allSimulations.stream().sorted((j1, j2) -> Double.compare(j2.getScore(), j1.getScore()))
                 // On garde les 5 meilleurs
-                //.limit(5) // (Hard codé)
+                //.limit(3) // (Hard codé)
                 .toList();
 
         // ----------------------- DEBUG -----------------------
         System.out.println("MEILLEURS PLACEMENTS POSSIBLE");
         top5Placements.forEach(jour -> {
             int j = jour.getNumJour().getValue();
-            List<Slot> slotDuCour = jour.getSlots().stream()
-                    .filter(s -> s.getUsedBy().contains(cours))
-                    .toList();
+            List<Slot> slotDuCour = jour.getSlots().stream().filter(s -> s.getUsedBy().contains(cours)).toList();
             int debut = slotDuCour.getFirst().getDebut();
             int fin = slotDuCour.getLast().getFin();
 
             String debutFormatte = String.format("%02d:%02d", debut / 60, debut % 60);
             String finFormatte = String.format("%02d:%02d", fin / 60, fin % 60);
 
-            System.out.println(
-                    "Jour " + j + " (M du jour=" + jour.getScore() + ") | de " + debutFormatte + " à " + finFormatte
-            );
+            System.out.println("Jour " + j + " (M du jour=" + jour.getScore() + ") | de " + debutFormatte + " à " + finFormatte);
 
         });
         // ----------------------- FIN DEBUG -----------------------
@@ -393,12 +375,10 @@ public class GenerationAlgorithme {
 
         CoursDto updatedCours = getRealDateCours(cours, semestre, numSemaine, numJour, minutesDebut, minutesFin);
 
-        jourGagnant.getSlots().stream()
-                .filter(s -> s.getDebut() >= minutesDebut && s.getFin() <= minutesFin)
-                .forEach(s -> {
-                    s.getUsedBy().remove(cours); // On enlève le DTO temporaire
-                    s.getUsedBy().add(updatedCours); // On met le DTO final avec les dates
-                });
+        jourGagnant.getSlots().stream().filter(s -> s.getDebut() >= minutesDebut && s.getFin() <= minutesFin).forEach(s -> {
+            s.getUsedBy().remove(cours); // On enlève le DTO temporaire
+            s.getUsedBy().add(updatedCours); // On met le DTO final avec les dates
+        });
 
         return jourGagnant;
     }
@@ -504,14 +484,11 @@ public class GenerationAlgorithme {
         //System.out.println(td);
         //System.out.println(tp);
 
-        Map<Integer, List<CMDto>> cmsParProf = cms.stream()
-                .collect(Collectors.groupingBy(c -> c.getProfesseurDto().getIdProf()));
+        Map<Integer, List<CMDto>> cmsParProf = cms.stream().collect(Collectors.groupingBy(c -> c.getProfesseurDto().getIdProf()));
 
-        Map<Integer, List<TDDto>> tdsParProf = tds.stream()
-                .collect(Collectors.groupingBy(t -> t.getProfesseurDto().getIdProf()));
+        Map<Integer, List<TDDto>> tdsParProf = tds.stream().collect(Collectors.groupingBy(t -> t.getProfesseurDto().getIdProf()));
 
-        Map<Integer, List<TPDto>> tpsParProf = tps.stream()
-                .collect(Collectors.groupingBy(t -> t.getProfesseurDto().getIdProf()));
+        Map<Integer, List<TPDto>> tpsParProf = tps.stream().collect(Collectors.groupingBy(t -> t.getProfesseurDto().getIdProf()));
 
         /**
          * Boucle sur tout les jours du semestre
@@ -551,19 +528,7 @@ public class GenerationAlgorithme {
                 for (PlanningPeriodMinutes period : planningPossiblePeriod) {
                     for (int start = period.debut(); start < period.fin(); start = start + slotStep) {
                         // Vérifier si ce créneau est présent dans des MomentBanalisés (jours fériés et autre)
-                        if (
-                                !this.isSlotAvailable(
-                                        LocalDateTime.of(actualDay, LocalTime.of(0, 0, 0)),
-                                        LocalDateTime.of(actualDay, LocalTime.of(23, 59, 59)),
-                                        pauses
-                                )
-                                        ||
-                                        !this.isSlotAvailable(
-                                                LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
-                                                LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)),
-                                                pauses
-                                        )
-                        ) {
+                        if (!this.isSlotAvailable(LocalDateTime.of(actualDay, LocalTime.of(0, 0, 0)), LocalDateTime.of(actualDay, LocalTime.of(23, 59, 59)), pauses) || !this.isSlotAvailable(LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)), LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)), pauses)) {
                             continue;
                         }
 
@@ -624,104 +589,70 @@ public class GenerationAlgorithme {
                 List<TDDto> tdDuProf = tdsParProf.getOrDefault(prof.getIdProf(), new ArrayList<>());
                 List<TPDto> tpDuProf = tpsParProf.getOrDefault(prof.getIdProf(), new ArrayList<>());
 
-                cmDuProf.stream()
-                        .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
-                        .forEach(cour -> {
+                cmDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cour -> {
 
-                            // ----------------------- DEBUG -----------------------
-                            StringBuilder cmGroupes = new StringBuilder();
-                            for (int sg = 0; sg < promo.size(); sg++) {
-                                if (sg == promo.size() - 1) {
-                                    cmGroupes.append(promo.get(sg).getNomSousGroupe());
-                                } else {
-                                    cmGroupes.append(promo.get(sg).getNomSousGroupe()).append(",");
-                                }
-                            }
-                            System.out.println(
-                                    "CM " + cmGroupes + " | " +
-                                            cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " | " +
-                                            cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
-                            // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- DEBUG -----------------------
+                    StringBuilder cmGroupes = new StringBuilder();
+                    for (int sg = 0; sg < promo.size(); sg++) {
+                        if (sg == promo.size() - 1) {
+                            cmGroupes.append(promo.get(sg).getNomSousGroupe());
+                        } else {
+                            cmGroupes.append(promo.get(sg).getNomSousGroupe()).append(",");
+                        }
+                    }
+                    System.out.println("CM " + cmGroupes + " | " + cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " | " + cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
+                    // ----------------------- FIN DEBUG -----------------------
 
-                            Set<ParticipeACoursDto> participeACoursDto = promo.stream().map(sg -> {
-                                return new ParticipeACoursDto(
-                                        sg.getIdSousGroupe(),
-                                        sg.getNomSousGroupe(),
-                                        sg.getNbEtuSousGroupe(),
-                                        sg.getGroupeDto().getIdGroupe()
-                                );
-                            }).collect(Collectors.toSet());
+                    Set<ParticipeACoursDto> participeACoursDto = promo.stream().map(sg -> {
+                        return new ParticipeACoursDto(sg.getIdSousGroupe(), sg.getNomSousGroupe(), sg.getNbEtuSousGroupe(), sg.getGroupeDto().getIdGroupe());
+                    }).collect(Collectors.toSet());
 
-                            ComposanteCoursDto composanteCoursDto = new ComposanteCoursDto(
-                                    cour.getComposanteDto().getIdComposante(),
-                                    cour.getComposanteDto().getBlocHoraireCM(),
-                                    cour.getComposanteDto().getBlocHoraireTD(),
-                                    cour.getComposanteDto().getBlocHoraireTP()
-                            );
+                    ComposanteCoursDto composanteCoursDto = new ComposanteCoursDto(cour.getComposanteDto().getIdComposante(), cour.getComposanteDto().getBlocHoraireCM(), cour.getComposanteDto().getBlocHoraireTD(), cour.getComposanteDto().getBlocHoraireTP());
 
-                            ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(
-                                    cour.getProfesseurDto().getIdProf(),
-                                    cour.getProfesseurDto().getJourIds()
-                            );
+                    ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf(), cour.getProfesseurDto().getJourIds());
 
-                            CoursDto courCreated = new CoursDto(
-                                    TypeCours.CM,
-                                    composanteCoursDto,
-                                    professeurCoursDto,
-                                    null, // Rempli manuellement après
-                                    participeACoursDto
-                            );
+                    CoursDto courCreated = new CoursDto(TypeCours.CM, composanteCoursDto, professeurCoursDto, null, // Rempli manuellement après
+                            participeACoursDto);
 
-                            // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
-                            // Le cours à ajouter,
-                            // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
-                            // Après on re-fait juste la moyenne
+                    // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
+                    // Le cours à ajouter,
+                    // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
+                    // Après on re-fait juste la moyenne
 
-                            for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
-                                Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
-                                if (jourGagnant == null) {
-                                    coursImpossibles.add(courCreated);
-                                } else {
-                                    currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
-                                }
-                            }
-                        });
+                    for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
+                        Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
+                        if (jourGagnant == null) {
+                            coursImpossibles.add(courCreated);
+                        } else {
+                            currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
+                        }
+                    }
+                });
 
-                tdDuProf.stream()
-                        .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
-                        .forEach(cours -> {
-                            List<SousGroupeDto> sousGroupesDto = promo.stream()
-                                    .filter(sg -> sg.getGroupeDto().getIdGroupe().equals(cours.getGroupeDto().getIdGroupe())).toList();
+                tdDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cours -> {
+                    List<SousGroupeDto> sousGroupesDto = promo.stream().filter(sg -> sg.getGroupeDto().getIdGroupe().equals(cours.getGroupeDto().getIdGroupe())).toList();
 
-                            // ----------------------- DEBUG -----------------------
-                            StringBuilder tdGroupes = new StringBuilder();
-                            for (int sg = 0; sg < sousGroupesDto.size(); sg++) {
-                                if (sg == sousGroupesDto.size() - 1) {
-                                    tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe());
-                                } else {
-                                    tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe()).append(",");
-                                }
-                            }
-                            System.out.println(
-                                    "TD " + tdGroupes + " | " +
-                                            cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
-                                            cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
-                            // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- DEBUG -----------------------
+                    StringBuilder tdGroupes = new StringBuilder();
+                    for (int sg = 0; sg < sousGroupesDto.size(); sg++) {
+                        if (sg == sousGroupesDto.size() - 1) {
+                            tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe());
+                        } else {
+                            tdGroupes.append(sousGroupesDto.get(sg).getNomSousGroupe()).append(",");
+                        }
+                    }
+                    System.out.println("TD " + tdGroupes + " | " + cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " + cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                    // ----------------------- FIN DEBUG -----------------------
 
-                        });
+                });
 
-                tpDuProf.stream()
-                        .filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0)
-                        .forEach(cours -> {
+                tpDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cours -> {
 
-                            // ----------------------- DEBUG -----------------------
-                            System.out.println(
-                                    "TP " + cours.getSousGroupeDto().getNomSousGroupe() + " | " +
-                                            cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " +
-                                            cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
-                            // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- DEBUG -----------------------
+                    System.out.println("TP " + cours.getSousGroupeDto().getNomSousGroupe() + " | " + cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " + cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
+                    // ----------------------- FIN DEBUG -----------------------
 
-                        });
+                });
             }
 
         }
