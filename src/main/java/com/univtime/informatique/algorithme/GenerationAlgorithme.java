@@ -359,7 +359,7 @@ public class GenerationAlgorithme {
         System.out.println("MEILLEURS PLACEMENTS POSSIBLE");
         top5Placements.forEach(jour -> {
             int j = jour.getNumJour().getValue();
-            List<Slot> slotDuCour = jour.getSlots().stream().filter(s -> s.getUsedBy().contains(cours)).toList();
+            List<Slot> slotDuCour = jour.getSlots().stream().filter(s -> s.getUsedBy().stream().anyMatch(c -> c == cours)).toList();
             int debut = slotDuCour.getFirst().getDebut();
             int fin = slotDuCour.getLast().getFin();
 
@@ -375,8 +375,15 @@ public class GenerationAlgorithme {
 
         int numSemaine = currentSemaine.getNumSemaine();
         int numJour = jourGagnant.getNumJour().getValue();
-        int minutesDebut = jourGagnant.getSlots().getFirst().getDebut();
-        int minutesFin = jourGagnant.getSlots().getLast().getFin();
+
+        // On isole uniquement les slots où l'algorithme a décidé de placer ce cours
+        List<Slot> slotsDuCoursGagnant = jourGagnant.getSlots().stream()
+                .filter(s -> s.getUsedBy().contains(cours))
+                .toList();
+
+        // On récupère les vraies heures de début et de fin du bloc
+        int minutesDebut = slotsDuCoursGagnant.getFirst().getDebut();
+        int minutesFin = slotsDuCoursGagnant.getLast().getFin();
 
         CoursDto updatedCours = getRealDateCours(cours, semestre, numSemaine, numJour, minutesDebut, minutesFin);
 
@@ -616,16 +623,22 @@ public class GenerationAlgorithme {
 
                     ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf(), cour.getProfesseurDto().getJourIds());
 
-                    CoursDto courCreated = new CoursDto(TypeCours.CM, composanteCoursDto, professeurCoursDto, null, // Rempli manuellement après
-                            participeACoursDto);
-
                     // Créer une fonction qui prend en paramètre : la list actuelle du planning de la semaine (slots)
                     // Le cours à ajouter,
                     // Optimisation à faire : on ne re-calcul réellement que le score du jour qui change à chaque fois ! Et non de la semaine entière tout le temps
                     // Après on re-fait juste la moyenne
 
                     for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
+                        CoursDto courCreated = new CoursDto(
+                                TypeCours.CM,
+                                composanteCoursDto,
+                                professeurCoursDto,
+                                null,
+                                participeACoursDto
+                        );
+
                         Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
+
                         if (jourGagnant == null) {
                             coursImpossibles.add(courCreated);
                         } else {

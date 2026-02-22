@@ -117,14 +117,28 @@ public class CoursDto {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(idCours);
+    public boolean equals(Object obj) {
+        // Si c'est exactement la même instance en mémoire, c'est le même objet (cas des DTO temporaires qu'on manipule dans l'algo)
+        if (this == obj) return true;
+
+        // Si c'est null ou d'une autre classe, c'est faux
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        CoursDto coursDto = (CoursDto) obj;
+
+        // Si l'un des deux (ou les deux) DTO n'a pas d'ID (null), ils sont forcément différents.
+        // (S'ils étaient la même instance, le point 1 aurait déjà renvoyé true)
+        if (this.idCours == null || coursDto.idCours == null) {
+            return false;
+        }
+
+        // Si les deux ont un ID, on les compare normalement
+        return Objects.equals(idCours, coursDto.idCours);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) return false;
-        CoursDto coursDto = (CoursDto) obj;
-        return Objects.equals(idCours, coursDto.idCours);
+    public int hashCode() {
+        // Si l'ID est null, on utilise l'adresse mémoire (super.hashCode())
+        return idCours != null ? Objects.hashCode(idCours) : super.hashCode();
     }
 }
