@@ -3,17 +3,17 @@ package com.univtime.informatique.algorithme;
 // MIN 0, 1 MAX
 public class WeightConfig {
     /**
-     * Critère 1 : Un cours à 8h (donc premier slot du jour)
+     * Critère : Un cours à 8h (donc premier slot du jour)
      */
     private static Double placementPlusTotPossible = 1.;
 
     /**
-     * Critère 4 : Un cours est dans la matinée avant 12h15
+     * Critère : Un cours est dans la matinée avant 12h15
      */
     private static Double placementMatin = 0.5;
 
     /**
-     * Critère 5 : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
+     * Critère : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
      * Ce critère est spécial car il a un impact que s'il est > 0. Et cette impact est de plus en plus important de >0 à 1.
      */
     private static Double placementPasFinTard = 0.;
@@ -117,13 +117,13 @@ public class WeightConfig {
                 Double scoreActuel = slot.getScore();
 
                 // ---------------------------------------------------------
-                // Critère 1 : Un cours à 8h (donc premier slot du jour)
+                // Critère : Un cours à 8h (donc premier slot du jour)
                 // ---------------------------------------------------------
                 boolean isDebutJour = slot.getDebut().equals(60 * 8) && !slot.getUsedBy().isEmpty();
                 Double score1 = WeightConfig.calculerScore(isDebutJour, WeightConfig.getPlacementPlusTotPossible());
 
                 // ---------------------------------------------------------
-                // Critère 4 : Un cours est dans la matinée avant 12h15
+                // Critère : Un cours est dans la matinée avant 12h15
                 // ---------------------------------------------------------
                 double score4 = WeightConfig.calculerScore(
                         !slot.getUsedBy().isEmpty() && slot.getFin() <= 60 * 12 + 15,
@@ -141,7 +141,7 @@ public class WeightConfig {
             }
 
             // ---------------------------------------------------------
-            // Critère 5 : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
+            // Critère : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
             // ---------------------------------------------------------
             double heurePivot = jour.getSlots().getFirst().getDebut(); // Dès le début
             double heureLimite = jour.getSlots().getLast().getFin();

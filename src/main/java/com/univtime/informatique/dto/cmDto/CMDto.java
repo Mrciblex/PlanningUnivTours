@@ -62,6 +62,7 @@ public class CMDto {
         );
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(professeurDto, promoDto, composanteDto, repartitionSemaineDto);

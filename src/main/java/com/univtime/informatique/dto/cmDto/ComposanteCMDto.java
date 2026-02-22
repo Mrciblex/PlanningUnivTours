@@ -1,5 +1,6 @@
 package com.univtime.informatique.dto.cmDto;
 
+import com.univtime.informatique.constants.TypeCours;
 import com.univtime.informatique.dto.idsDto.BesoinSalleIdDto;
 import com.univtime.informatique.dto.idsDto.TDIdDto;
 import com.univtime.informatique.dto.idsDto.TPIdDto;
@@ -169,6 +170,15 @@ public class ComposanteCMDto {
 
     public void setBesoinSalleIds(Set<BesoinSalleIdDto> besoinSalleIds) {
         this.besoinSalleIds = besoinSalleIds;
+    }
+
+    public Integer getBlocHoraire(TypeCours typeCours){
+        return switch (typeCours) {
+            case CM -> blocHoraireCM;
+            case TD -> blocHoraireTD;
+            case TP -> blocHoraireTP;
+            default -> 0;
+        };
     }
 
     @Override

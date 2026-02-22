@@ -239,27 +239,32 @@ public class GenerationAlgorithme {
                      * Placement à des heures pas fixe impossible
                      */
 
-                    /*
-                                            boolean isHeureFixe = (slot.getDebut().equals(60 * 8) // 8h
-                                || slot.getDebut().equals(60 * 8 + 30) // 8h30
-                                || slot.getDebut().equals(60 * 10 + 15) // 10h15
-                                || slot.getDebut().equals(13 * 60 + 30) // 13h30
-                                || slot.getDebut().equals(60 * 14) // 14h00
-                                || slot.getDebut().equals(15 * 60 + 45) // 15h45
-                                || slot.getDebut().equals(18 * 60)); // 18h
-                     */
-
-                    // Si premier slot du cours
+                    // Le problème avec ce système c'est que il ne peut pas y avoir de cours
+                    // avec un bloc de cours différent de 2h ou 1H30.
+                    // Cependant mon système avec cette contrainte sous forme relative avec le score
+                    // permettait cette fonctionnalité.
                     if (k == 0) {
-                        // Vérifier si c'est à une heure fixe pour 2h et heure fixe pour 1h sinon, passer ces slots
-                        if (blocNecessaire == 2 * 60 && (slot.getDebut().equals(60 * 8) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60))) {
+                        boolean isValid2h = blocNecessaire == 2 * 60 && (
+                                slot.getDebut().equals(60 * 8)
+                                        || slot.getDebut().equals(60 * 10 + 15)
+                                        || slot.getDebut().equals(13 * 60 + 30)
+                                        || slot.getDebut().equals(15 * 60 + 45)
+                                        || slot.getDebut().equals(18 * 60)
+                        );
 
-                        } else if (blocNecessaire == 60 + 30 && (slot.getDebut().equals(60 * 8 + 30) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(60 * 14) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60))
+                        boolean isValid1h30 = blocNecessaire == 60 + 30 && (
+                                slot.getDebut().equals(60 * 8 + 30)
+                                        || slot.getDebut().equals(60 * 10 + 15)
+                                        || slot.getDebut().equals(13 * 60 + 30)
+                                        || slot.getDebut().equals(60 * 14)
+                                        || slot.getDebut().equals(15 * 60 + 45)
+                                        || slot.getDebut().equals(18 * 60)
+                        );
 
-                        ) {
-
-                        } else {
-
+                        // Si ce n'est NI valide pour 2h, NI valide pour 1h30
+                        if (!(isValid2h || isValid1h30)) {
+                            j = indexActuel;
+                            continue outerloop;
                         }
                     }
 
@@ -600,7 +605,7 @@ public class GenerationAlgorithme {
                             cmGroupes.append(promo.get(sg).getNomSousGroupe()).append(",");
                         }
                     }
-                    System.out.println("CM " + cmGroupes + " | " + cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " | " + cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
+                    System.out.println("CM " + cmGroupes + " | " + cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " " + (cour.getComposanteDto().getBlocHoraire(TypeCours.CM) / 60) + "h | " + cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
                     // ----------------------- FIN DEBUG -----------------------
 
                     Set<ParticipeACoursDto> participeACoursDto = promo.stream().map(sg -> {
