@@ -50,6 +50,9 @@ CREATE TABLE IF NOT EXISTS Composantes (
     blocHoraireTP INT,
     idModule INT,
     CONSTRAINT chk_nom_composante CHECK (nomComposante IS NOT NULL),
+    CONSTRAINT chk_bloc_horaire_cm CHECK (blocHoraireCM IS NOT NULL),
+    CONSTRAINT chk_bloc_horaire_td CHECK (blocHoraireTD IS NOT NULL),
+    CONSTRAINT chk_bloc_horaire_tp CHECK (blocHoraireTP IS NOT NULL),
     CONSTRAINT pk_composante PRIMARY KEY (idComposante),
     CONSTRAINT fk_module FOREIGN KEY (idModule) REFERENCES Modules (idModule)
 );
