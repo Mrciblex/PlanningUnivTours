@@ -6,6 +6,7 @@ import com.univtime.informatique.dto.coursDto.ParticipeACoursDto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 // MIN 0, 1 MAX
 public class WeightConfig {
@@ -36,11 +37,9 @@ public class WeightConfig {
     private static Double placementSansTrou = 1.;
 
     /**
-     * Si le slot est utilisé et ne correspond pas au cours de la semaine 1
-     * (attention, s'il y a 1 cours S1 puis 2 cours S2 dans le même slot, si le cours S1 est quand même là il ne faut pas de pénalité)
-     * Première occurence d'un cours
+     * Critère 6 : Placement de Référence (Régularité)
      */
-    private static Double placementReference = 0.;
+    private static Double placementReference = 1.;
 
     public static Double getPlacementSansTrou() {
         return placementSansTrou;
@@ -110,7 +109,14 @@ public class WeightConfig {
         return somme / valeurs.length;
     }
 
-    public static void evaluationPlacements(Jour jour) {
+    /**
+     *
+     * @param jour
+     * @param occurrence correspond au slot référent d'une clé composante-typecours.
+     *                   Si un cours a déjà été placé, on aimerait selon le critère 6 placement référent,
+     *                   placer les autres au même endroit (le plus possible).
+     */
+    public static void evaluationPlacements(Jour jour, HashMap<String, Set<String>> occurrence) {
         if (jour != null) {
             HashMap<String, Integer> instancesOfCoursInDay = new  HashMap<>();
             HashMap<ParticipeACoursDto, Integer> lastInstanceOfSousGroupeInDay = new  HashMap<>();
@@ -124,8 +130,12 @@ public class WeightConfig {
                 // ---------------------------------------------------------
                 // Critère 5 : Un cours ne créer pas de trou
                 // ---------------------------------------------------------
+                // ---------------------------------------------------------
+                // Critère 6 : Placement de Référence (Régularité)
+                // ---------------------------------------------------------
                 double score1Sum = 0.;
                 double score5sum = 0.;
+                double score6Sum = 0.;
                 for(int usedByIndex = 0; usedByIndex < slot.getUsedBy().size(); usedByIndex++) {
                     CoursDto courOfSlot = slot.getUsedBy().get(usedByIndex);
 
@@ -160,11 +170,23 @@ public class WeightConfig {
 
                     boolean isMultipleCour = instanceNb > courOfSlot.getComposanteDto().getBlocHoraire(courOfSlot.getTypeCoursEnum()) / 15;
                     score1Sum += WeightConfig.calculerScore(isMultipleCour, WeightConfig.getRepetitionCoursDansJournee());
+
+                    String slotSignature = jour.getNumJour().getValue() + "-" + slot.getDebut();
+                    boolean respecteReference = true; // Vrai par défaut (pour la 1ère occurrence)
+
+                    if (occurrence.containsKey(courseKey)) {
+                        // Si on a un historique, on vérifie si ce créneau exact a été utilisé la première semaine
+                        respecteReference = occurrence.get(courseKey).contains(slotSignature);
+                    }
+
+                    score6Sum += WeightConfig.calculerScore(respecteReference, WeightConfig.getPlacementReference());
                 }
 
                 Double score5 = !slot.getUsedBy().isEmpty() ? score5sum / slot.getUsedBy().size() : score5sum;
 
                 Double score1 = !slot.getUsedBy().isEmpty() ? score1Sum / slot.getUsedBy().size() : score1Sum;
+
+                Double score6 = !slot.getUsedBy().isEmpty() ? score6Sum / slot.getUsedBy().size() : score6Sum;
 
                 Double scoreActuel = slot.getScore();
 
@@ -189,7 +211,7 @@ public class WeightConfig {
 
 
                 // Calcul moyenne après tout les scores calculer :
-                slot.setScore(calculerMoyenne(score1, score2, score3, score5));
+                slot.setScore(calculerMoyenne(score1, score2, score3, score5, score6));
             }
 
             // ---------------------------------------------------------

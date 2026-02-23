@@ -213,7 +213,8 @@ public class GenerationAlgorithme {
     private Jour getRandomBestPlacement(Semestre semestre,
                                         Semaine currentSemaine,
                                         CoursDto cours,
-                                        List<JourDto> joursDuProf) {
+                                        List<JourDto> joursDuProf,
+                                        HashMap<String, Set<String>> occurrence) {
         int dureeSemaine = currentSemaine.getJours().size();
         Integer blocNecessaire = cours.getComposanteDto().getBlocHoraire(cours.getTypeCoursEnum());
         int nbSlotNecessaire = (int) Math.ceil((double) blocNecessaire / slotStep);
@@ -341,7 +342,7 @@ public class GenerationAlgorithme {
             Jour jourSimule = new Jour(vraiJourActuel.getNumJour().getValue(), slotsCopies);
 
             // Calcul des scores (met à jour les scores des slots/jour)
-            WeightConfig.evaluationPlacements(jourSimule);
+            WeightConfig.evaluationPlacements(jourSimule, occurrence);
 
             return jourSimule;
         }).collect(Collectors.toList());
@@ -391,6 +392,16 @@ public class GenerationAlgorithme {
             s.getUsedBy().remove(cours); // On enlève le DTO temporaire
             s.getUsedBy().add(updatedCours); // On met le DTO final avec les dates
         });
+
+        // Pour critère 6
+        String courseKey = updatedCours.getComposanteDto().getIdComposante() + "-" + updatedCours.getTypeCoursEnum().name();
+        if (!occurrence.containsKey(courseKey)){
+            occurrence.putIfAbsent(courseKey, new java.util.HashSet<>());
+            slotsDuCoursGagnant.forEach(s -> {
+                String slotSignature = numJour + "-" + s.getDebut();
+                occurrence.get(courseKey).add(slotSignature);
+            });
+        }
 
         return jourGagnant;
     }
@@ -508,6 +519,7 @@ public class GenerationAlgorithme {
         long nbSemaine = semestre.nbSemaines();
         List<Semaine> semaines = new ArrayList<>();
         List<CoursDto> coursImpossibles = new ArrayList<>();
+        HashMap<String, Set<String>> occurrence = new  HashMap<>();
 
         for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++) {
             // Début et fin de la semaine du calendrier
@@ -637,7 +649,7 @@ public class GenerationAlgorithme {
                                 participeACoursDto
                         );
 
-                        Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()));
+                        Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()), occurrence);
 
                         if (jourGagnant == null) {
                             coursImpossibles.add(courCreated);
