@@ -10,15 +10,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/groupes")
-public class GroupeController {
+@RequestMapping("/gestion-groupes")
+public class GestionGroupeController {
 
     private final GroupeService groupeService;
     private final PromoService promoService;
 
-    public GroupeController(GroupeService groupeService, PromoService promoService) {
+    public GestionGroupeController(GroupeService groupeService, PromoService promoService) {
         this.groupeService = groupeService;
         this.promoService = promoService;
+    }
+
+    @GetMapping("/gestion_groupes")
+    public String showEdt() {
+        return "edt";
     }
 
     @GetMapping
