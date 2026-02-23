@@ -4,7 +4,7 @@
     margin-top: 40px;
 }
 
-/* Main Calendar Area */
+/* Calendrier Principal */
 .calendar-area {
     flex: 1;
     display: flex;
@@ -15,16 +15,15 @@
 
 /* Header */
 .edt-header {
-    background: white;
+    background: #2F3E47;
     padding: 16px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #e0e0e0;
 }
 
 .edt-header h1 {
-    color: #333;
+    color: white;
 }
 
 .week-nav {
@@ -52,7 +51,7 @@
 .week-info {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: white;
 }
 
 /* Calendar Table */

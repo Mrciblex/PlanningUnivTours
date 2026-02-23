@@ -30,3 +30,8 @@ h2 {
 .animate-in {
     animation: fadeInUp 0.8s ease forwards;
 }
+
+.logo-image {
+    width: 2rem;
+    height: auto;
+}
