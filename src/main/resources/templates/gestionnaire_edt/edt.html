@@ -38,9 +38,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- 6h à 21h par slot de 30 minutes -->
+                            <!-- 6h à 21h par slot de 15 minutes + faire un générateur -->
                             <tr><th>6:00</th><td onclick="addCourseAt(1, '6:00')"></td><td onclick="addCourseAt(2, '6:00')"></td><td onclick="addCourseAt(3, '6:00')"></td><td onclick="addCourseAt(4, '6:00')"></td><td onclick="addCourseAt(5, '6:00')"></td></tr>
+                            <tr><th>6:15</th><td onclick="addCourseAt(1, '6:15')"></td><td onclick="addCourseAt(2, '6:15')"></td><td onclick="addCourseAt(3, '6:15')"></td><td onclick="addCourseAt(4, '6:15')"></td><td onclick="addCourseAt(5, '6:15')"></td></tr>
                             <tr><th>6:30</th><td onclick="addCourseAt(1, '6:30')"></td><td onclick="addCourseAt(2, '6:30')"></td><td onclick="addCourseAt(3, '6:30')"></td><td onclick="addCourseAt(4, '6:30')"></td><td onclick="addCourseAt(5, '6:30')"></td></tr>
+                            <tr><th>6:45</th><td onclick="addCourseAt(1, '6:45')"></td><td onclick="addCourseAt(2, '6:45')"></td><td onclick="addCourseAt(3, '6:45')"></td><td onclick="addCourseAt(4, '6:45')"></td><td onclick="addCourseAt(5, '6:45')"></td></tr>
                             <tr><th>7:00</th><td onclick="addCourseAt(1, '7:00')"></td><td onclick="addCourseAt(2, '7:00')"></td><td onclick="addCourseAt(3, '7:00')"></td><td onclick="addCourseAt(4, '7:00')"></td><td onclick="addCourseAt(5, '7:00')"></td></tr>
                             <tr><th>7:30</th><td onclick="addCourseAt(1, '7:30')"></td><td onclick="addCourseAt(2, '7:30')"></td><td onclick="addCourseAt(3, '7:30')"></td><td onclick="addCourseAt(4, '7:30')"></td><td onclick="addCourseAt(5, '7:30')"></td></tr>
                             <tr><th>8:00</th><td onclick="addCourseAt(1, '8:00')"></td><td onclick="addCourseAt(2, '8:00')"></td><td onclick="addCourseAt(3, '8:00')"></td><td onclick="addCourseAt(4, '8:00')"></td><td onclick="addCourseAt(5, '8:00')"></td></tr>
@@ -75,32 +77,41 @@
 
             <!-- Menu à droite -->
             <div class="sidebar">
-                <button class="sidebar-btn calendar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
-                    EDT
-                </button>
-
-                <button class="sidebar-btn" onclick="addCourse()">
+                <button class="btn-primary" onclick="addCourse()">
                      + Ajouter un cours
                 </button>
 
-                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_modules'">
+                    + Modules
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
                     + Composantes
                 </button>
 
-                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
                     + Enseignants
                 </button>
 
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_groupes'">
                 <button class="sidebar-btn"
                         th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
                     + Groupes
                 </button>
 
-                <button class="sidebar-btn" onclick="openSettings()">
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">
+                    + Maquette
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/recap'">
+                    Récapitulatif
+                </button>
+
+                <button class="btn-primary" onclick="openSettings()">
                     Paramètres
                 </button>
 
-                <button class="sidebar-btn" onclick="exportEDT()">
+                <button class="btn-primary" onclick="exportEDT()">
                     Exporter
                 </button>
 

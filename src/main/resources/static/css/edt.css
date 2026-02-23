@@ -69,7 +69,7 @@
 }
 
 .calendar-table thead th {
-    background: #5b7fc7;
+    background: #00A99B;
     color: white;
     padding: 2px;
     text-align: center;
@@ -167,30 +167,20 @@
     overflow-y: hidden;
 }
 
-.sidebar-btn {
-    background: #5b7fc7;
-    border: none;
+.btn-primary {
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #00A99B, #1F635E);
     color: white;
-    padding: 12px 16px;
-    border-radius: 8px;
-    cursor: pointer;
+    border: none;
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 14px;
-    text-align: center;
+    cursor: pointer;
     transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
-.sidebar-btn:hover {
-    background: #4a6db0;
+.btn-primary:hover {
+    background: linear-gradient(135deg, #00A99B, #1F635E);
     transform: translateY(-2px);
-}
-
-.sidebar-btn.calendar-btn {
-    background: linear-gradient(135deg, #6b9bd8, #5b7fc7);
 }
 
 /* Mini Calendar */
