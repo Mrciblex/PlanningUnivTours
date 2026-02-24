@@ -1,13 +1,12 @@
 package com.univtime.informatique.controllers;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
 @Controller
-public class IndexController {
+public class GestionPromosController {
 
-    @GetMapping("/")
-    public String showIndex() {
-        return "index";
+    @GetMapping("/gestion-promos")
+    public String gestionPromos() {
+        return "gestionnaire_promos";
     }
 }
+

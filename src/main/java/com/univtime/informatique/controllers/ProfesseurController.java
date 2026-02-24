@@ -26,20 +26,20 @@ public class ProfesseurController {
     public String listAllProfesseurs(Model model) {
         List<ProfesseurDto> professeurs = professeurService.findAllProfesseurs();
         model.addAttribute("professeurs", professeurs);
-        return "gestion_professeurs";
+        return "gestionnaire_edt_promo/gestion_professeurs";
     }
 
     @GetMapping("/{id}")
     public String getProfesseurById(@PathVariable Integer id, Model model) {
         ProfesseurDto professeur = professeurService.findProfesseurDtoById(id);
         model.addAttribute("professeur", professeur);
-        return "professeurDetail";// change le nom si cela ne te plait pas
+        return "gestionnaire_edt_promo/professeurDetail";// change le nom si cela ne te plait pas
     }
 
     @GetMapping("/new")
     public String formDeCreation(Model model) {
         model.addAttribute("professeur", new ProfesseurDto());
-        return "newProfesseur";// pour la pop up de cration du prof
+        return "gestionnaire_edt_promo/newProfesseur";// pour la pop up de cration du prof
     }
 
     @PostMapping("/new")
@@ -52,7 +52,7 @@ public class ProfesseurController {
     public String formDeModification(@PathVariable Integer id, Model model) {
         ProfesseurDto professeur = professeurService.findProfesseurDtoById(id);
         model.addAttribute("professeur", professeur);
-        return "editProfesseur";// et la il faut mettre la pop up en html et faire le lien en js comme j'ai montré au debut
+        return "gestionnaire_edt_promo/editProfesseur";// et la il faut mettre la pop up en html et faire le lien en js comme j'ai montré au debut
     }
 
     @PostMapping("/{id}/edit")
