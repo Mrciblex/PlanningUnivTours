@@ -13,17 +13,17 @@ public class WeightConfig {
     /**
      * Critère 1 : Si un même cours et même type se répète plusieur fois dans la même journée
      */
-    private static Double repetitionCoursDansJournee = 1.;
+    private static Double repetitionCoursDansJournee = 0.5;
 
     /**
      * Critère 2 : Un cours à 8h (donc premier slot du jour)
      */
-    private static Double placementPlusTotPossible = 1.;
+    private static Double placementPlusTotPossible = 0.5;
 
     /**
      * Critère 3 : Un cours est dans la matinée avant 12h15
      */
-    private static Double placementMatin = 1.;
+    private static Double placementMatin = 0.5;
 
     /**
      * Critère 4 : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
@@ -34,12 +34,12 @@ public class WeightConfig {
     /**
      * Critère 5 : Un cours ne créer pas de trou
      */
-    private static Double placementSansTrou = 1.;
+    private static Double placementSansTrou = 0.5;
 
     /**
      * Critère 6 : Placement de Référence (Régularité)
      */
-    private static Double placementReference = 1.;
+    private static Double placementReference = 0.5;
 
     public static Double getPlacementSansTrou() {
         return placementSansTrou;
@@ -182,13 +182,11 @@ public class WeightConfig {
                     score6Sum += WeightConfig.calculerScore(respecteReference, WeightConfig.getPlacementReference());
                 }
 
-                Double score5 = !slot.getUsedBy().isEmpty() ? score5sum / slot.getUsedBy().size() : score5sum;
+                Double score5 = !slot.getUsedBy().isEmpty() ? score5sum / slot.getUsedBy().size() : 0.5;
 
-                Double score1 = !slot.getUsedBy().isEmpty() ? score1Sum / slot.getUsedBy().size() : score1Sum;
+                Double score1 = !slot.getUsedBy().isEmpty() ? score1Sum / slot.getUsedBy().size() : 0.5;
 
-                Double score6 = !slot.getUsedBy().isEmpty() ? score6Sum / slot.getUsedBy().size() : score6Sum;
-
-                Double scoreActuel = slot.getScore();
+                Double score6 = !slot.getUsedBy().isEmpty() ? score6Sum / slot.getUsedBy().size() : 0.5;
 
                 // ---------------------------------------------------------
                 // Critère 2 : Un cours à 8h (donc premier slot du jour)
