@@ -50,46 +50,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-/*
-// Gestionnaire de promo
-document.getElementById('promoModal')
-    .addEventListener(
-        'click',
-        function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        }
-    );
+/* Gestionnaire de promo */
+function openPromoPopUp() {
+    document.getElementById('popUpTitleA').textContent = 'Ajouter une promotion';
+    document.getElementById('promoIdA').value = '';
+    document.getElementById('nomA').value = '';
+    document.getElementById('anneeA').value = '';
+    document.getElementById('dateDebutS1A').value = '';
+    document.getElementById('dateFinS1A').value = '';
+    document.getElementById('dateDebutS2A').value = '';
+    document.getElementById('dateFinS2A').value = '';
+    document.getElementById('promoAdd').classList.add('active');
+//    console.log('Pop Up classes:', this.className);
+}
+
+function editPromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
+    document.getElementById('popUpTitleU').textContent = 'Modifier la promotion';
+    document.getElementById('promoIdU').value = id;
+    document.getElementById('nomU').value = nom;
+    document.getElementById('anneeU').value = annee;
+    document.getElementById('dateDebutS1U').value = dateDebutS1 || '';
+    document.getElementById('dateFinS1U').value = dateFinS1 || '';
+    document.getElementById('dateDebutS2U').value = dateDebutS2 || '';
+    document.getElementById('dateFinS2U').value = dateFinS2 || '';
+    document.getElementById('promoUpdate').classList.add('active');
+}
+
+function deletePromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
+    deletePromoId = id;
+    document.getElementById('nomD').textContent = nom;
+    document.getElementById('anneeD').value = annee;
+    document.getElementById('dateDebutS1D').value = dateDebutS1 || '';
+    document.getElementById('dateFinS1D').value = dateFinS1 || '';
+    document.getElementById('dateDebutS2D').value = dateDebutS2 || '';
+    document.getElementById('dateFinS2D').value = dateFinS2 || '';
+
+/*    const s1 = (dateDebutS1 && dateFinS1)
+        ? formatDate(dateDebutS1) + ' - ' + formatDate(dateFinS1)
+        : 'Non défini';
+    document.getElementById('deleteS1').textContent = s1;
+
+    const s2 = (dateDebutS2 && dateFinS2)
+        ? formatDate(dateDebutS2) + ' - ' + formatDate(dateFinS2)
+        : 'Non défini';
+    document.getElementById('deleteS2').textContent = s2;
 */
-function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Ajouter une promotion';
-    document.getElementById('promoId').value = '';
-    document.getElementById('nom').value = '';
-    document.getElementById('annee').value = '';
-    document.getElementById('dateDebutS1').value = '';
-    document.getElementById('dateFinS1').value = '';
-    document.getElementById('dateDebutS2').value = '';
-    document.getElementById('dateFinS2').value = '';
-    document.getElementById('promoModal').classList.add('active');
-    console.log('Modal classes:', this.className);
+    document.getElementById('promoDelete').classList.add('active');
 }
 
-function editPromo(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
-    document.getElementById('modalTitle').textContent = 'Modifier la promotion';
-    document.getElementById('promoId').value = id;
-    document.getElementById('nom').value = nom;
-    document.getElementById('annee').value = annee;
-    document.getElementById('dateDebutS1').value = dateDebutS1 || '';
-    document.getElementById('dateFinS1').value = dateFinS1 || '';
-    document.getElementById('dateDebutS2').value = dateDebutS2 || '';
-    document.getElementById('dateFinS2').value = dateFinS2 || '';
-    document.getElementById('promoModal').classList.add('active');
-}
-
-function closeModal() {
-    document.getElementById('promoModal').classList.remove('active');
-    console.log('Modal close:', this.className);
+function closePopUp() {
+    document.getElementById('promoAdd' || 'promoUpdate' || 'promoDelete').classList.remove('active');
+    console.log('Pop Up close:', this.className);
 }
 
 // EDT
@@ -146,7 +157,7 @@ function loadCourses() {
 }
 
 // Sidebar actions
-window.goToCalendar = function() {
+window.goToCalendrier = function() {
     window.location.href = '/';
 };
 
@@ -176,17 +187,17 @@ window.exportEDT = function() {
     alert('Exporter - Modal à implémenter');
 };
 
-// Mini calendar
-let miniCalendarDate = new Date();
+// Mini calendrier
+let miniCalendrierDate = new Date();
 
-function renderMiniCalendar() {
-    const year = miniCalendarDate.getFullYear();
-    const month = miniCalendarDate.getMonth();
+function renderMiniCalendrier() {
+    const year = miniCalendrierDate.getFullYear();
+    const month = miniCalendrierDate.getMonth();
 
     // Update month display
     const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+    document.getElementById('calendrierMonth').textContent = `${monthNames[month]} ${year}`;
 
     // Get first day of month and number of days
     const firstDay = new Date(year, month, 1);
@@ -231,17 +242,17 @@ function renderMiniCalendar() {
         if (currentDay > daysInMonth && nextMonthDay > 7) break;
     }
 
-    document.getElementById('calendarDates').innerHTML = html;
+    document.getElementById('calendrierDates').innerHTML = html;
 }
 
 function previousMonth() {
-    miniCalendarDate.setMonth(miniCalendarDate.getMonth() - 1);
-    renderMiniCalendar();
+    miniCalendrierDate.setMonth(miniCalendrierDate.getMonth() - 1);
+    renderMiniCalendrier();
 }
 
 function nextMonth() {
-    miniCalendarDate.setMonth(miniCalendarDate.getMonth() + 1);
-    renderMiniCalendar();
+    miniCalendrierDate.setMonth(miniCalendrierDate.getMonth() + 1);
+    renderMiniCalendrier();
 }
 
 function selectDate(year, month, day) {
@@ -251,6 +262,6 @@ function selectDate(year, month, day) {
     loadCourses();
 }
 
-// Initialize
+// Initialisation
 updateWeekInfo();
-renderMiniCalendar();
+renderMiniCalendrier();
