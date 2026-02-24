@@ -13,17 +13,17 @@ public class WeightConfig {
     /**
      * Critère 1 : Si un même cours et même type se répète plusieur fois dans la même journée
      */
-    private static Double repetitionCoursDansJournee = 0.5;
+    private static Double repetitionCoursDansJournee = 1.;
 
     /**
      * Critère 2 : Un cours à 8h (donc premier slot du jour)
      */
-    private static Double placementPlusTotPossible = 0.5;
+    private static Double placementPlusTotPossible = 1.;
 
     /**
      * Critère 3 : Un cours est dans la matinée avant 12h15
      */
-    private static Double placementMatin = 0.5;
+    private static Double placementMatin = 1.;
 
     /**
      * Critère 4 : Si le slot est utilisé et n'est pas tard donc ça concerne le dernier cours (coef plus c'est tard = plus score fait mal)
@@ -34,12 +34,12 @@ public class WeightConfig {
     /**
      * Critère 5 : Un cours ne créer pas de trou
      */
-    private static Double placementSansTrou = 0.5;
+    private static Double placementSansTrou = 1.;
 
     /**
      * Critère 6 : Placement de Référence (Régularité)
      */
-    private static Double placementReference = 0.5;
+    private static Double placementReference = 1.;
 
     public static Double getPlacementSansTrou() {
         return placementSansTrou;

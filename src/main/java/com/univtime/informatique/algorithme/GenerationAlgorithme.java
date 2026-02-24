@@ -13,12 +13,12 @@ import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
 import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.dto.tdDto.TDDto;
+import com.univtime.informatique.dto.tpDto.SousGroupeTPDto;
 import com.univtime.informatique.dto.tpDto.TPDto;
 import com.univtime.informatique.helpers.MomentBanalise;
 import com.univtime.informatique.helpers.PlanningPeriodMinutes;
 import com.univtime.informatique.helpers.Semestre;
 import com.univtime.informatique.services.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -148,7 +148,12 @@ public class GenerationAlgorithme {
     }
 
     private boolean isProfDisponible(Slot slot,
-                                     Set<DisponibiliteJourDto> dispos) {
+                                     Set<DisponibiliteJourDto> dispos,
+                                     Integer idProf) {
+        if (slot.getUsedBy().stream().anyMatch(cour -> cour.getProfesseurDto().getIdProf().equals(idProf))){
+            return false;
+        }
+
         for (DisponibiliteJourDto dispo : dispos) {
             if (slot.getDebut() >= dispo.getHeureDebutDispo() && slot.getFin() <= dispo.getHeureFinDispo()) {
                 return true;
@@ -236,7 +241,7 @@ public class GenerationAlgorithme {
                     Slot slot = jour.getSlots().get(indexActuel);
 
                     /**
-                     * Transformer des critères en contraintes
+                     * Transformer des critères en contraintes absolues
                      * Placement à des heures pas fixe impossible
                      */
 
@@ -275,8 +280,10 @@ public class GenerationAlgorithme {
                         continue outerloop;
                     }
 
+
+                    // On s'assure que le prof n'a pas déjà cours dans ce slot
                     // On s'assure que le professeurs est dispo pour tout les créneau qu'on utilise pour placer le bloc de cours
-                    if (!isProfDisponible(slot, disponibiliteProf)) {
+                    if (!isProfDisponible(slot, disponibiliteProf, cours.getProfesseurDto().getIdProf())) {
                         j = indexActuel; // Au reset de la boucle, j prends + 1 donc pas besoin de faire + 1 ici
                         continue outerloop;
                     }
@@ -305,7 +312,7 @@ public class GenerationAlgorithme {
             return null;
         }
 
-        // ----------------------- DEBUG -----------------------
+        /* ----------------------- DEBUG -----------------------
         System.out.println("PLACEMENTS POSSIBLE");
         bestPlacements.forEach(jour -> {
             int j = jour.getNumJour().getValue();
@@ -318,7 +325,7 @@ public class GenerationAlgorithme {
             System.out.println("Jour " + j + " | de " + debutFormatte + " à " + finFormatte);
 
         });
-        // ----------------------- FIN DEBUG -----------------------
+        // ----------------------- FIN DEBUG ----------------------- */
 
         // On reconstruit tout les jours par rapports à la semaine actuelle pour voir avec le score lesquelles sont les meilleures
         List<Jour> allSimulations = bestPlacements.stream().map(placement -> {
@@ -353,10 +360,10 @@ public class GenerationAlgorithme {
         // Tri décroissant sur le score calculé pour tout les jours
         List<Jour> top5Placements = allSimulations.stream().sorted((j1, j2) -> Double.compare(j2.getScore(), j1.getScore()))
                 // On garde les 5 meilleurs
-                //.limit(3) // (Hard codé)
+                .limit(2) // (Hard codé)
                 .toList();
 
-        // ----------------------- DEBUG -----------------------
+        /* ----------------------- DEBUG -----------------------
         System.out.println("MEILLEURS PLACEMENTS POSSIBLE");
         top5Placements.forEach(jour -> {
             int j = jour.getNumJour().getValue();
@@ -370,7 +377,7 @@ public class GenerationAlgorithme {
             System.out.println("Jour " + j + " (M du jour=" + jour.getScore() + ") | de " + debutFormatte + " à " + finFormatte);
 
         });
-        // ----------------------- FIN DEBUG -----------------------
+        // ----------------------- FIN DEBUG ----------------------- */
 
         Jour jourGagnant = getRandomJour(top5Placements);
 
@@ -406,9 +413,11 @@ public class GenerationAlgorithme {
         return jourGagnant;
     }
 
-    public List<CoursDto> generatePlanning(Integer idPromo,
+    public AlgorithmeResponse generatePlanning(Integer idPromo,
                                            Integer numSemestre,
                                            List<MomentBanalise> momentBanalises) {
+        long startTime = System.nanoTime();
+
         // INSERT TEST DATA
         /**
          * Paramètres globaux
@@ -518,7 +527,8 @@ public class GenerationAlgorithme {
          */
         long nbSemaine = semestre.nbSemaines();
         List<Semaine> semaines = new ArrayList<>();
-        List<CoursDto> coursImpossibles = new ArrayList<>();
+        List<CoursDto> coursPossibles = new ArrayList<>();
+        HashMap<Integer, List<CoursDto>> coursImpossibles = new HashMap<>();
         HashMap<String, Set<String>> occurrence = new  HashMap<>();
 
         for (int weekOffset = 0; weekOffset < nbSemaine; weekOffset++) {
@@ -606,16 +616,15 @@ public class GenerationAlgorithme {
                 return Double.compare(ratio2, ratio1);
             });
 
-            System.out.println("COURS QUI DOIVENT ÊTRE PLACER ------------");
-            System.out.println("SEMAINE " + currentWeek + " : ");
+            // System.out.println("COURS QUI DOIVENT ÊTRE PLACER ------------");
+            // System.out.println("SEMAINE " + currentWeek + " : ");
             for (ProfesseurDto prof : professeurs) {
                 List<CMDto> cmDuProf = cmsParProf.getOrDefault(prof.getIdProf(), new ArrayList<>());
                 List<TDDto> tdDuProf = tdsParProf.getOrDefault(prof.getIdProf(), new ArrayList<>());
                 List<TPDto> tpDuProf = tpsParProf.getOrDefault(prof.getIdProf(), new ArrayList<>());
 
                 cmDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cour -> {
-
-                    // ----------------------- DEBUG -----------------------
+                    /* ----------------------- DEBUG -----------------------
                     StringBuilder cmGroupes = new StringBuilder();
                     for (int sg = 0; sg < promo.size(); sg++) {
                         if (sg == promo.size() - 1) {
@@ -625,7 +634,7 @@ public class GenerationAlgorithme {
                         }
                     }
                     System.out.println("CM " + cmGroupes + " | " + cour.getComposanteDto().getNomComposante() + " x" + cour.getRepartitionSemaineDto().getQteTypeCours() + " " + (cour.getComposanteDto().getBlocHoraire(TypeCours.CM) / 60) + "h | " + cour.getProfesseurDto().getPrenomProf() + " " + cour.getProfesseurDto().getNomProf());
-                    // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- FIN DEBUG ----------------------- */
 
                     Set<ParticipeACoursDto> participeACoursDto = promo.stream().map(sg -> {
                         return new ParticipeACoursDto(sg.getIdSousGroupe(), sg.getNomSousGroupe(), sg.getNbEtuSousGroupe(), sg.getGroupeDto().getIdGroupe());
@@ -645,24 +654,22 @@ public class GenerationAlgorithme {
                                 TypeCours.CM,
                                 composanteCoursDto,
                                 professeurCoursDto,
-                                null,
                                 participeACoursDto
                         );
 
                         Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()), occurrence);
 
                         if (jourGagnant == null) {
-                            coursImpossibles.add(courCreated);
+                            coursImpossibles.computeIfAbsent(currentWeek, k -> new ArrayList<>()).add(courCreated);
                         } else {
+                            coursPossibles.add(courCreated);
                             currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
                         }
                     }
                 });
 
-                tdDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cours -> {
-                    List<SousGroupeDto> sousGroupesDto = promo.stream().filter(sg -> sg.getGroupeDto().getIdGroupe().equals(cours.getGroupeDto().getIdGroupe())).toList();
-
-                    // ----------------------- DEBUG -----------------------
+                tdDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cour -> {
+                    /* ----------------------- DEBUG -----------------------
                     StringBuilder tdGroupes = new StringBuilder();
                     for (int sg = 0; sg < sousGroupesDto.size(); sg++) {
                         if (sg == sousGroupesDto.size() - 1) {
@@ -672,113 +679,205 @@ public class GenerationAlgorithme {
                         }
                     }
                     System.out.println("TD " + tdGroupes + " | " + cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " + cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
-                    // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- FIN DEBUG ----------------------- */
+
+                    Set<ParticipeACoursDto> participeACoursDto = promo.stream().filter(sg -> sg.getGroupeDto().getIdGroupe().equals(cour.getGroupeDto().getIdGroupe())).map(sg -> {
+                        return new ParticipeACoursDto(sg.getIdSousGroupe(), sg.getNomSousGroupe(), sg.getNbEtuSousGroupe(), sg.getGroupeDto().getIdGroupe());
+                    }).collect(Collectors.toSet());
+
+                    ComposanteCoursDto composanteCoursDto = new ComposanteCoursDto(cour.getComposanteDto().getIdComposante(), cour.getComposanteDto().getBlocHoraireCM(), cour.getComposanteDto().getBlocHoraireTD(), cour.getComposanteDto().getBlocHoraireTP());
+
+                    ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf(), cour.getProfesseurDto().getJourIds());
+
+                    for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
+                        CoursDto courCreated = new CoursDto(
+                                TypeCours.TD,
+                                composanteCoursDto,
+                                professeurCoursDto,
+                                participeACoursDto
+                        );
+
+                        Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()), occurrence);
+
+                        if (jourGagnant == null) {
+                            coursImpossibles.computeIfAbsent(currentWeek, k -> new ArrayList<>()).add(courCreated);
+                        } else {
+                            coursPossibles.add(courCreated);
+                            currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
+                        }
+                    }
 
                 });
 
-                tpDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cours -> {
-
-                    // ----------------------- DEBUG -----------------------
+                tpDuProf.stream().filter(cours -> cours.getRepartitionSemaineDto().getNumSemaine().equals(currentWeek) && cours.getRepartitionSemaineDto().getQteTypeCours() > 0).forEach(cour -> {
+                    /* ----------------------- DEBUG -----------------------
                     System.out.println("TP " + cours.getSousGroupeDto().getNomSousGroupe() + " | " + cours.getComposanteDto().getNomComposante() + " x" + cours.getRepartitionSemaineDto().getQteTypeCours() + " | " + cours.getProfesseurDto().getPrenomProf() + " " + cours.getProfesseurDto().getNomProf());
-                    // ----------------------- FIN DEBUG -----------------------
+                    // ----------------------- FIN DEBUG ----------------------- */
+                    SousGroupeTPDto sg = cour.getSousGroupeDto();
+                    ParticipeACoursDto participeACoursDto = new ParticipeACoursDto(sg.getIdSousGroupe(), sg.getNomSousGroupe(), sg.getNbEtuSousGroupe(), sg.getGroupeId());
 
+                    ComposanteCoursDto composanteCoursDto = new ComposanteCoursDto(cour.getComposanteDto().getIdComposante(), cour.getComposanteDto().getBlocHoraireCM(), cour.getComposanteDto().getBlocHoraireTD(), cour.getComposanteDto().getBlocHoraireTP());
+
+                    ProfesseurCoursDto professeurCoursDto = new ProfesseurCoursDto(cour.getProfesseurDto().getIdProf(), cour.getProfesseurDto().getJourIds());
+
+                    for (int v = 0; v < cour.getRepartitionSemaineDto().getQteTypeCours(); v++) {
+                        CoursDto courCreated = new CoursDto(
+                                TypeCours.TP,
+                                composanteCoursDto,
+                                professeurCoursDto,
+                                Set.of(participeACoursDto)
+                        );
+
+                        Jour jourGagnant = getRandomBestPlacement(semestre, currentSemaine, courCreated, disposParProf.get(courCreated.getProfesseurDto().getIdProf()), occurrence);
+
+                        if (jourGagnant == null) {
+                            coursImpossibles.computeIfAbsent(currentWeek, k -> new ArrayList<>()).add(courCreated);
+                        } else {
+                            coursPossibles.add(courCreated);
+                            currentSemaine.getJours().get(jourGagnant.getNumJour().getValue() - 1).setSlots(jourGagnant.getSlots());
+                        }
+                    }
                 });
             }
 
-        }
-        return null;
-    }
 
+
+            // Backtracking pour essayer d'implémenter un maximum de cours non placé
+            // =========================================================
+            // PHASE 2 : BACKTRACKING (Relocalisation des cours bloqués)
+            // =========================================================
+            List<CoursDto> coursARePlacer = coursImpossibles.getOrDefault(currentWeek, new ArrayList<>());
+
+            if (!coursARePlacer.isEmpty()) {
+                System.out.println("\n--- TENTATIVE DE RELOCALISATION POUR SEMAINE " + currentWeek + " ---");
+
+                // On utilise un Iterator pour pouvoir supprimer en toute sécurité de la liste pendant qu'on la parcourt
+                Iterator<CoursDto> iterator = coursARePlacer.iterator();
+                while (iterator.hasNext()) {
+                    CoursDto coursImpossible = iterator.next();
+
+                    List<JourDto> disposProf = disposParProf.get(coursImpossible.getProfesseurDto().getIdProf());
+
+                    // On tente la relocalisation !
+                    boolean success = tryRelocation(semestre, currentSemaine, coursImpossible, disposProf, occurrence, disposParProf);
+
+                    if (success) {
+                        System.out.println("SUCCÈS : Relocalisation réussie pour un cours " + coursImpossible.getTypeCoursEnum());
+                        coursPossibles.add(coursImpossible);
+                        iterator.remove(); // On l'enlève de la liste des impossibles !
+                    } else {
+                        System.out.println("ÉCHEC : Relocalisation impossible pour le cours " + coursImpossible.getTypeCoursEnum());
+                    }
+                }
+            }
+        }
+
+
+
+        long endTime = System.nanoTime();
+        long totalMs = (endTime - startTime) / 1_000_000;
+
+        return new AlgorithmeResponse(coursPossibles, coursImpossibles, totalMs);
+    }
 
     /**
-     * Fonction pour générer les données issues de la base données de test
+     * Tente de relocaliser un cours bloquant pour faire de la place à un cours impossible.
+     * Renvoie true si le placement a réussi, false sinon.
      */
-    /*
-    private List<ProfesseurDto> testDataProfesseurs(){
-        List<ProfesseurDto> profs = new ArrayList<>();
-        // DISPO QUE LE MATIN (8h-12h15)
-        profs.add(new ProfesseurDto(
-                        "Brouard",
-                        "Thierry",
-                        false,
-                        List.of(
-                                new JourDto(1, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
-                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
-                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
-                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15))),
-                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 12 * 60 + 15)))
-                        )
-                )
-        );
-        // DISPO TOUT LE TEMPS
-        profs.add(new ProfesseurPojo(
-                        "Brouard",
-                        "Helene",
-                        false,
-                        List.of(
-                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
-                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
-                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
-                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 20 * 60))),
-                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 20 * 60)))
-                        )
-                )
-        );
-        // DISPO QUE LE MATIN (10h30-12h15) DONC MOINS DE 2H
-        profs.add(new ProfesseurPojo(
-                        "Desport",
-                        "Pierre",
-                        false,
-                        List.of(
-                                new JourPojo(1, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
-                                new JourPojo(2, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
-                                new JourPojo(3, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
-                                new JourPojo(4, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15))),
-                                new JourPojo(5, List.of(new DisponibilitePojo(10 * 60 + 30, 12 * 60 + 15)))
-                        )
-                )
-        );
-        // DISPO DECOUPER
-        profs.add(new ProfesseurPojo(
-                        "Cabet",
-                        "Aurore",
-                        false,
-                        List.of(
-                                new JourPojo(1, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
-                                new JourPojo(2, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
-                                new JourPojo(3, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
-                                new JourPojo(4, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45))),
-                                new JourPojo(5, List.of(new DisponibilitePojo(8 * 60, 10 * 60 + 15), new DisponibilitePojo(15 * 60 + 45, 17 * 60 + 45)))
-                        )
-                )
-        );
-        return profs;
+    private boolean tryRelocation(Semestre semestre,
+                                  Semaine currentSemaine,
+                                  CoursDto coursImpossible,
+                                  List<JourDto> joursDuProf,
+                                  HashMap<String, Set<String>> occurrence,
+                                  Map<Integer, List<JourDto>> disposParProf) {
+
+        int dureeSemaine = currentSemaine.getJours().size();
+        Integer blocNecessaire = coursImpossible.getComposanteDto().getBlocHoraire(coursImpossible.getTypeCoursEnum());
+        int nbSlotNecessaire = (int) Math.ceil((double) blocNecessaire / slotStep);
+
+        // 1. On parcourt toute la semaine pour trouver un endroit où le PROF du cours impossible EST DISPONIBLE
+        for (int i = 0; i < dureeSemaine; i++) {
+            int currentDay = i;
+            Jour jour = currentSemaine.getJours().get(i);
+            Set<DisponibiliteJourDto> disponibiliteProf = joursDuProf.stream().filter(j -> j.getJourSemaine() == currentDay + 1).map(JourDto::getDisponibiliteDto).flatMap(Set::stream).collect(Collectors.toSet());
+
+            outerloop:
+            for (int j = 0; j <= jour.getSlots().size() - nbSlotNecessaire; j++) {
+                List<Slot> slotsPotentiels = new ArrayList<>();
+                List<CoursDto> coursBloquantsPotentiels = new ArrayList<>();
+
+                boolean isProfDispoForBlock = true;
+
+                for (int k = 0; k < nbSlotNecessaire; k++) {
+                    int indexActuel = j + k;
+                    Slot slot = jour.getSlots().get(indexActuel);
+
+                    // Vérification des règles de base de la structure (2h ou 1h30)
+                    if (k == 0) {
+                        boolean isValid2h = blocNecessaire == 2 * 60 && (slot.getDebut().equals(60 * 8) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60));
+                        boolean isValid1h30 = blocNecessaire == 60 + 30 && (slot.getDebut().equals(60 * 8 + 30) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(60 * 14) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60));
+                        if (!(isValid2h || isValid1h30)) { j = indexActuel; continue outerloop; }
+                    }
+
+                    // Le prof du cours impossible doit au moins être dispo (au sens de ses "DisponibiliteJourDto")
+                    // Note : On ne vérifie pas encore s'il a DÉJÀ un cours, car ce cours pourrait être celui qu'on va déplacer !
+                    boolean dispoTheorique = false;
+                    for (DisponibiliteJourDto dispo : disponibiliteProf) {
+                        if (slot.getDebut() >= dispo.getHeureDebutDispo() && slot.getFin() <= dispo.getHeureFinDispo()) {
+                            dispoTheorique = true; break;
+                        }
+                    }
+                    if (!dispoTheorique) { isProfDispoForBlock = false; break; }
+
+                    // On collecte tous les cours qui utilisent ce slot (ce sont nos bloquants potentiels)
+                    coursBloquantsPotentiels.addAll(slot.getUsedBy());
+                    slotsPotentiels.add(slot);
+                }
+
+                if (!isProfDispoForBlock) continue;
+
+                // On enlève les doublons des cours bloquants (un bloc de 2h a les mêmes cours sur 8 slots)
+                List<CoursDto> coursBloquantsUniques = coursBloquantsPotentiels.stream().distinct().toList();
+
+                // 2. TENTATIVE DE DÉPLACEMENT
+                // Pour simplifier ce premier jet, on ne tente le déplacement que s'il n'y a qu'UN SEUL cours bloquant.
+                // Déplacer 2 cours ou plus créerait un arbre de possibilités trop complexe et ralentirait l'algo.
+                if (coursBloquantsUniques.size() == 1) {
+                    CoursDto coursADeplacer = coursBloquantsUniques.getFirst();
+
+                    // --- SIMULATION DU DÉPLACEMENT ---
+                    // a. On enlève le cours bloquant du planning actuel
+                    currentSemaine.getJours().forEach((index, jd) -> jd.getSlots().forEach(s -> s.getUsedBy().removeIf(c -> c == coursADeplacer)));
+
+                    // b. On essaie de replacer ce cours bloquant AILLEURS
+                    List<JourDto> disposProfBloquant = disposParProf.get(coursADeplacer.getProfesseurDto().getIdProf());
+                    Jour nouvelEmplacementPourBloquant = getRandomBestPlacement(semestre, currentSemaine, coursADeplacer, disposProfBloquant, occurrence);
+
+                    if (nouvelEmplacementPourBloquant != null) {
+                        // SUCCÈS ! Le cours bloquant a trouvé une nouvelle maison.
+                        // c. On met à jour le jour dans notre semaine actuelle
+                        currentSemaine.getJours().get(nouvelEmplacementPourBloquant.getNumJour().getValue() - 1).setSlots(nouvelEmplacementPourBloquant.getSlots());
+
+                        // d. ON PLACE ENFIN NOTRE COURS IMPOSSIBLE dans le créneau qu'on vient de libérer !
+                        // Comme on sait que le créneau est libre et que le prof est dispo, on peut appeler getRandomBestPlacement
+                        // Il trouvera naturellement cette nouvelle place libre.
+                        Jour emplacementPourImpossible = getRandomBestPlacement(semestre, currentSemaine, coursImpossible, joursDuProf, occurrence);
+
+                        if (emplacementPourImpossible != null) {
+                            currentSemaine.getJours().get(emplacementPourImpossible.getNumJour().getValue() - 1).setSlots(emplacementPourImpossible.getSlots());
+                            return true; // Victoire totale !
+                        } else {
+                            // C'est très rare, mais si ça échoue, on doit annuler le déplacement du bloquant...
+                            // (Pour la simplicité, on le laisse où il a atterri si c'est valide, ce n'est pas très grave)
+                        }
+                    } else {
+                        // ÉCHEC : Le cours bloquant ne peut aller nulle part.
+                        // On doit le remettre exactement à sa place initiale.
+                        slotsPotentiels.forEach(s -> s.getUsedBy().add(coursADeplacer));
+                    }
+                }
+            }
+        }
+        return false; // Impossible de relocaliser
     }
-
-    public Semestre testDataSemestre(){
-        return new Semestre(
-                LocalDate.of(2025, 9, 1),
-                LocalDate.of(2025, 9, 7)
-        );
-    }
-
-    private List<ComposantePojo> testDataComposantes(){
-        List<ComposantePojo> composantes = new ArrayList<>();
-        composantes.add(new ComposantePojo("Maths", 2 * 60, 2 * 60, 2 * 60));
-        composantes.add(new ComposantePojo("Admin BD", 2 * 60, 2 * 60, 2 * 60));
-        composantes.add(new ComposantePojo("Securite Logicielle", 2 * 60, 2 * 60, 2 * 60));
-
-        return composantes;
-    }
-
-    private List<SousGroupePojo> testDataPromo(){
-        List<SousGroupePojo> promo = new ArrayList<>();
-        promo.add(new SousGroupePojo("G1A", 10));
-        promo.add(new SousGroupePojo("G1B", 10));
-        promo.add(new SousGroupePojo("G2A", 10));
-        promo.add(new SousGroupePojo("G2B", 10));
-
-        return promo;
-    }
-    */
 }
