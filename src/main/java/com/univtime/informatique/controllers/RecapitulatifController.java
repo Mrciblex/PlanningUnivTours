@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/gestionnaire-edt/edt")
-public class EdtController {
+@RequestMapping("/gestionnaire-edt/recapitulaltif")
+public class RecapitulatifController {
     /**
-     * URL : /gestionnaire-edt/edt
+     * URL : /gestionnaire-edt/recapitulaltif
      */
     @GetMapping
-    public String afficheredt() {
-        return "gestionnaire_edt/edt";
+    public String afficherRecapitulatif() {
+        return "gestionnaire_edt/recapitulatif";
     }
 }
