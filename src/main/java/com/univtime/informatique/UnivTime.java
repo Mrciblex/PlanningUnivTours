@@ -1,5 +1,6 @@
 package com.univtime.informatique;
 
+import com.univtime.informatique.algorithme.AlgorithmeResponse;
 import com.univtime.informatique.algorithme.GenerationAlgorithme;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,18 +21,12 @@ public class UnivTime {
         return args -> {
             System.out.println("=== DÉBUT DU TEST DE L'ALGO ===");
 
-            long startTime = System.nanoTime();
             // Appelle ta méthode ici
-            algo.generatePlanning(2, 1, null);
-            long endTime = System.nanoTime();
-            long totalMs = (endTime - startTime) / 1_000_000;
+            AlgorithmeResponse response = algo.generatePlanning(2, 1, null);
 
-            long minutes = (totalMs / 1000) / 60;
-            long seconds = (totalMs / 1000) % 60;
-            long milliseconds = totalMs % 1000;
-
-            String formattedTime = String.format("%02d:%02d:%03d", minutes, seconds, milliseconds);
-            System.out.println("Temps d'exécution : " + formattedTime);
+            System.out.println(response.afficherCoursPlaces());
+            System.out.println(response.afficherCoursImpossibles());
+            System.out.println("Temps d'exécution : " + response.getExecutionTime());
 
             System.out.println("=== FIN DU TEST ===");
         };

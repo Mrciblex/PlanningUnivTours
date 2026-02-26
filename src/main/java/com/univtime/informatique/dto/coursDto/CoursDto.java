@@ -42,12 +42,10 @@ public class CoursDto {
             TypeCours typeCoursEnum,
             ComposanteCoursDto composanteDto,
             ProfesseurCoursDto professeurDto,
-            SalleCoursDto salleDto,
             Set<ParticipeACoursDto> participeADto) {
         this.typeCoursEnum = typeCoursEnum;
         this.composanteDto = composanteDto;
         this.professeurDto = professeurDto;
-        this.salleDto = salleDto;
         this.participeADto = participeADto;
     }
 

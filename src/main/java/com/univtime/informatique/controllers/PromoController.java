@@ -17,13 +17,13 @@ public class PromoController {
     public PromoController(PromoService promoService) {
         this.promoService = promoService;
     }
-
+    /**
     @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
         model.addAttribute("promos", promos);
         return "gestion_promos";
-    }
+    }*/
 
     @GetMapping("/{id}")
     public String getPromoById(@PathVariable Integer id, Model model) {

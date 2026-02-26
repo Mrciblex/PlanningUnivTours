@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/gestionnaire-edt")
 public class GestionnaireEdtController {
     // pour la vue edt
+    /**
     @GetMapping("/edt")
     public String edt() {
         return "gestionnaire_edt/edt";
@@ -16,13 +17,11 @@ public class GestionnaireEdtController {
         return "gestionnaire_edt/gestion_composantes";
     }
     // pour la vue groupe
-    @GetMapping("/groupes")
-    public String groupes() {
-        return "gestionnaire_edt/gestion_groupes";
-    }
-    // proffesseurs
+
+    // professeurs
+
     @GetMapping("/professeurs")
     public String professeurs() {
         return "gestionnaire_edt/gestion_professeurs";
-    }
+    }*/
 }
