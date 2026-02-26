@@ -2,10 +2,15 @@ package com.univtime.informatique;
 
 import com.univtime.informatique.algorithme.AlgorithmeResponse;
 import com.univtime.informatique.algorithme.GenerationAlgorithme;
+import com.univtime.informatique.helpers.MomentBanalise;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class UnivTime {
@@ -21,8 +26,11 @@ public class UnivTime {
         return args -> {
             System.out.println("=== DÉBUT DU TEST DE L'ALGO ===");
 
+            List<MomentBanalise> mb = new ArrayList<>();
+            //mb.add(new MomentBanalise("TEST", LocalDateTime.of(2025, 9, 1, 0, 0), LocalDateTime.of(2025, 9, 2, 9, 0)));
+
             // Appelle ta méthode ici
-            AlgorithmeResponse response = algo.generatePlanning(2, 1, null);
+            AlgorithmeResponse response = algo.generatePlanning(2, 1, mb);
 
             System.out.println(response.afficherCoursPlaces());
             System.out.println(response.afficherCoursImpossibles());

@@ -561,9 +561,14 @@ public class GenerationAlgorithme {
                 List<Slot> slots = new ArrayList<>();
                 for (PlanningPeriodMinutes period : planningPossiblePeriod) {
                     for (int start = period.debut(); start < period.fin(); start = start + slotStep) {
-                        // Vérifier si ce créneau est présent dans des MomentBanalisés (jours fériés et autre)
-                        if (!this.isSlotAvailable(LocalDateTime.of(actualDay, LocalTime.of(0, 0, 0)), LocalDateTime.of(actualDay, LocalTime.of(23, 59, 59)), pauses) || !this.isSlotAvailable(LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)), LocalDateTime.of(actualDay, LocalTime.of(start / 60, start % 60)), pauses)) {
-                            continue;
+                        LocalTime heureDebutSlot = LocalTime.of(start / 60, start % 60);
+                        LocalTime heureFinSlot = LocalTime.of((start + slotStep) / 60, (start + slotStep) % 60);
+
+                        LocalDateTime debutSlot = LocalDateTime.of(actualDay, heureDebutSlot);
+                        LocalDateTime finSlot = LocalDateTime.of(actualDay, heureFinSlot);
+
+                        if (!this.isSlotAvailable(debutSlot, finSlot, pauses)) {
+                            continue; // Ce slot est banalisé on passe au suivant (15 min plus tard)
                         }
 
                         Slot slot = new Slot(start, start + slotStep);
@@ -751,20 +756,20 @@ public class GenerationAlgorithme {
             if (!coursARePlacer.isEmpty()) {
                 System.out.println("\n--- TENTATIVE DE RELOCALISATION POUR SEMAINE " + currentWeek + " ---");
 
-                // On utilise un Iterator pour pouvoir supprimer en toute sécurité de la liste pendant qu'on la parcourt
+                // Suppression dans la liste pendant qu'on la parcourt
                 Iterator<CoursDto> iterator = coursARePlacer.iterator();
                 while (iterator.hasNext()) {
                     CoursDto coursImpossible = iterator.next();
 
                     List<JourDto> disposProf = disposParProf.get(coursImpossible.getProfesseurDto().getIdProf());
 
-                    // On tente la relocalisation !
+                    // On tente la relocalisation
                     boolean success = tryRelocation(semestre, currentSemaine, coursImpossible, disposProf, occurrence, disposParProf);
 
                     if (success) {
                         System.out.println("SUCCÈS : Relocalisation réussie pour un cours " + coursImpossible.getTypeCoursEnum());
                         coursPossibles.add(coursImpossible);
-                        iterator.remove(); // On l'enlève de la liste des impossibles !
+                        iterator.remove(); // On enlève de la liste des impossibles
                     } else {
                         System.out.println("ÉCHEC : Relocalisation impossible pour le cours " + coursImpossible.getTypeCoursEnum());
                     }
@@ -781,8 +786,8 @@ public class GenerationAlgorithme {
     }
 
     /**
-     * Tente de relocaliser un cours bloquant pour faire de la place à un cours impossible.
-     * Renvoie true si le placement a réussi, false sinon.
+     * Tente de relocaliser un cours bloquant pour faire de la place à un cours impossible
+     * Renvoie true si le placement a réussi, false sinon
      */
     private boolean tryRelocation(Semestre semestre,
                                   Semaine currentSemaine,
@@ -795,7 +800,7 @@ public class GenerationAlgorithme {
         Integer blocNecessaire = coursImpossible.getComposanteDto().getBlocHoraire(coursImpossible.getTypeCoursEnum());
         int nbSlotNecessaire = (int) Math.ceil((double) blocNecessaire / slotStep);
 
-        // 1. On parcourt toute la semaine pour trouver un endroit où le PROF du cours impossible EST DISPONIBLE
+        // On parcourt toute la semaine pour trouver un endroit où le PROF du cours impossible EST DISPONIBLE
         for (int i = 0; i < dureeSemaine; i++) {
             int currentDay = i;
             Jour jour = currentSemaine.getJours().get(i);
@@ -819,17 +824,21 @@ public class GenerationAlgorithme {
                         if (!(isValid2h || isValid1h30)) { j = indexActuel; continue outerloop; }
                     }
 
-                    // Le prof du cours impossible doit au moins être dispo (au sens de ses "DisponibiliteJourDto")
-                    // Note : On ne vérifie pas encore s'il a DÉJÀ un cours, car ce cours pourrait être celui qu'on va déplacer !
+                    // Le prof du cours impossible doit être dispo
+                    // On ne vérifie pas encore s'il a DÉJÀ un cours car ce cours pourrait être celui qu'on va déplacer
                     boolean dispoTheorique = false;
                     for (DisponibiliteJourDto dispo : disponibiliteProf) {
                         if (slot.getDebut() >= dispo.getHeureDebutDispo() && slot.getFin() <= dispo.getHeureFinDispo()) {
-                            dispoTheorique = true; break;
+                            dispoTheorique = true;
+                            break;
                         }
                     }
-                    if (!dispoTheorique) { isProfDispoForBlock = false; break; }
+                    if (!dispoTheorique) {
+                        isProfDispoForBlock = false;
+                        break;
+                    }
 
-                    // On collecte tous les cours qui utilisent ce slot (ce sont nos bloquants potentiels)
+                    // On collecte tous les cours qui utilisent ce slot (les bloquants potentiels)
                     coursBloquantsPotentiels.addAll(slot.getUsedBy());
                     slotsPotentiels.add(slot);
                 }
@@ -839,40 +848,38 @@ public class GenerationAlgorithme {
                 // On enlève les doublons des cours bloquants (un bloc de 2h a les mêmes cours sur 8 slots)
                 List<CoursDto> coursBloquantsUniques = coursBloquantsPotentiels.stream().distinct().toList();
 
-                // 2. TENTATIVE DE DÉPLACEMENT
-                // Pour simplifier ce premier jet, on ne tente le déplacement que s'il n'y a qu'UN SEUL cours bloquant.
-                // Déplacer 2 cours ou plus créerait un arbre de possibilités trop complexe et ralentirait l'algo.
+                // TENTATIVE DE DÉPLACEMENT
+                // Pour simplifier ce premier test, on ne tente le déplacement que s'il n'y a qu'un seul cours bloquant.
+                // Déplacer plus d'un cours ou plus créerait un arbre de possibilités trop complexe et ralentirait l'algo
                 if (coursBloquantsUniques.size() == 1) {
                     CoursDto coursADeplacer = coursBloquantsUniques.getFirst();
 
                     // --- SIMULATION DU DÉPLACEMENT ---
-                    // a. On enlève le cours bloquant du planning actuel
+                    // On enlève le cours bloquant du planning actuel
                     currentSemaine.getJours().forEach((index, jd) -> jd.getSlots().forEach(s -> s.getUsedBy().removeIf(c -> c == coursADeplacer)));
 
-                    // b. On essaie de replacer ce cours bloquant AILLEURS
+                    // On essaie de replacer ce cours bloquant AILLEURS
                     List<JourDto> disposProfBloquant = disposParProf.get(coursADeplacer.getProfesseurDto().getIdProf());
                     Jour nouvelEmplacementPourBloquant = getRandomBestPlacement(semestre, currentSemaine, coursADeplacer, disposProfBloquant, occurrence);
 
                     if (nouvelEmplacementPourBloquant != null) {
-                        // SUCCÈS ! Le cours bloquant a trouvé une nouvelle maison.
-                        // c. On met à jour le jour dans notre semaine actuelle
+                        // SUCCÈS !
+                        // On met à jour le jour dans notre semaine actuelle
                         currentSemaine.getJours().get(nouvelEmplacementPourBloquant.getNumJour().getValue() - 1).setSlots(nouvelEmplacementPourBloquant.getSlots());
 
-                        // d. ON PLACE ENFIN NOTRE COURS IMPOSSIBLE dans le créneau qu'on vient de libérer !
-                        // Comme on sait que le créneau est libre et que le prof est dispo, on peut appeler getRandomBestPlacement
-                        // Il trouvera naturellement cette nouvelle place libre.
+                        // On place le cours dans le créneau qu'on vient de libérer !
                         Jour emplacementPourImpossible = getRandomBestPlacement(semestre, currentSemaine, coursImpossible, joursDuProf, occurrence);
 
                         if (emplacementPourImpossible != null) {
+                            // Il faut changer la date du cours ? Ou pas besoin grâce à la méthode getRandomBestPlacement ?
                             currentSemaine.getJours().get(emplacementPourImpossible.getNumJour().getValue() - 1).setSlots(emplacementPourImpossible.getSlots());
-                            return true; // Victoire totale !
+                            return true;
                         } else {
-                            // C'est très rare, mais si ça échoue, on doit annuler le déplacement du bloquant...
-                            // (Pour la simplicité, on le laisse où il a atterri si c'est valide, ce n'est pas très grave)
+                            // C'est très rare, mais si ça échoue, on doit annuler le déplacement du bloquant
                         }
                     } else {
-                        // ÉCHEC : Le cours bloquant ne peut aller nulle part.
-                        // On doit le remettre exactement à sa place initiale.
+                        // Le cours bloquant ne peut aller nulle part
+                        // On doit le remettre exactement à sa place initiale
                         slotsPotentiels.forEach(s -> s.getUsedBy().add(coursADeplacer));
                     }
                 }
