@@ -23,7 +23,6 @@ com\univtime\informatique\dto\besoinSalleDto\ComposanteBesoinSalleDto.class
 com\univtime\informatique\dto\professeurDto\JourProfesseurDto.class
 com\univtime\informatique\mappers\GroupeMapper.class
 com\univtime\informatique\mappers\TPMapper.class
-com\univtime\informatique\controllers\ComposanteController.class
 com\univtime\informatique\services\DisponibiliteService.class
 com\univtime\informatique\services\ProfesseurService.class
 com\univtime\informatique\dto\moduleDto\ModuleDto.class
@@ -38,6 +37,7 @@ com\univtime\informatique\dto\promoEstComposeeDto\PromoPromoEstComposeeDto.class
 com\univtime\informatique\entities\ComposanteEntity.class
 com\univtime\informatique\dto\composanteDto\TDComposanteDto.class
 com\univtime\informatique\dto\professeurDto\ProfesseurDto.class
+com\univtime\informatique\controllers\GestionProfesseurController.class
 com\univtime\informatique\dto\cmDto\PromoCMDto.class
 com\univtime\informatique\dto\jourDto\ProfesseurJourDto.class
 com\univtime\informatique\dto\moduleDto\ComposanteModuleDto.class
@@ -115,8 +115,11 @@ com\univtime\informatique\constants\TypeCours.class
 com\univtime\informatique\dto\moduleDto\PromoEstComposeeModuleDto.class
 com\univtime\informatique\dto\repartitionSemaineDto\RepartitionSemaineDto.class
 com\univtime\informatique\services\CoursService.class
+com\univtime\informatique\controllers\RecapitulatifController.class
 com\univtime\informatique\dto\idsDto\ParticipeAIdDto.class
+com\univtime\informatique\controllers\GestionModuleController.class
 com\univtime\informatique\dto\coursDto\ProfesseurCoursDto.class
+com\univtime\informatique\controllers\GestionGroupeController.class
 com\univtime\informatique\dto\jourDto\JourDto.class
 com\univtime\informatique\dto\repartitionSemaineDto\TDRepartitionSemaineDto.class
 com\univtime\informatique\algorithme\GenerationAlgorithme.class
@@ -133,9 +136,9 @@ com\univtime\informatique\dto\besoinSalleDto\BesoinSalleDto.class
 com\univtime\informatique\dto\disponibiliteDto\JourDisponibiliteDto.class
 com\univtime\informatique\entities\CoursEntity.class
 com\univtime\informatique\dto\tdDto\RepartitionSemaineTDDto.class
+com\univtime\informatique\algorithme\AlgorithmeResponse.class
 com\univtime\informatique\helpers\Semestre.class
 com\univtime\informatique\repositories\ModuleRepository.class
-com\univtime\informatique\controllers\ProfesseurController.class
 com\univtime\informatique\dto\sousGroupeDto\TPSousGroupeDto.class
 com\univtime\informatique\mappers\DisponibiliteMapper.class
 com\univtime\informatique\mappers\JourMapper.class
@@ -144,15 +147,16 @@ com\univtime\informatique\dto\professeurDto\CMProfesseurDto.class
 com\univtime\informatique\services\CMService.class
 com\univtime\informatique\repositories\SousGroupeRepository.class
 com\univtime\informatique\mappers\ParticipeAMapper.class
-com\univtime\informatique\controllers\GroupeController.class
 com\univtime\informatique\entities\ids\PromoEstComposeeId.class
 com\univtime\informatique\repositories\CoursRepository.class
 com\univtime\informatique\dto\composanteDto\BesoinSalleComposanteDto.class
 com\univtime\informatique\repositories\JourRepository.class
 com\univtime\informatique\repositories\PromoEstComposeeRepository.class
 com\univtime\informatique\entities\JourEntity.class
+com\univtime\informatique\controllers\GestionComposanteController.class
 com\univtime\informatique\dto\coursDto\ComposanteCoursDto.class
 com\univtime\informatique\repositories\ComposanteRepository.class
+com\univtime\informatique\controllers\MaquetteController.class
 com\univtime\informatique\entities\PromoEstComposeeEntity.class
 com\univtime\informatique\mappers\CMMapper.class
 com\univtime\informatique\entities\TPEntity.class
