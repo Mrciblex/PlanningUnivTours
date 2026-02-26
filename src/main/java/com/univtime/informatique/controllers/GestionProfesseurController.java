@@ -7,18 +7,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @Controller
-@RequestMapping("/professeurs")
-public class ProfesseurController {
-    // les pages html ne sont pas existante donc je pense que cela crée des erreurs minime a voir comment faire une pop up et le relier au contrroler le style de pop up "Controller  →  envoie la page HTML
-    //HTML        →  contient un modal (popup)
-    //JS          →  ouvre / ferme le popup
-    //Formulaire  →  envoie vers Controller"
-
+@RequestMapping("gestionnaire-edt/professeurs")
+public class GestionProfesseurController {
     private final ProfesseurService professeurService;
 
-    public ProfesseurController(ProfesseurService professeurService) {
+    public GestionProfesseurController(ProfesseurService professeurService) {
         this.professeurService = professeurService;
     }
 
@@ -26,20 +20,20 @@ public class ProfesseurController {
     public String listAllProfesseurs(Model model) {
         List<ProfesseurDto> professeurs = professeurService.findAllProfesseurs();
         model.addAttribute("professeurs", professeurs);
-        return "gestionnaire_edt_promo/gestion_professeurs";
+        return "gestionnaire_edt/gestion_professeurs";
     }
 
     @GetMapping("/{id}")
     public String getProfesseurById(@PathVariable Integer id, Model model) {
         ProfesseurDto professeur = professeurService.findProfesseurDtoById(id);
         model.addAttribute("professeur", professeur);
-        return "gestionnaire_edt_promo/professeurDetail";// change le nom si cela ne te plait pas
+        return "gestionnaire_edt/editProfesseurs";
     }
 
     @GetMapping("/new")
     public String formDeCreation(Model model) {
         model.addAttribute("professeur", new ProfesseurDto());
-        return "gestionnaire_edt_promo/newProfesseur";// pour la pop up de cration du prof
+        return "gestionnaire_edt/newProfesseur";// pour la pop up de creation du prof
     }
 
     @PostMapping("/new")
@@ -52,7 +46,7 @@ public class ProfesseurController {
     public String formDeModification(@PathVariable Integer id, Model model) {
         ProfesseurDto professeur = professeurService.findProfesseurDtoById(id);
         model.addAttribute("professeur", professeur);
-        return "gestionnaire_edt_promo/editProfesseur";// et la il faut mettre la pop up en html et faire le lien en js comme j'ai montré au debut
+        return "gestionnaire_edt/editProfesseur";// et la il faut mettre la pop up en html et faire le lien en js comme j'ai montré au debut
     }
 
     @PostMapping("/{id}/edit")
@@ -62,12 +56,12 @@ public class ProfesseurController {
         professeurDto.setIdProf(id);
         professeurService.updateProfesseur(professeurDto);
 
-        return "redirect:/professeurs/" + id;
+        return "redirect:/gestion_professeurs/" + id;
     }
 
     @GetMapping("/{id}/delete")
     public String deleteProfesseur(@PathVariable Integer id) {
         professeurService.deleteProfesseurById(id);
-        return "redirect:/professeurs";
+        return "redirect:/gestion_professeurs";
     }
 }

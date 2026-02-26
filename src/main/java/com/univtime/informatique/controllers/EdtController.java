@@ -5,12 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/gestionnaire_edt")
+@RequestMapping("/gestionnaire-edt/edt")
 public class EdtController {
-
-    @GetMapping("/edt")
-    public String showEdt() {
-        return "edt";
+    /**
+     * URL : /gestionnaire-edt/edt
+     */
+    @GetMapping
+    public String afficheredt() {
+        return "gestionnaire_edt/edt";
     }
 }
-

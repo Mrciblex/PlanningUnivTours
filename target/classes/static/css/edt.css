@@ -1,6 +1,6 @@
 .edt-container {
     display: flex;
-    height: 100vh;
+    height: max-content;
 }
 
 /* Main Calendar Area */
