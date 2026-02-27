@@ -22,6 +22,16 @@ public class GestionProfesseurController {
         model.addAttribute("professeurs", professeurs);
         return "gestionnaire_edt/gestion_professeurs";
     }
+    @GetMapping("/promo/{idPromo}")// pour avoir la liste des profs en fonction de la promo
+    public String listProfesseursByPromo(@PathVariable Integer idPromo, Model model) {
+
+        List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
+
+        model.addAttribute("professeurs", professeurs);
+        model.addAttribute("idPromo", idPromo);
+
+        return "gestionnaire_edt/gestion_professeurs";
+    }
 
     @GetMapping("/{id}")
     public String getProfesseurById(@PathVariable Integer id, Model model) {

@@ -46,6 +46,14 @@ public class GroupeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Le groupe avec l'id n'est trouvé : " + id));
     }
 
+    public List<GroupeDto> findGroupeDtoByIdPromo(Integer idPromo) {
+
+        return groupeRepository.findByPromo_IdPromo(idPromo)
+                .stream()
+                .map(GroupeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public GroupeDto createGroupe(GroupeDto groupeDto) {
         // Vérifie la clé étrangère de promo
         if (groupeDto.getPromoDto() == null || groupeDto.getPromoDto().getIdPromo() == null) {
