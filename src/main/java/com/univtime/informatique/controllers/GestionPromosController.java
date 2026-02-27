@@ -34,7 +34,7 @@ public class GestionPromosController {
     }
 
     @PostMapping("/{id}/edit")
-    public String updateGroupe(@PathVariable Integer id, @ModelAttribute PromoDto promoDto) {
+    public String updatepromo(@PathVariable Integer id, @ModelAttribute PromoDto promoDto) {
 
         promoDto.setIdPromo(id);
         promoService.updatePromo(new PromoDto());

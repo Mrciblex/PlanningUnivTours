@@ -4,10 +4,7 @@ import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.services.CoursService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/edt")
@@ -31,5 +28,19 @@ public class EdtController {
 
         return "redirect:/gestionnaire-edt/edt";// je sais pas quoi mettree
     }
+    @PostMapping("/{id}/edit")
+    public String updateCours(@PathVariable Integer id, @ModelAttribute CoursDto coursDto) {
 
+        coursDto.setIdCours(id);
+        coursService.updateCours(new CoursDto());
+
+        return "redirect:/gestionnaire-edt/edt";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteCours(@PathVariable Integer id, @ModelAttribute CoursDto coursDto) {
+
+        coursService.deleteCoursById(id);
+        return "redirect:/gestionnaire-edt/edt";
+    }
 }
