@@ -1,6 +1,7 @@
 .edt-container {
     display: flex;
     height: max-content;
+    margin-top: 40px;
 }
 
 /* Main Calendar Area */
@@ -71,7 +72,7 @@
 .calendar-table thead th {
     background: #5b7fc7;
     color: white;
-    padding: 12px;
+    padding: 2px;
     text-align: center;
     font-weight: 600;
     border-right: 1px solid white;
@@ -95,13 +96,13 @@
     font-size: 11px;
     font-weight: 600;
     width: 70px;
-    height: 40px;
+    height: 20px;
     border-bottom: 1px solid #34495e;
 }
 
 .calendar-table tbody td {
     border: 1px solid #e0e0e0;
-    height: 40px;
+    height: 20px;
     position: relative;
     background: white;
     padding: 0;
@@ -114,7 +115,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 32px;
     color: #5b7fc7;
     font-weight: 300;
     opacity: 0.5;

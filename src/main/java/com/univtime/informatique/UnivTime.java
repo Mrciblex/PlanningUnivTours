@@ -21,6 +21,7 @@ public class UnivTime {
         // Le code de test de l'algorithme a été temporairement retiré pour assurer la compilation.
     }
 
+    /*
     @Bean
     public CommandLineRunner testAlgo(GenerationAlgorithme algo) {
         return args -> {
@@ -39,4 +40,5 @@ public class UnivTime {
             System.out.println("=== FIN DU TEST ===");
         };
     }
+     */
 }

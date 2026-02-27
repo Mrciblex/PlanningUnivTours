@@ -44,6 +44,15 @@ public class CoursService {
                 .collect(Collectors.toList());
     }
 
+    public List<CoursDto> findAllCoursByPromoId(Integer idPromo) {
+        List<CoursEntity> coursEntities = coursRepository.findByIdPromo(idPromo);
+
+        return coursEntities
+                .stream()
+                .map(CoursMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public CoursDto findCoursDtoById(Integer id) {
         CoursEntity coursEntity = coursRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Le cours avec l'id n'est trouvé : " + id));

@@ -43,8 +43,7 @@
 /* Dropdown */
 .dropdown-container {
     max-height: 0;
-    opacity: 0;
-    overflow: hidden;
+    display: none;
     transition: all 0.4s ease;
     margin-top: 40px;
     width: 100%;
@@ -52,7 +51,7 @@
 
 .dropdown-container.active {
     max-height: 400px;
-    opacity: 1;
+    display: block;
 }
 
 .dropdown-list {
@@ -65,7 +64,7 @@
     border-radius: 16px;
     border: 1px solid rgba(120, 144, 156, 0.2);
     overflow-y: auto;
-    max-height: 450px;
+    max-height: 350px;
     max-width: 800px;
     margin: 0 auto;
 }
@@ -127,7 +126,7 @@
     transition: transform 0.3s ease;
 }
 
-.promo-item:hover .promo-arrow {
+.promo-arrow:hover {
     transform: translateX(4px);
     color: #66bb6a;
 }
