@@ -17,13 +17,13 @@ public class PromoController {
     public PromoController(PromoService promoService) {
         this.promoService = promoService;
     }
-    /**
+
     @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
         model.addAttribute("promos", promos);
         return "gestion_promos";
-    }*/
+    }
 
     @GetMapping("/{id}")
     public String getPromoById(@PathVariable Integer id, Model model) {
@@ -41,7 +41,7 @@ public class PromoController {
     @PostMapping("/new")
     public String createPromo(@ModelAttribute PromoDto promoDto) {
         PromoDto saved = promoService.createPromo(promoDto);
-        return "redirect:/promos/" + saved.getIdPromo();
+        return "redirect:/promos";
     }
 
     @GetMapping("/{id}/edit")
