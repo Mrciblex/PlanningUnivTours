@@ -24,6 +24,7 @@ public class EdtController {
     public String afficheredt() {
         return "gestionnaire_edt/edt";
     }
+    // edt promo
     @PostMapping("/new")
     public String createCours(@ModelAttribute CoursDto coursDto) {
         coursService.createCours(coursDto);

@@ -1,4 +1,5 @@
 package com.univtime.informatique.controllers;
+import com.univtime.informatique.dto.groupeDto.GroupeDto;
 import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.services.PromoService;
 import org.springframework.stereotype.Controller;
@@ -10,17 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/gestion-promo") // Préfixe clair pour la gestion des promos
+@RequestMapping("/gestion-promo")
 public class GestionPromosController {
     public final PromoService promoService;
     public GestionPromosController(PromoService promoService) {
         this.promoService = promoService;
     }
-    @GetMapping("/gestion-promos")
-    public String gestionPromos() {
-        return "gestionnaire_promos";
-    }
-
+    @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
         if (promos == null) {
@@ -33,9 +30,23 @@ public class GestionPromosController {
     public String createPromo(@ModelAttribute PromoDto promoDto) {
         promoService.createPromo(promoDto);
         // Redirige vers la méthode qui liste toutes les promos
-        return "redirect:/gestion_promos";
+        return "redirect:/gestion-promos";
     }
 
+    @PostMapping("/{id}/edit")
+    public String updateGroupe(@PathVariable Integer id, @ModelAttribute PromoDto promoDto) {
+
+        promoDto.setIdPromo(id);
+        promoService.updatePromo(new PromoDto());
+
+        return "redirect:/gestion-promos";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deletePromo(@PathVariable Integer id) {
+        promoService.deletePromoById(id);;
+        return "redirect:/gestion-promo";
+    }
 
 
 }
