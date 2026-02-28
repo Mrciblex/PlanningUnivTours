@@ -44,8 +44,8 @@ public class CoursService {
                 .collect(Collectors.toList());
     }
 
-    public List<CoursDto> findAllCoursByPromoId(Integer idPromo) {
-        List<CoursEntity> coursEntities = coursRepository.findByIdPromo(idPromo);
+    public List<CoursDto> findAllCoursByPromoIdBySemestre(Integer idPromo, Integer numSemestre) {
+        List<CoursEntity> coursEntities = coursRepository.findByIdPromoBySemestre(idPromo, numSemestre);
 
         return coursEntities
                 .stream()

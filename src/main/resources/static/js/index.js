@@ -154,7 +154,10 @@ window.addCourse = function() {
     alert('Ajouter un cours - Modal à implémenter');
 };
 
-window.addCourseAt = function(day, time) {
+window.addCourseAt = function(cell) {
+    const day = cell.dataset.day;
+    const time = cell.dataset.time;
+
     console.log('Add course at day ' + day + ' at ' + time);
     // TODO: Open modal with pre-filled day and time
     alert('Ajouter un cours le jour ' + day + ' à ' + time);

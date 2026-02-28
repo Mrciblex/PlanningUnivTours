@@ -8,7 +8,17 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CoursRepository extends JpaRepository<CoursEntity, Integer> {
-    @Query(value = "SELECT * FROM Cours c WHERE EXISTS (SELECT 1 FROM ParticipeA pa INNER JOIN Cours c USING(idCours) INNER JOIN SousGroupes sg USING(idSousGroupe) INNER JOIN Groupes g USING(idGroupe) WHERE g.idPromo = :idPromo)",
+    @Query(value = "SELECT c.* FROM Cours c " +
+            "INNER JOIN ParticipeA pa ON c.idCours = pa.idCours " +
+            "INNER JOIN SousGroupes sg ON pa.idSousGroupe = sg.idSousGroupe " +
+            "INNER JOIN Groupes g ON sg.idGroupe = g.idGroupe " +
+            "INNER JOIN Promos p ON g.idPromo = p.idPromo " +
+            "WHERE p.idPromo = :idPromo " +
+            "AND ( " +
+            "  (:numSemestre = 1 AND c.heureDebutCours BETWEEN p.debutS1Promo AND p.finS1Promo) " +
+            "  OR " +
+            "  (:numSemestre = 2 AND c.heureDebutCours BETWEEN p.debutS2Promo AND p.finS2Promo) " +
+            ")",
            nativeQuery = true)
-    public List<CoursEntity> findByIdPromo(@Param("idPromo") Integer idPromo);
+    public List<CoursEntity> findByIdPromoBySemestre(@Param("idPromo") Integer idPromo, @Param("numSemestre") Integer numSemestre);
 }

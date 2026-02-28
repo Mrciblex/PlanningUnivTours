@@ -1,135 +1,155 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
-        <link rel="stylesheet" th:href="@{/css/edt.css}">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/edt.css}">
 
-        <title>UnivTime - EDT</title>
-    </head>
-    <body>
-        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+    <title>UnivTime - EDT</title>
+</head>
+<body>
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <div class="edt-container">
-            <!-- Main Calendar -->
-            <div class="calendar-area">
-                <!-- Header -->
-                <div class="edt-header">
-                    <h1 class="text-2xl font-bold">UnivTime</h1>
+<div class="edt-container">
+    <!-- Main Calendar -->
+    <div class="calendar-area">
+        <!-- Header -->
+        <div class="edt-header">
+            <h1 class="text-2xl font-bold">UnivTime</h1>
 
-                    <div class="week-nav">
-                        <button onclick="previousWeek()">◄</button>
-                        <span class="week-info" id="weekInfo">Semaine du 19 au 25 janvier 2025</span>
-                        <button onclick="nextWeek()">►</button>
-                        <span class="text-sm text-slate-400">Semaine <span id="weekNumber">6</span></span>
-                    </div>
-                </div>
-
-                <!-- Calendrier Principal -->
-                <div class="calendar-scroll">
-                    <table class="calendar-table">
-                        <thead>
-                        <tr>
-                            <th>Heures</th>
-                            <th>Lundi</th>
-                            <th>Mardi</th>
-                            <th>Mercredi</th>
-                            <th>Jeudi</th>
-                            <th>Vendredi</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 6h à 21h par slot de 30 minutes -->
-                            <tr><th>6:00</th><td onclick="addCourseAt(1, '6:00')"></td><td onclick="addCourseAt(2, '6:00')"></td><td onclick="addCourseAt(3, '6:00')"></td><td onclick="addCourseAt(4, '6:00')"></td><td onclick="addCourseAt(5, '6:00')"></td></tr>
-                            <tr><th>6:30</th><td onclick="addCourseAt(1, '6:30')"></td><td onclick="addCourseAt(2, '6:30')"></td><td onclick="addCourseAt(3, '6:30')"></td><td onclick="addCourseAt(4, '6:30')"></td><td onclick="addCourseAt(5, '6:30')"></td></tr>
-                            <tr><th>7:00</th><td onclick="addCourseAt(1, '7:00')"></td><td onclick="addCourseAt(2, '7:00')"></td><td onclick="addCourseAt(3, '7:00')"></td><td onclick="addCourseAt(4, '7:00')"></td><td onclick="addCourseAt(5, '7:00')"></td></tr>
-                            <tr><th>7:30</th><td onclick="addCourseAt(1, '7:30')"></td><td onclick="addCourseAt(2, '7:30')"></td><td onclick="addCourseAt(3, '7:30')"></td><td onclick="addCourseAt(4, '7:30')"></td><td onclick="addCourseAt(5, '7:30')"></td></tr>
-                            <tr><th>8:00</th><td onclick="addCourseAt(1, '8:00')"></td><td onclick="addCourseAt(2, '8:00')"></td><td onclick="addCourseAt(3, '8:00')"></td><td onclick="addCourseAt(4, '8:00')"></td><td onclick="addCourseAt(5, '8:00')"></td></tr>
-                            <tr><th>8:30</th><td onclick="addCourseAt(1, '8:30')"></td><td onclick="addCourseAt(2, '8:30')"></td><td onclick="addCourseAt(3, '8:30')"></td><td onclick="addCourseAt(4, '8:30')"></td><td onclick="addCourseAt(5, '8:30')"></td></tr>
-                            <tr><th>9:00</th><td onclick="addCourseAt(1, '9:00')"></td><td onclick="addCourseAt(2, '9:00')"></td><td onclick="addCourseAt(3, '9:00')"></td><td onclick="addCourseAt(4, '9:00')"></td><td onclick="addCourseAt(5, '9:00')"></td></tr>
-                            <tr><th>9:30</th><td onclick="addCourseAt(1, '9:30')"></td><td onclick="addCourseAt(2, '9:30')"></td><td onclick="addCourseAt(3, '9:30')"></td><td onclick="addCourseAt(4, '9:30')"></td><td onclick="addCourseAt(5, '9:30')"></td></tr>
-                            <tr><th>10:00</th><td onclick="addCourseAt(1, '10:00')"></td><td onclick="addCourseAt(2, '10:00')"></td><td onclick="addCourseAt(3, '10:00')"></td><td onclick="addCourseAt(4, '10:00')"></td><td onclick="addCourseAt(5, '10:00')"></td></tr>
-                            <tr><th>10:30</th><td onclick="addCourseAt(1, '10:30')"></td><td onclick="addCourseAt(2, '10:30')"></td><td onclick="addCourseAt(3, '10:30')"></td><td onclick="addCourseAt(4, '10:30')"></td><td onclick="addCourseAt(5, '10:30')"></td></tr>
-                            <tr><th>11:00</th><td onclick="addCourseAt(1, '11:00')"></td><td onclick="addCourseAt(2, '11:00')"></td><td onclick="addCourseAt(3, '11:00')"></td><td onclick="addCourseAt(4, '11:00')"></td><td onclick="addCourseAt(5, '11:00')"></td></tr>
-                            <tr><th>11:30</th><td onclick="addCourseAt(1, '11:30')"></td><td onclick="addCourseAt(2, '11:30')"></td><td onclick="addCourseAt(3, '11:30')"></td><td onclick="addCourseAt(4, '11:30')"></td><td onclick="addCourseAt(5, '11:30')"></td></tr>
-                            <tr><th>12:00</th><td onclick="addCourseAt(1, '12:00')"></td><td onclick="addCourseAt(2, '12:00')"></td><td onclick="addCourseAt(3, '12:00')"></td><td onclick="addCourseAt(4, '12:00')"></td><td onclick="addCourseAt(5, '12:00')"></td></tr>
-                            <tr><th>12:30</th><td onclick="addCourseAt(1, '12:30')"></td><td onclick="addCourseAt(2, '12:30')"></td><td onclick="addCourseAt(3, '12:30')"></td><td onclick="addCourseAt(4, '12:30')"></td><td onclick="addCourseAt(5, '12:30')"></td></tr>
-                            <tr><th>13:00</th><td onclick="addCourseAt(1, '13:00')"></td><td onclick="addCourseAt(2, '13:00')"></td><td onclick="addCourseAt(3, '13:00')"></td><td onclick="addCourseAt(4, '13:00')"></td><td onclick="addCourseAt(5, '13:00')"></td></tr>
-                            <tr><th>13:30</th><td onclick="addCourseAt(1, '13:30')"></td><td onclick="addCourseAt(2, '13:30')"></td><td onclick="addCourseAt(3, '13:30')"></td><td onclick="addCourseAt(4, '13:30')"></td><td onclick="addCourseAt(5, '13:30')"></td></tr>
-                            <tr><th>14:00</th><td onclick="addCourseAt(1, '14:00')"></td><td onclick="addCourseAt(2, '14:00')"></td><td onclick="addCourseAt(3, '14:00')"></td><td onclick="addCourseAt(4, '14:00')"></td><td onclick="addCourseAt(5, '14:00')"></td></tr>
-                            <tr><th>14:30</th><td onclick="addCourseAt(1, '14:30')"></td><td onclick="addCourseAt(2, '14:30')"></td><td onclick="addCourseAt(3, '14:30')"></td><td onclick="addCourseAt(4, '14:30')"></td><td onclick="addCourseAt(5, '14:30')"></td></tr>
-                            <tr><th>15:00</th><td onclick="addCourseAt(1, '15:00')"></td><td onclick="addCourseAt(2, '15:00')"></td><td onclick="addCourseAt(3, '15:00')"></td><td onclick="addCourseAt(4, '15:00')"></td><td onclick="addCourseAt(5, '15:00')"></td></tr>
-                            <tr><th>15:30</th><td onclick="addCourseAt(1, '15:30')"></td><td onclick="addCourseAt(2, '15:30')"></td><td onclick="addCourseAt(3, '15:30')"></td><td onclick="addCourseAt(4, '15:30')"></td><td onclick="addCourseAt(5, '15:30')"></td></tr>
-                            <tr><th>16:00</th><td onclick="addCourseAt(1, '16:00')"></td><td onclick="addCourseAt(2, '16:00')"></td><td onclick="addCourseAt(3, '16:00')"></td><td onclick="addCourseAt(4, '16:00')"></td><td onclick="addCourseAt(5, '16:00')"></td></tr>
-                            <tr><th>16:30</th><td onclick="addCourseAt(1, '16:30')"></td><td onclick="addCourseAt(2, '16:30')"></td><td onclick="addCourseAt(3, '16:30')"></td><td onclick="addCourseAt(4, '16:30')"></td><td onclick="addCourseAt(5, '16:30')"></td></tr>
-                            <tr><th>17:00</th><td onclick="addCourseAt(1, '17:00')"></td><td onclick="addCourseAt(2, '17:00')"></td><td onclick="addCourseAt(3, '17:00')"></td><td onclick="addCourseAt(4, '17:00')"></td><td onclick="addCourseAt(5, '17:00')"></td></tr>
-                            <tr><th>17:30</th><td onclick="addCourseAt(1, '17:30')"></td><td onclick="addCourseAt(2, '17:30')"></td><td onclick="addCourseAt(3, '17:30')"></td><td onclick="addCourseAt(4, '17:30')"></td><td onclick="addCourseAt(5, '17:30')"></td></tr>
-                            <tr><th>18:00</th><td onclick="addCourseAt(1, '18:00')"></td><td onclick="addCourseAt(2, '18:00')"></td><td onclick="addCourseAt(3, '18:00')"></td><td onclick="addCourseAt(4, '18:00')"></td><td onclick="addCourseAt(5, '18:00')"></td></tr>
-                            <tr><th>18:30</th><td onclick="addCourseAt(1, '18:30')"></td><td onclick="addCourseAt(2, '18:30')"></td><td onclick="addCourseAt(3, '18:30')"></td><td onclick="addCourseAt(4, '18:30')"></td><td onclick="addCourseAt(5, '18:30')"></td></tr>
-                            <tr><th>19:00</th><td onclick="addCourseAt(1, '19:00')"></td><td onclick="addCourseAt(2, '19:00')"></td><td onclick="addCourseAt(3, '19:00')"></td><td onclick="addCourseAt(4, '19:00')"></td><td onclick="addCourseAt(5, '19:00')"></td></tr>
-                            <tr><th>19:30</th><td onclick="addCourseAt(1, '19:30')"></td><td onclick="addCourseAt(2, '19:30')"></td><td onclick="addCourseAt(3, '19:30')"></td><td onclick="addCourseAt(4, '19:30')"></td><td onclick="addCourseAt(5, '19:30')"></td></tr>
-                            <tr><th>20:00</th><td onclick="addCourseAt(1, '20:00')"></td><td onclick="addCourseAt(2, '20:00')"></td><td onclick="addCourseAt(3, '20:00')"></td><td onclick="addCourseAt(4, '20:00')"></td><td onclick="addCourseAt(5, '20:00')"></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Menu à droite -->
-            <div class="sidebar">
-                <button class="sidebar-btn calendar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
-                    EDT
-                </button>
-
-                <button class="sidebar-btn" onclick="addCourse()">
-                     + Ajouter un cours
-                </button>
-
-                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
-                    + Composantes
-                </button>
-
-                <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
-                    + Enseignants
-                </button>
-
-                <button class="sidebar-btn"
-                        th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
-                    + Groupes
-                </button>
-
-                <button class="sidebar-btn" onclick="openSettings()">
-                    Paramètres
-                </button>
-
-                <button class="sidebar-btn" onclick="exportEDT()">
-                    Exporter
-                </button>
-
-                <!-- Mini Calendrier -->
-                <div class="mini-calendar">
-                    <div class="mini-calendar-header">
-                        <button class="mini-calendar-nav" onclick="previousMonth()">‹</button>
-                        <span class="mini-calendar-month" id="calendarMonth">Janvier 2025</span>
-                        <button class="mini-calendar-nav" onclick="nextMonth()">›</button>
-                    </div>
-
-                    <table class="mini-calendar-table" id="miniCalendarTable">
-                        <thead>
-                        <tr>
-                            <th>L</th>
-                            <th>M</th>
-                            <th>M</th>
-                            <th>J</th>
-                            <th>V</th>
-                            <th>S</th>
-                            <th>D</th>
-                        </tr>
-                        </thead>
-                        <tbody id="calendarDates">
-                            <!-- Genéré en JS -->
-                        </tbody>
-                    </table>
-                </div>
+            <div class="week-nav">
+                <button onclick="previousWeek()">◄</button>
+                <span class="week-info" id="weekInfo">Semaine du 19 au 25 janvier 2025</span>
+                <button onclick="nextWeek()">►</button>
+                <span class="text-sm text-slate-400">Semaine <span id="weekNumber">6</span></span>
             </div>
         </div>
-    </body>
+
+        <!-- Calendrier Principal -->
+        <div class="calendar-scroll">
+            <table class="calendar-table">
+                <thead>
+                <tr>
+                    <th>Heures</th>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                </tr>
+                </thead>
+                <tbody id="calendar-body">
+                <!-- 6h à 20h par slot de 30 minutes -->
+                <tr th:each="i : ${#numbers.sequence( 60 * 7, 60 * 20, 15)}"
+                    th:with="heure=${i/60 + ':' + (i%60 == 0 ? '00' : i%60)}">
+
+                    <th th:text="${heure}"></th>
+
+                    <td th:each="j : ${#numbers.sequence(1, 5, 1)}"
+                        th:data-day="${j}"
+                        th:data-time="${heure}"
+                        style="position: relative; padding: 0;"
+                        onclick="addCourseAt(this)">
+
+                        <th:block th:if="${cours != null}"
+                                  th:with="coursDuSlot=${cours.?[#temporals.dayOfWeek(heureDebutCours) == #root.j and (#temporals.hour(heureDebutCours) * 60 + #temporals.minute(heureDebutCours)) >= #root.i and (#temporals.hour(heureDebutCours) * 60 + #temporals.minute(heureDebutCours)) < (#root.i + 15)]}">
+
+                            <div th:if="${not #lists.isEmpty(coursDuSlot)}"
+                                 style="position: absolute; top: 0; left: 0; right: 0; display: flex; flex-direction: row; gap: 2px; z-index: 10;">
+
+                                <div th:each="c : ${coursDuSlot}"
+                                     th:with="
+                                        debutMin=${#temporals.hour(c.heureDebutCours) * 60 + #temporals.minute(c.heureDebutCours)},
+                                        finMin=${#temporals.hour(c.heureFinCours) * 60 + #temporals.minute(c.heureFinCours)},
+                                        dureeMin=${finMin - debutMin},
+                                        offsetMin=${debutMin - #root.i}
+                                     "
+                                     class="course-block"
+                                     th:style="'margin-top: calc(' + ${offsetMin} + ' * 30px / 15); height: calc(' + ${dureeMin} + ' * 30px / 15 - 1px);'"
+                                     onclick="event.stopPropagation(); alert('Modifier ce cours');">
+
+                                    <div class="course-title" th:text="${c.composanteDto != null ? c.composanteDto.nomComposante : 'Cours'} + ' - ' + ${c.typeCoursEnum}"></div>
+                                    <div class="course-details">
+                                        <span th:text="${#temporals.format(c.heureDebutCours, 'HH:mm')} + ' - ' + ${#temporals.format(c.heureFinCours, 'HH:mm')}"></span><br>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </th:block>
+                    </td>
+                </tr>
+                <!--
+                <tr>
+                    <th>6:00</th>
+                    <td onclick="addCourseAt(1, '6:00')"></td>
+                    <td onclick="addCourseAt(2, '6:00')"></td>
+                    <td onclick="addCourseAt(3, '6:00')"></td>
+                    <td onclick="addCourseAt(4, '6:00')"></td>
+                    <td onclick="addCourseAt(5, '6:00')"></td>
+                </tr>
+                -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Menu à droite -->
+    <div class="sidebar">
+        <button class="sidebar-btn calendar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
+            EDT
+        </button>
+
+        <button class="sidebar-btn" onclick="addCourse()">
+            + Ajouter un cours
+        </button>
+
+        <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
+            + Composantes
+        </button>
+
+        <button class="sidebar-btn" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
+            + Enseignants
+        </button>
+
+        <button class="sidebar-btn"
+                th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
+            + Groupes
+        </button>
+
+        <button class="sidebar-btn" onclick="openSettings()">
+            Paramètres
+        </button>
+
+        <button class="sidebar-btn" onclick="exportEDT()">
+            Exporter
+        </button>
+
+        <!-- Mini Calendrier -->
+        <div class="mini-calendar">
+            <div class="mini-calendar-header">
+                <button class="mini-calendar-nav" onclick="previousMonth()">‹</button>
+                <span class="mini-calendar-month" id="calendarMonth">Janvier 2025</span>
+                <button class="mini-calendar-nav" onclick="nextMonth()">›</button>
+            </div>
+
+            <table class="mini-calendar-table" id="miniCalendarTable">
+                <thead>
+                <tr>
+                    <th>L</th>
+                    <th>M</th>
+                    <th>M</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>S</th>
+                    <th>D</th>
+                </tr>
+                </thead>
+                <tbody id="calendarDates">
+                <!-- Genéré en JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
 </html>

@@ -29,33 +29,36 @@ public class EdtController {
             return "redirect:/";
         }
 
-        Integer lastPromoId = null;
+        String[] lastPromoSplit;
+        int lastPromoId;
         try {
-            String[] lastPromoSplit = lastPromo.split("-");
-            lastPromoId = Integer.valueOf(lastPromoSplit[0]);
+            lastPromoSplit = lastPromo.split("-");
+            lastPromoId = Integer.parseInt(lastPromoSplit[0]);
 
         } catch (Exception e) {
             // En cas de cookie mal formé, on redirige pour éviter le crash
             return "redirect:/";
         }
 
-        List<CoursDto> cours = coursService.findAllCoursByPromoId(lastPromoId);
+        Integer numSemestre = Integer.parseInt(lastPromoSplit[1]);
+        List<CoursDto> cours = coursService.findAllCoursByPromoIdBySemestre(lastPromoId, numSemestre);
 
-        System.out.println(cours);
         model.addAttribute("cours", cours);
         return "gestionnaire_edt/edt";
     }
 
     @GetMapping("/{idPromo}/{numSemestre}")
     public String edtOfPromo(@PathVariable Integer idPromo, @PathVariable Integer numSemestre, HttpServletResponse response, Model model) {
-        if (!(numSemestre == 1 || numSemestre == 2)) return null; // Securite pour limite de semestre
+        if (!(numSemestre == 1 || numSemestre == 2)) return "redirect:/"; // Securite pour limite de semestre
 
         Cookie cookie = new Cookie("lastPromo", idPromo.toString() + "-" + numSemestre);
         cookie.setMaxAge(60 * 60 * 24 * 365); // 30 jours
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        List<CoursDto> cours = coursService.findAllCoursByPromoId(idPromo);
+        List<CoursDto> cours = coursService.findAllCoursByPromoIdBySemestre(idPromo, numSemestre);
+        model.addAttribute("cours", cours);
+
         return "gestionnaire_edt/edt";
     }
 
@@ -64,7 +67,7 @@ public class EdtController {
     public String createCours(@ModelAttribute CoursDto coursDto) {
         coursService.createCours(coursDto);
 
-        return "redirect:/gestionnaire-edt/edt";// je sais pas quoi mettree
+        return "redirect:/gestionnaire-edt/edt";// je sais pas quoi mettre
     }
     @PostMapping("/{id}/edit")
     public String updateCours(@PathVariable Integer id, @ModelAttribute CoursDto coursDto) {
