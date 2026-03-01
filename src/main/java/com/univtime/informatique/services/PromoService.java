@@ -43,6 +43,9 @@ public class PromoService {
     }
 
     public PromoDto createPromo(PromoDto promoDto) {
+        if (promoDto.getNbEtuPromo() == null) {
+            promoDto.setNbEtuPromo(0);
+        }
         PromoEntity promoEntity = PromoMapper.toEntity(promoDto);
 
         PromoEntity savedPromo = promoRepository.save(promoEntity);

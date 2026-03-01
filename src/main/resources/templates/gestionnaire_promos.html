@@ -20,66 +20,111 @@
                 <div class="table-container">
                     <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Année</th>
-                                <th>Semestre 1</th>
-                                <th>Semestre 2</th>
-                                <th>EDT</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Année</th>
+                            <th>Semestre 1</th>
+                            <th>Semestre 2</th>
+                            <th>EDT</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
+
                         <tbody>
-                            <tr th:each="promo : ${promos}" th:if="${promo != null}">
-                                <td class="font-semibold text-tours-green-light" th:text="${promo.nomPromo}">Licence 3 Informatique</td>
-                                <td th:text="${promo.anneePromo}">2024-2025</td>
-                                <td>
-                                    <span th:text="${promo.dateDebutS1 != null ? #temporals.format(promo.dateDebutS1, 'dd/MM/yyyy') : '-'}">01/09/2024</span>
-                                    <span class="text-slate-400"> - </span>
-                                    <span th:text="${promo.dateFinS1 != null ? #temporals.format(promo.dateFinS1, 'dd/MM/yyyy') : '-'}">31/01/2025</span>
-                                </td>
-                                <td>
-                                    <span th:text="${promo.dateDebutS2 != null ? #temporals.format(promo.dateDebutS2, 'dd/MM/yyyy') : '-'}">01/02/2025</span>
-                                    <span class="text-slate-400"> - </span>
-                                    <span th:text="${promo.dateFinS2 != null ? #temporals.format(promo.dateFinS2, 'dd/MM/yyyy') : '-'}">30/06/2025</span>
-                                </td>
-                                <td>
-                                    <button>S1</button>
-                                    <button>S2</button>
-                                </td>
-                                <td>
-                                    <button th:onclick="|editPromoPopUp('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|" class="btn-edit mr-2">Modifier</button>
-                                    <button th:onclick="|deletePromoPopUp('${promo.id}', '${promo.nom}')|" class="btn-delete">Supprimer</button>
-                                </td>
-                            </tr>
 
-                            <!-- Static -->
-                            <tr>
-                                <td class="text-white">Licence 3 Informatique</td>
-                                <td class="text-white">2024-2025</td>
-                                <td>
-                                    <span class="text-white">01/09/2024</span>
-                                    <span class="text-white"> - </span>
-                                    <span class="text-white">31/01/2025</span>
-                                </td>
-                                <td>
-                                    <span class="text-white">01/02/2025</span>
-                                    <span class="text-white"> - </span>
-                                    <span class="text-white">30/06/2025</span>
-                                </td>
-                                <td>
-                                    <button class="btn-semester mr-2" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S1</button>
-                                    <button class="btn-semester mr-2" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S2</button>
-                                </td>
-                                <td>
-                                    <button class="btn-edit mr-2" th:onclick="|editPromoPopUp('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')|">Modifier</button>
-                                    <button class="btn-delete" th:onclick="deletePromoPopUp('${promo.id}', '${promo.nom}', '${promo.annee}', '${promo.dateDebutS1}', '${promo.dateFinS1}', '${promo.dateDebutS2}', '${promo.dateFinS2}')">Supprimer</button>
-                                </td>
-                            </tr>
+                        <!-- LISTE DYNAMIQUE -->
+                        <tr th:each="promo : ${promos}" th:if="${promo != null}">
+                            <td class="font-semibold text-tours-green-light"
+                                th:text="${promo.nomPromo}">
 
-                            <tr th:if="${#lists.isEmpty(promotions)}">
-                                <td colspan="6" class="text-center text-red-700 font-bold">Aucune promotion</td>
-                            </tr>
+                            </td>
+
+                            <td th:text="${promo.anneePromo}"></td>
+
+                            <td>
+                <span th:text="${promo.debutS1Promo != null ? #temporals.format(promo.debutS1Promo, 'dd/MM/yyyy') : '-'}">
+
+                </span>
+                                <span class="text-slate-400"> - </span>
+                                <span th:text="${promo.finS1Promo != null ? #temporals.format(promo.finS1Promo, 'dd/MM/yyyy') : '-'}">
+
+                </span>
+                            </td>
+
+                            <td>
+                <span th:text="${promo.debutS2Promo != null ? #temporals.format(promo.debutS2Promo, 'dd/MM/yyyy') : '-'}">
+
+                </span>
+                                <span class="text-slate-400"> - </span>
+                                <span th:text="${promo.finS2Promo != null ? #temporals.format(promo.finS2Promo, 'dd/MM/yyyy') : '-'}">
+
+                </span>
+                            </td>
+
+                            <td>
+                                <button>S1</button>
+                                <button>S2</button>
+                            </td>
+
+                            <td>
+                                <button
+                                        class="btn-edit mr-2"
+                                        onclick="editPromoPopUp(this)"
+                                        th:attr="
+                                                    data-id=${promo.idPromo},
+                                                    data-nom=${promo.nomPromo},
+                                                    data-annee=${promo.anneePromo},
+                                                    data-debut-s1=${promo.debutS1Promo},
+                                                    data-fin-s1=${promo.finS1Promo},
+                                                    data-debut-s2=${promo.debutS2Promo},
+                                                    data-fin-s2=${promo.finS2Promo}">
+                                    Modifier
+                                </button>
+
+                                <button
+                                        class="btn-delete"
+                                        onclick="deletePromoPopUp(this)"
+                                        th:attr="
+                                                    data-id=${promo.idPromo},
+                                                    data-nom=${promo.nomPromo}">
+                                    Supprimer
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- LIGNE STATIQUE (inchangée) -->
+                        <tr>
+                            <td class="text-white">Licence 3 Informatique</td>
+                            <td class="text-white">2024-2025</td>
+                            <td>
+                                <span class="text-white">01/09/2024</span>
+                                <span class="text-white"> - </span>
+                                <span class="text-white">31/01/2025</span>
+                            </td>
+                            <td>
+                                <span class="text-white">01/02/2025</span>
+                                <span class="text-white"> - </span>
+                                <span class="text-white">30/06/2025</span>
+                            </td>
+                            <td>
+                                <button class="btn-semester mr-2"
+                                        onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S1</button>
+                                <button class="btn-semester mr-2"
+                                        onclick="window.location.href='/univtime/gestionnaire-edt/edt'">S2</button>
+                            </td>
+                            <td>
+                                <button class="btn-edit mr-2">Modifier</button>
+                                <button class="btn-delete">Supprimer</button>
+                            </td>
+                        </tr>
+
+                        <!-- MESSAGE SI VIDE -->
+                        <tr th:if="${#lists.isEmpty(promos)}">
+                            <td colspan="6" class="text-center text-red-700 font-bold">
+                                Aucune promotion
+                            </td>
+                        </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -91,17 +136,17 @@
             <div class="popUp-content">
                 <p id="popUpTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter une promotion</p>
 
-                <form th:action="@{/promo/ajout}" method="post">
-                    <input type="hidden" id="promoIdA" name="id">
+                <form th:action="@{/gestion-promos/new}" method="post" th:object="${newPromo}">
+                    <input type="hidden" th:field="*{idPromo}">
 
                     <div class="form-group">
                         <label>Nom *</label>
-                        <input type="text" id="nomA" name="nom" required placeholder="Ex: Licence 3 Informatique">
+                        <input type="text" th:field="*{nomPromo}" required placeholder="Ex: Licence 3 Informatique">
                     </div>
 
                     <div class="form-group">
                         <label>Année *</label>
-                        <input type="text" id="anneeA" name="annee" required placeholder="Ex: 2024-2025">
+                        <input type="number" th:field="*{anneePromo}" required placeholder="Ex: 2024-2025">
                     </div>
 
                     <div class="form-group">
@@ -109,11 +154,11 @@
                         <div class="date-group">
                             <div>
                                 <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS1A" name="dateDebutS1">
+                                <input type="date" th:field="*{debutS1Promo}">
                             </div>
                             <div>
                                 <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS1A" name="dateFinS1">
+                                <input type="date" th:field="*{finS1Promo}">
                             </div>
                         </div>
                     </div>
@@ -123,11 +168,11 @@
                         <div class="date-group">
                             <div>
                                 <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS2A" name="dateDebutS2">
+                                <input type="date" th:field="*{debutS2Promo}">
                             </div>
                             <div>
                                 <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS2A" name="dateFinS2">
+                                <input type="date" th:field="*{finS2Promo}">
                             </div>
                         </div>
                     </div>
@@ -138,6 +183,7 @@
                     </div>
                 </form>
             </div>
+        </div>
 
             <!-- Pop Up Modfier -->
             <div id="promoUpdate" class="popUp">
@@ -225,6 +271,5 @@
                     </div>
                 </div>
             </div>
-        </div>
     </body>
 </html>

@@ -25,6 +25,10 @@ public class GestionPromosController {
             promos = new ArrayList<>();
         }
         model.addAttribute("promos", promos);
+
+        // ⚠️ Objet vide pour le formulaire Ajouter
+        model.addAttribute("newPromo", new PromoDto());
+
         return "gestionnaire_promos";
     }
     @PostMapping("/new")
