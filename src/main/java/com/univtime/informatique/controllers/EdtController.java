@@ -1,7 +1,9 @@
 package com.univtime.informatique.controllers;
 
 import com.univtime.informatique.dto.coursDto.CoursDto;
+import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.services.CoursService;
+import com.univtime.informatique.services.PromoService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
@@ -15,9 +17,13 @@ import java.util.List;
 public class EdtController {
     private final CoursService coursService;
 
-    public EdtController(CoursService coursService){
+    private final PromoService promoService;
+
+    public EdtController(CoursService coursService,
+                         PromoService promoService){
         this.coursService = coursService;
 
+        this.promoService = promoService;
     }
 
     /**
@@ -43,6 +49,9 @@ public class EdtController {
         Integer numSemestre = Integer.parseInt(lastPromoSplit[1]);
         List<CoursDto> cours = coursService.findAllCoursByPromoIdBySemestre(lastPromoId, numSemestre);
 
+        PromoDto promo = promoService.findPromoDtoById(lastPromoId);
+        model.addAttribute("promo", promo);
+
         model.addAttribute("cours", cours);
         return "gestionnaire_edt/edt";
     }
@@ -56,8 +65,11 @@ public class EdtController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
+        PromoDto promo = promoService.findPromoDtoById(idPromo);
         List<CoursDto> cours = coursService.findAllCoursByPromoIdBySemestre(idPromo, numSemestre);
+
         model.addAttribute("cours", cours);
+        model.addAttribute("promo", promo);
 
         return "gestionnaire_edt/edt";
     }

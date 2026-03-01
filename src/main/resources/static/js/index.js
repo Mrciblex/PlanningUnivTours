@@ -27,20 +27,25 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, elements:', ancienBtn, nouvelBtn, dropdown);
 
     // Ancien EDT - toggle dropdown
+    /*
     ancienBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         console.log('Ancien EDT clicked');
         toggleDropdown();
     });
+     */
 
     // Nouvel EDT - redirect
+    /*
     nouvelBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         console.log('Nouvel EDT clicked');
         createNewEDT();
     });
+     */
 
     // Close dropdown when clicking outside
+    /*
     document.addEventListener('click', function(event) {
         if (!dropdown.contains(event.target) &&
             !ancienBtn.contains(event.target) &&
@@ -48,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dropdown.classList.remove('active');
         }
     });
+     */
 });
 
 /* Gestionnaire de promo */
@@ -139,40 +145,10 @@ function getWeekNumber(date) {
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
-function previousWeek() {
-    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-    updateWeekInfo();
-    loadCourses();
-}
-
-function nextWeek() {
-    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-    updateWeekInfo();
-    loadCourses();
-}
-
 function loadCourses() {
     // TODO: Load courses from server
     // fetch('/edt/courses?week=' + currentWeekStart.toISOString())
 }
-
-// Sidebar actions
-window.goToCalendrier = function() {
-    window.location.href = '/';
-};
-
-window.addCourse = function() {
-    alert('Ajouter un cours - Modal à implémenter');
-};
-
-window.addCourseAt = function(cell) {
-    const day = cell.dataset.day;
-    const time = cell.dataset.time;
-
-    console.log('Add course at day ' + day + ' at ' + time);
-    // TODO: Open modal with pre-filled day and time
-    alert('Ajouter un cours le jour ' + day + ' à ' + time);
-};
 
 window.manageTeachers = function() {
     window.location.href = '/professeur';
@@ -200,7 +176,7 @@ function renderMiniCalendrier() {
     // Update month display
     const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    document.getElementById('calendrierMonth').textContent = `${monthNames[month]} ${year}`;
+    //document.getElementById('calendrierMonth').textContent = `${monthNames[month]} ${year}`;
 
     // Get first day of month and number of days
     const firstDay = new Date(year, month, 1);
@@ -245,7 +221,7 @@ function renderMiniCalendrier() {
         if (currentDay > daysInMonth && nextMonthDay > 7) break;
     }
 
-    document.getElementById('calendrierDates').innerHTML = html;
+    //document.getElementById('calendrierDates').innerHTML = html;
 }
 
 function previousMonth() {
