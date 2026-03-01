@@ -1,6 +1,10 @@
 <th:block th:fragment="defaultHeader">
     <header class="fixed w-full top-0 z-50 bg-[#00A99B]">
         <nav class="w-full py-2 flex gap-20 items-center justify-center">
+            <div class="text-white font-bold">
+                <img th:src="@{/images/Logo_Tours_Blanc.png}" alt="Logo de l'université de Tours en blanc" class="logo-image float-left" />
+                <span>Département Informatique</span>
+            </div>
             <a class="min-w-50 text-center bg-[#0ccbba] rounded-xl" th:href="@{/gestion-promos}">Gestionnaire</a>
             <a class="min-w-50 text-center bg-[#0ccbba] rounded-xl" th:href="@{/}">UnivTime</a>
             <a class="min-w-50 text-center bg-[#0ccbba] rounded-xl" th:href="@{/gestionnaire-edt/edt}">EDT</a>
