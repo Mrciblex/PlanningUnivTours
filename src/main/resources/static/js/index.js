@@ -2,22 +2,10 @@
 
 // Make functions global
 window.toggleDropdown = function() {
-    console.log('Toggle dropdown called');
     const dropdown = document.getElementById('selection_promo_recente');
-    console.log('Dropdown element:', dropdown);
-    console.log('Current classes:', dropdown.className);
     dropdown.classList.toggle('active');
-    console.log('New classes:', dropdown.className);
 };
-
-window.createNewEDT = function() {
-    window.location.href = '/edt/create';
-};
-
-window.accessPromo = function(promoId) {
-    window.location.href = '/edt/promo/' + promoId;
-};
-
+/*
 // Setup event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     const ancienBtn = document.getElementById('ancienEdtBtn');
@@ -49,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
+*/
 /* Gestionnaire de promo */
 function openPromoPopUp() {
     document.getElementById('promoAdd').classList.add('active');
