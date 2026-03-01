@@ -12,6 +12,6 @@ public class MaquetteController {
      */
     @GetMapping
     public String afficherMaquettes() {
-        return "gestionnaire_edt/maquettes";
+        return "gestionnaire_edt/maquette";
     }
 }
