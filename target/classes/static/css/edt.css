@@ -222,7 +222,7 @@
 }
 
 .mini-calendar-nav:hover {
-    color: #8ab4f8;
+    color: #00A99B;
 }
 
 .mini-calendar-month {
@@ -259,15 +259,131 @@
 }
 
 .mini-calendar-table td.today {
-    background: #5b7fc7;
+    background: #00A99B;
     font-weight: 700;
 }
 
 .mini-calendar-table td.selected {
-    background: #2e7d32;
+    background: #1F635E;
     font-weight: 700;
 }
 
 .mini-calendar-table td.other-month {
     opacity: 0.3;
+}
+
+/* Pop Up des Exportations */
+.export-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.export-popup-content {
+    background: rgba(45, 62, 80, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.export-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.export-popup-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #eceff1;
+    margin: 0;
+}
+
+.export-popup-close {
+    background: none;
+    border: none;
+    color: #78909c;
+    cursor: pointer;
+    font-size: 28px;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    transition: color 0.2s;
+}
+
+.export-popup-close:hover {
+    color: #eceff1;
+}
+
+.export-popup-description {
+    color: #b0bec5;
+    margin-bottom: 24px;
+}
+
+.export-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.export-option-btn {
+    background: rgba(84, 110, 122, 0.2);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    color: #eceff1;
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.2s;
+}
+
+.export-option-btn:hover {
+    background: rgba(0, 169, 155, 0.2);
+    border-color: rgba(0, 169, 155, 0.4);
+    transform: translateX(4px);
+}
+
+.export-option-text {
+    text-align: left;
+}
+
+.export-option-title {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.export-option-desc {
+    font-size: 13px;
+    color: #78909c;
+}
+
+.export-cancel-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: rgba(84, 110, 122, 0.2);
+    color: #78909c;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.export-cancel-btn:hover {
+    background: rgba(84, 110, 122, 0.4);
 }

@@ -88,18 +88,16 @@ function deletePromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, d
 
 function closePopUp() {
     document.getElementById('promoAdd' || 'promoUpdate' || 'promoDelete').classList.remove('active');
-    console.log('Pop Up close:', this.className);
 }
 
 // EDT
-// Current date tracking
 let currentDate = new Date();
 let currentWeekStart = getWeekStart(currentDate);
 
 function getWeekStart(date) {
     const d = new Date(date);
     const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Ajustement le dimanche
     return new Date(d.setDate(diff));
 }
 
@@ -144,42 +142,125 @@ function loadCourses() {
     // fetch('/edt/courses?week=' + currentWeekStart.toISOString())
 }
 
-// Sidebar actions
-window.goToCalendrier = function() {
-    window.location.href = '/';
-};
+// Gestion des boutons à droite de l'EDT
 
 window.addCourse = function() {
-    alert('Ajouter un cours - Modal à implémenter');
-};
-
-window.addCourseAt = function(cell) {
-    const day = cell.dataset.day;
-    const time = cell.dataset.time;
-
-    console.log('Add course at day ' + day + ' at ' + time);
-    // TODO: Open modal with pre-filled day and time
-    alert('Ajouter un cours le jour ' + day + ' à ' + time);
-};
-
-window.manageTeachers = function() {
-    window.location.href = '/professeur';
-};
-
-window.manageGroups = function() {
-    window.location.href = '/groupe';
+    alert('Ajouter un cours - Pop Up à implémenter');
 };
 
 window.openSettings = function() {
-    alert('Paramètres - Modal à implémenter');
+    alert('Paramètres - Pop Up à implémenter');
 };
 
+// Pop Up Exportation
 window.exportEDT = function() {
-    alert('Exporter - Modal à implémenter');
+    document.getElementById('exportPopUp').style.display = 'flex';
+};
+
+window.closeExportModal = function() {
+    document.getElementById('exportPopUp').style.display = 'none';
+};
+
+// LES EXPORTATIONS
+// CSV
+window.exportToCSV = function() {
+    const weekInfo = document.getElementById('weekInfo').textContent;
+    const weekNum = document.getElementById('weekNumber').textContent;
+
+    // Get calendar data
+    const csv = [];
+    csv.push([`Emploi du temps - ${weekInfo}`]);
+    csv.push([]);
+
+    // Header row
+    const headers = ['Horaire', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+    csv.push(headers);
+
+    // Get all time rows
+    const rows = document.querySelectorAll('.calendar-table tbody tr');
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('th, td');
+        const rowData = [];
+        cells.forEach(cell => {
+            rowData.push(cell.textContent.trim() || '');
+        });
+        csv.push(rowData);
+    });
+
+    // Convert to CSV string
+    const csvContent = csv.map(row => row.join(',')).join('\n');
+
+    // Download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `EDT_Semaine_${weekNum}.csv`;
+    link.click();
+
+    closeExportModal();
+};
+
+// Excel
+window.exportToExcel = function() {
+    const weekInfo = document.getElementById('weekInfo').textContent;
+    const weekNum = document.getElementById('weekNumber').textContent;
+
+    // Create a workbook
+    let html = '<html><head><meta charset="utf-8"></head><body>';
+    html += `<h1>Emploi du temps - ${weekInfo}</h1>`;
+    html += '<table border="1">';
+
+    // Get table HTML
+    const table = document.querySelector('.calendar-table');
+    html += table.innerHTML;
+
+    html += '</table></body></html>';
+
+    // Create blob and download
+    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `EDT_Semaine_${weekNum}.xls`;
+    link.click();
+
+    closeExportModal();
+};
+
+// PDF
+window.exportToPDF = function() {
+    closeExportModal();
+
+    // Create a new window with printable content
+    const printWindow = window.open('', '', 'height=600,width=800');
+    const weekInfo = document.getElementById('weekInfo').textContent;
+
+    printWindow.document.write('<html><head><title>Emploi du temps</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
+    printWindow.document.write('h1 { text-align: center; color: #333; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; margin-top: 20px; }');
+    printWindow.document.write('th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }');
+    printWindow.document.write('th { background-color: #5b7fc7; color: white; }');
+    printWindow.document.write('tbody th { background-color: #2c3e50; color: white; }');
+    printWindow.document.write('@media print { @page { margin: 1cm; } }');
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write(`<h1>Emploi du temps - ${weekInfo}</h1>`);
+
+    // Copy table
+    const table = document.querySelector('.calendar-table').cloneNode(true);
+    printWindow.document.write(table.outerHTML);
+
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+
+    // Wait for content to load, then print
+    setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+    }, 250);
 };
 
 // Mini calendrier
-// Mini calendar
 let miniCalendarDate = new Date();
 
 function renderMiniCalendar() {
