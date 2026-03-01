@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="flex items-start">
-                    <button onclick="openMatiereModal()" class="btn-add">+ Ajouter une matière</button>
+                    <button onclick="openMaquetteMatierePopUp()" class="btn-add">+ Ajouter une matière</button>
                 </div>
             </div>
 
@@ -180,7 +180,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="matiereModalTitle">Ajouter une matière</h2>
-                    <button class="modal-close" onclick="closeMatiereModal()">&times;</button>
+                    <button class="modal-close" onclick="openMaquetteMatierePopUp()">&times;</button>
                 </div>
 
                 <form id="matiereForm">
@@ -252,7 +252,7 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" onclick="closeMatiereModal()" class="btn-cancel">Annuler</button>
+                        <button type="button" onclick="closeMaquetteMatierePopUp()" class="btn-cancel">Annuler</button>
                         <button type="submit" class="btn-save">Enregistrer</button>
                     </div>
                 </form>

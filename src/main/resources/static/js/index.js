@@ -180,11 +180,101 @@ function loadCourses() {
 }
 
 // Gestion des boutons à droite de l'EDT
-
 window.addCourse = function() {
     alert('Ajouter un cours - Pop Up à implémenter');
 };
 
+// Maquette
+// Ouverture de la pop up pour ajouter une maquette de matière
+function openMaquetteMatierePopUp() {
+    document.getElementById('matiereModal').classList.add('active');
+}
+
+// Fermeture de la Pop Up
+window.closeMaquetteMatierePopUp = function() {
+    document.getElementById('matiereModal').classList.remove('active');
+};
+
+// test
+const selections = {
+    module: [],
+    composante: [],
+    enseignant: [],
+    groupe: [],
+    sousgroupe: []
+};
+
+const availableData = {
+    module: [
+        { id: 1, name: 'Informatique' },
+        { id: 2, name: 'Mathématiques' },
+        { id: 3, name: 'Physique' },
+        { id: 4, name: 'Chimie' }
+    ],
+    composante: [
+        { id: 1, name: 'UFR Sciences et Techniques' },
+        { id: 2, name: 'UFR Lettres et Langues' },
+        { id: 3, name: 'IUT' }
+    ],
+    enseignant: [
+        { id: 1, name: 'Pr. Martin Dupont' },
+        { id: 2, name: 'Dr. Sophie Bernard' },
+        { id: 3, name: 'Dr. Jean Moreau' },
+        { id: 4, name: 'Pr. Marie Leroy' }
+    ],
+    groupe: [
+        { id: 1, name: 'Groupe A' },
+        { id: 2, name: 'Groupe B' },
+        { id: 3, name: 'Groupe C' }
+    ],
+    sousgroupe: [
+        { id: 1, name: 'TD1' },
+        { id: 2, name: 'TD2' },
+        { id: 3, name: 'TD3' },
+        { id: 4, name: 'TP1' },
+        { id: 5, name: 'TP2' }
+    ]
+};
+
+let currentSelectionType = null;
+
+// Ouverture de la Pop Up
+window.openSelectionModal = function(type) {
+    currentSelectionType = type;
+    const titles = {
+        module: 'Sélectionner des modules',
+        composante: 'Sélectionner des composantes',
+        enseignant: 'Sélectionner des enseignants',
+        groupe: 'Sélectionner des groupes',
+        sousgroupe: 'Sélectionner des sous-groupes'
+    };
+
+    document.getElementById('selectionModalTitle').textContent = titles[type];
+
+    // Generate checkboxes
+    const checkboxList = document.getElementById('checkboxList');
+    checkboxList.innerHTML = '';
+
+    availableData[type].forEach(item => {
+        const isChecked = selections[type].some(s => s.id === item.id);
+        const div = document.createElement('div');
+        div.className = 'checkbox-item';
+        div.innerHTML = `
+                    <input type="checkbox" id="check_${item.id}" value="${item.id}" ${isChecked ? 'checked' : ''}>
+                    <label for="check_${item.id}">${item.name}</label>
+                `;
+        checkboxList.appendChild(div);
+    });
+
+    document.getElementById('selectionModal').classList.add('active');
+};
+
+// Fermeture de la Pop Up
+window.closeSelectionModal = function() {
+    document.getElementById('selectionModal').classList.remove('active');
+};
+
+// Paramètre
 window.openSettings = function() {
     alert('Paramètres - Pop Up à implémenter');
 };
