@@ -14,4 +14,6 @@ public class MaquetteController {
     public String afficherMaquettes() {
         return "gestionnaire_edt/maquette";
     }
+
+
 }

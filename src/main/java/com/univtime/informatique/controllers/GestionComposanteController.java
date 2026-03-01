@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/gestionnaire-edt/composante")
+@RequestMapping("/gestionnaire-edt/composantes")
 public class GestionComposanteController {
 
     private final ComposanteService composanteService;
@@ -21,7 +21,7 @@ public class GestionComposanteController {
         this.moduleService = moduleService;
     }
     /**
-     * URL : /gestionnaire-edt/composante
+     * URL : /gestionnaire-edt/composantes
      */
     @GetMapping
     public String listAllComposantes(Model model) {

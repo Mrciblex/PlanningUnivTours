@@ -11,12 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/gestion-promo")
+@RequestMapping("/gestion-promos")
 public class GestionPromosController {
     public final PromoService promoService;
     public GestionPromosController(PromoService promoService) {
         this.promoService = promoService;
     }
+
     @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
@@ -45,7 +46,7 @@ public class GestionPromosController {
     @GetMapping("/{id}/delete")
     public String deletePromo(@PathVariable Integer id) {
         promoService.deletePromoById(id);;
-        return "redirect:/gestion-promo";
+        return "redirect:/gestion-promos";
     }
 
 

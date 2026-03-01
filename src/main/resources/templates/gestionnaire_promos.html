@@ -31,8 +31,8 @@
                         </thead>
                         <tbody>
                             <tr th:each="promo : ${promos}" th:if="${promo != null}">
-                                <td class="font-semibold text-tours-green-light" th:text="${promo.nom}">Licence 3 Informatique</td>
-                                <td th:text="${promo.annee}">2024-2025</td>
+                                <td class="font-semibold text-tours-green-light" th:text="${promo.nomPromo}">Licence 3 Informatique</td>
+                                <td th:text="${promo.anneePromo}">2024-2025</td>
                                 <td>
                                     <span th:text="${promo.dateDebutS1 != null ? #temporals.format(promo.dateDebutS1, 'dd/MM/yyyy') : '-'}">01/09/2024</span>
                                     <span class="text-slate-400"> - </span>
