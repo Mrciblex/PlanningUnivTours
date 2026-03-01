@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+    <head>
+        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/index.css}">
+
+        <title>UnivTime - Accueil</title>
+    </head>
+    <body class="bg-[#2F3E47]">
+        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+        <div class="min-h-screen flex flex-col items-center justify-center">
+            <!-- Titre -->
+            <div class="text-center mb-20 animate-in">
+                <h1 class="text-white">Accueil de UnivTime</h1>
+            </div>
+
+            <!-- Les 2 cercles -->
+            <div class="flex gap-30 mb-12 animate-in">
+                <!-- Cercle 1: Ancien EDT -->
+                <div class="flex flex-col items-center w-40">
+                    <button id="ancienEdtBtn" class="avatar-button">
+                        <div class="avatar-content new-edt">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="avatar-label text-center text-white">Ancien EDT</div>
+                </div>
+
+                <!-- Cercle 2: Nouveau EDT -->
+                <div class="flex flex-col items-center w-40">
+                    <button id="nouvelEdtBtn" class="avatar-button ">
+                        <div class="avatar-content old-edt">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                        </div>
+                    </button>
+                    <div class="avatar-label text-center text-white">Nouveau EDT</div>
+                </div>
+            </div>
+
+            <!-- Sélection des promotions les plus récentes -->
+            <div id="selection_promo_recente" class="dropdown-container">
+                <div class="dropdown-list">
+                    <div th:each="promo : ${promotions}" class="promo-item">
+                        <!--<div class="promo-icon" th:text="${promo.code}">L3</div> -->
+                        <div class="promo-info">
+                            <div class="promo-name" th:text="${promo.nomPromo}">Licence 3 Informatique</div>
+                            <div class="promo-meta">
+                                <span th:text="${promo.anneePromo}">2024-2025</span>
+                                <span th:if="${promo.nbEtuPromo != null}"> • </span>
+                                <span th:if="${promo.nbEtuPromo != null}" th:text="${promo.nbEtuPromo + ' étudiants'}">45 étudiants</span>
+                                <!-- th:href="@{/gestionnaire-edt/edt/{id}(id=${promo.idPromo})}" -->
+                            </div>
+                        </div>
+                        <div>
+                            <a class="promo-arrow flex" th:if="${promo.debutS1Promo != null && promo.finS1Promo != null}" th:href="@{/gestionnaire-edt/edt/{idPromo}/1(idPromo=${promo.idPromo})}">
+                                <span>S1</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </a>
+                            <a class="promo-arrow flex" th:if="${promo.debutS2Promo != null && promo.finS2Promo != null}" th:href="@{/gestionnaire-edt/edt/{idPromo}/2(idPromo=${promo.idPromo})}">
+                                <span>S2</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Static -->
+                    <!--
+                    <div class="promo-item" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
+                        <div class="promo-icon">L3</div>
+                        <div class="promo-info">
+                            <div class="promo-name">Licence 3 Informatique</div>
+                            <div class="promo-meta">2024-2025 • 45 étudiants</div>
+                        </div>
+                        <div class="promo-arrow">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    -->
+
+                    <div th:if="${!#lists.isEmpty(promotions)}" class="text-center text-slate-400 scroll-indicator cursor-pointer" onclick="window.location.href='/univtime/gestion-promos'">
+                        VOIR PLUS
+                    </div>
+
+                    <!-- Empty state -->
+                    <div th:if="${#lists.isEmpty(promotions)}" class="text-center py-8 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto mb-4 opacity-30">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <p>Aucun EDT disponible</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

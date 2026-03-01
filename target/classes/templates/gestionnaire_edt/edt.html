@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/edt.css}">
+
+    <title>UnivTime - EDT</title>
+</head>
+<body>
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+<div class="edt-container">
+    <!-- Main Calendar -->
+    <div class="calendar-area">
+        <!-- Header -->
+        <div class="edt-header">
+            <h1 class="text-2xl font-bold">UnivTime</h1>
+
+            <div class="week-nav">
+                <button onclick="previousWeek()">◄</button>
+                <span class="week-info" id="weekInfo">Semaine du 19 au 25 janvier 2025</span>
+                <button onclick="nextWeek()">►</button>
+                <span class="text-sm text-slate-400">Semaine <span id="weekNumber">6</span></span>
+            </div>
+        </div>
+
+        <!-- Calendrier Principal -->
+        <div class="calendar-scroll">
+            <table class="calendar-table">
+                <thead>
+                <tr>
+                    <th>Heures</th>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                </tr>
+                </thead>
+                <tbody id="calendar-body">
+                <!-- 6h à 20h par slot de 30 minutes -->
+                <tr th:each="i : ${#numbers.sequence( 60 * 7, 60 * 20, 15)}"
+                    th:with="heure=${i/60 + ':' + (i%60 == 0 ? '00' : i%60)}">
+
+                    <th th:text="${heure}"></th>
+
+                    <td th:each="j : ${#numbers.sequence(1, 5, 1)}"
+                        th:data-day="${j}"
+                        th:data-time="${heure}"
+                        style="position: relative; padding: 0;"
+                        onclick="addCourseAt(this)">
+
+                        <th:block th:if="${cours != null}"
+                                  th:with="coursDuSlot=${cours.?[#temporals.dayOfWeek(heureDebutCours) == #root.j and (#temporals.hour(heureDebutCours) * 60 + #temporals.minute(heureDebutCours)) >= #root.i and (#temporals.hour(heureDebutCours) * 60 + #temporals.minute(heureDebutCours)) < (#root.i + 15)]}">
+
+                            <div th:if="${not #lists.isEmpty(coursDuSlot)}"
+                                 style="position: absolute; top: 0; left: 0; right: 0; display: flex; flex-direction: row; gap: 2px; z-index: 10;">
+
+                                <div th:each="c : ${coursDuSlot}"
+                                     th:with="
+                                        debutMin=${#temporals.hour(c.heureDebutCours) * 60 + #temporals.minute(c.heureDebutCours)},
+                                        finMin=${#temporals.hour(c.heureFinCours) * 60 + #temporals.minute(c.heureFinCours)},
+                                        dureeMin=${finMin - debutMin},
+                                        offsetMin=${debutMin - #root.i}
+                                     "
+                                     class="course-block"
+                                     th:style="'margin-top: calc(' + ${offsetMin} + ' * 30px / 15); height: calc(' + ${dureeMin} + ' * 30px / 15 - 1px);'"
+                                     onclick="event.stopPropagation(); alert('Modifier ce cours');">
+
+                                    <div class="course-title" th:text="${c.composanteDto != null ? c.composanteDto.nomComposante : 'Cours'} + ' - ' + ${c.typeCoursEnum}"></div>
+                                    <div class="course-details">
+                                        <span th:text="${#temporals.format(c.heureDebutCours, 'HH:mm')} + ' - ' + ${#temporals.format(c.heureFinCours, 'HH:mm')}"></span><br>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </th:block>
+                    </td>
+                </tr>
+                <!--
+                <tr>
+                    <th>6:00</th>
+                    <td onclick="addCourseAt(1, '6:00')"></td>
+                    <td onclick="addCourseAt(2, '6:00')"></td>
+                    <td onclick="addCourseAt(3, '6:00')"></td>
+                    <td onclick="addCourseAt(4, '6:00')"></td>
+                    <td onclick="addCourseAt(5, '6:00')"></td>
+                </tr>
+                -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+            <!-- Menu à droite -->
+            <div class="sidebar">
+                <button class="btn-primary" onclick="addCourse()">
+                     + Ajouter un cours
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_modules'">
+                    + Modules
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
+                    + Composantes
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
+                    + Enseignants
+                </button>
+
+                <button class="btn-primary"
+                        th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
+                    + Groupes
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">
+                    + Maquette
+                </button>
+
+                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/recap'">
+                    Récapitulatif
+                </button>
+
+                <button class="btn-primary" onclick="openSettings()">
+                    Paramètres
+                </button>
+
+                <button class="btn-primary" onclick="exportEDT()">
+                    Exporter
+                </button>
+
+        <!-- Mini Calendrier -->
+        <div class="mini-calendar">
+            <div class="mini-calendar-header">
+                <button class="mini-calendar-nav" onclick="previousMonth()">‹</button>
+                <span class="mini-calendar-month" id="calendarMonth">Janvier 2025</span>
+                <button class="mini-calendar-nav" onclick="nextMonth()">›</button>
+            </div>
+
+            <table class="mini-calendar-table" id="miniCalendarTable">
+                <thead>
+                <tr>
+                    <th>L</th>
+                    <th>M</th>
+                    <th>M</th>
+                    <th>J</th>
+                    <th>V</th>
+                    <th>S</th>
+                    <th>D</th>
+                </tr>
+                </thead>
+                <tbody id="calendarDates">
+                <!-- Genéré en JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
