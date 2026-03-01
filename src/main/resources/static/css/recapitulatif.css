@@ -1,0 +1,312 @@
+.recap-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    height: max-content;
+    margin-top: 40px;
+    width: 100vw;
+}
+
+/* Header Section */
+.recap-header {
+    background: rgba(55, 71, 79, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.promo-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.promo-subtitle {
+    font-size: 16px;
+    color: #78909c;
+    margin-bottom: 24px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: rgba(0, 169, 155, 0.1);
+    border: 1px solid rgba(0, 169, 155, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #78909c;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #eceff1;
+}
+
+/* Volume Horaire par matière - Section */
+.volume-section {
+    background: rgba(55, 71, 79, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.volume-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Matiere Volume Cards */
+.matiere-volume-card {
+    background: rgba(0, 169, 155, 0.1);
+    border: 1px solid rgba(0, 169, 155, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+.matiere-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(120, 144, 156, 0.2);
+}
+
+.matiere-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.matiere-total {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.matiere-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.matiere-type {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.matiere-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.progress-percent {
+    font-size: 18px;
+    font-weight: 700;
+    color: #00A99B;
+    text-align: center;
+}
+
+.volume-card {
+    background: rgba(45, 62, 80, 0.5);
+    border: 1px solid rgba(120, 144, 156, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.volume-type {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.type-cm {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a;
+}
+
+.type-td {
+    background: rgba(33, 150, 243, 0.2);
+    color: #64b5f6;
+}
+
+.type-tp {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ffb74d;
+}
+
+.progress-bar-container {
+    margin: 16px 0;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.progress-current {
+    color: #fff;
+    font-weight: 600;
+}
+
+.progress-target {
+    color: #fff;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(55, 71, 79, 0.5);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 6px;
+}
+
+.progress-fill.cm { background: linear-gradient(90deg, #2e7d32, #43a047); }
+.progress-fill.td { background: linear-gradient(90deg, #1976d2, #2196f3); }
+.progress-fill.tp { background: linear-gradient(90deg, #f57c00, #ff9800); }
+
+.progress-fill.complete { background: linear-gradient(90deg, #2e7d32, #66bb6a); }
+.progress-fill.over { background: linear-gradient(90deg, #d32f2f, #f44336); }
+
+.progress-percentage {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Professors Table */
+.profs-table-container {
+    background: rgba(55, 71, 79, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.profs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profs-table thead {
+    background: rgba(46, 125, 50, 0.1);
+}
+
+.profs-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #00A99B;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(0, 169, 155, 0.3);
+}
+
+.profs-table tbody tr {
+    border-bottom: 1px solid rgba(120, 144, 156, 0.2);
+    transition: background 0.2s;
+}
+
+.profs-table tbody tr:hover {
+    background: rgba(0, 169, 155, 0.05);
+}
+
+.profs-table td {
+    padding: 16px 20px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.prof-name {
+    font-weight: 600;
+    color: #00A99B;
+}
+
+.hours-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hours-value {
+    font-weight: 600;
+    min-width: 60px;
+}
+
+.mini-progress {
+    flex: 1;
+    height: 6px;
+    background: rgba(55, 71, 79, 0.5);
+    border-radius: 3px;
+    overflow: hidden;
+    max-width: 100px;
+}
+
+.mini-progress-fill {
+    height: 100%;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-ok {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a;
+}
+
+.status-warning {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ffb74d;
+}
+
+.status-alert {
+    background: rgba(211, 47, 47, 0.2);
+    color: #ef5350;
+}
