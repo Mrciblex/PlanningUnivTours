@@ -64,10 +64,12 @@
                                         offsetMin=${debutMin - #root.i}
                                      "
                                      class="course-block"
+                                     th:classappend="${c.typeCoursEnum != null} ? 'type-' + ${#strings.toLowerCase(c.typeCoursEnum)} : ''"
                                      th:style="'margin-top: calc(' + ${offsetMin} + ' * 30px / 15); height: calc(' + ${dureeMin} + ' * 30px / 15 - 1px);'"
                                      onclick="event.stopPropagation(); alert('Modifier ce cours');">
 
-                                    <div class="course-title" th:text="${c.composanteDto != null ? c.composanteDto.nomComposante : 'Cours'} + ' - ' + ${c.typeCoursEnum}"></div>
+                                    <div class="course-title"
+                                         th:text="${c.composanteDto != null ? c.composanteDto.nomComposante : 'Cours'} + ' - ' + ${c.typeCoursEnum}"></div>
                                     <div class="course-details">
                                         <span th:text="${#temporals.format(c.heureDebutCours, 'HH:mm')} + ' - ' + ${#temporals.format(c.heureFinCours, 'HH:mm')}"></span><br>
                                     </div>
@@ -93,44 +95,44 @@
         </div>
     </div>
 
-            <!-- Menu à droite -->
-            <div class="sidebar">
-                <button class="btn-primary" onclick="addCourse()">
-                     + Ajouter un cours
-                </button>
+    <!-- Menu à droite -->
+    <div class="sidebar">
+        <button class="btn-primary" onclick="addCourse()">
+            + Ajouter un cours
+        </button>
 
-                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_modules'">
-                    + Modules
-                </button>
+        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_modules'">
+            + Modules
+        </button>
 
-                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
-                    + Composantes
-                </button>
+        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">
+            + Composantes
+        </button>
 
-                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
-                    + Enseignants
-                </button>
+        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">
+            + Enseignants
+        </button>
 
-                <button class="btn-primary"
-                        th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
-                    + Groupes
-                </button>
+        <button class="btn-primary"
+                th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">
+            + Groupes
+        </button>
 
-                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">
-                    + Maquette
-                </button>
+        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">
+            + Maquette
+        </button>
 
-                <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/recap'">
-                    Récapitulatif
-                </button>
+        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/recap'">
+            Récapitulatif
+        </button>
 
-                <button class="btn-primary" onclick="openSettings()">
-                    Paramètres
-                </button>
+        <button class="btn-primary" onclick="openSettings()">
+            Paramètres
+        </button>
 
-                <button class="btn-primary" onclick="exportEDT()">
-                    Exporter
-                </button>
+        <button class="btn-primary" onclick="exportEDT()">
+            Exporter
+        </button>
 
         <!-- Mini Calendrier -->
         <div class="mini-calendar">
