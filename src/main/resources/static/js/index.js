@@ -5,7 +5,7 @@ window.toggleDropdown = function() {
     const dropdown = document.getElementById('selection_promo_recente');
     dropdown.classList.toggle('active');
 };
-/*
+
 // Setup event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
     const ancienBtn = document.getElementById('ancienEdtBtn');
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-*/
+
 /* Gestionnaire de promo */
 function openPromoPopUp() {
     document.getElementById('popUpTitleA').textContent = 'Ajouter une promotion';
@@ -179,16 +179,17 @@ window.exportEDT = function() {
 };
 
 // Mini calendrier
-let miniCalendrierDate = new Date();
+// Mini calendar
+let miniCalendarDate = new Date();
 
-function renderMiniCalendrier() {
-    const year = miniCalendrierDate.getFullYear();
-    const month = miniCalendrierDate.getMonth();
+function renderMiniCalendar() {
+    const year = miniCalendarDate.getFullYear();
+    const month = miniCalendarDate.getMonth();
 
     // Update month display
     const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
         'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    document.getElementById('calendrierMonth').textContent = `${monthNames[month]} ${year}`;
+    document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
 
     // Get first day of month and number of days
     const firstDay = new Date(year, month, 1);
@@ -233,17 +234,17 @@ function renderMiniCalendrier() {
         if (currentDay > daysInMonth && nextMonthDay > 7) break;
     }
 
-    document.getElementById('calendrierDates').innerHTML = html;
+    document.getElementById('calendarDates').innerHTML = html;
 }
 
 function previousMonth() {
-    miniCalendrierDate.setMonth(miniCalendrierDate.getMonth() - 1);
-    renderMiniCalendrier();
+    miniCalendarDate.setMonth(miniCalendarDate.getMonth() - 1);
+    renderMiniCalendar();
 }
 
 function nextMonth() {
-    miniCalendrierDate.setMonth(miniCalendrierDate.getMonth() + 1);
-    renderMiniCalendrier();
+    miniCalendarDate.setMonth(miniCalendarDate.getMonth() + 1);
+    renderMiniCalendar();
 }
 
 function selectDate(year, month, day) {
@@ -253,6 +254,6 @@ function selectDate(year, month, day) {
     loadCourses();
 }
 
-// Initialisation
+// Initialize
 updateWeekInfo();
-renderMiniCalendrier();
+renderMiniCalendar();

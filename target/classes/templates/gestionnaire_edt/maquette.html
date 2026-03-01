@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
     <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
-    <body>
-        <div class="planning-container">
+        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/maquette.css}">
 
-            <!-- Header with Title and Promo Recap -->
+        <title>UnivTime - Maquette</title>
+    </head>
+    <body class="bg-[#2F3E47]">
+        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+        <div class="planning-container">
+            <!-- Titre + Recap -->
             <div class="planning-header">
                 <div class="header-left">
-                    <h1 class="text-3xl font-bold text-white mb-2">Maquette Pédagogique</h1>
+                    <h1 class="text-xl font-bold text-white mb-2">Maquette Pédagogique</h1>
 
-                    <!-- Promo Recap -->
+                    <!-- Recap de la promo -->
                     <div class="promo-recap">
                         <div class="promo-recap-title">Promotion sélectionnée</div>
                         <div class="promo-recap-content">
