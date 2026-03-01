@@ -41,6 +41,13 @@ public class ModuleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Le module avec l'id n'est trouvé : " + id));
     }
 
+    public List<ModuleDto> findModuleDtoByIdPromo(Integer idPromo) {
+        return moduleRepository.findByIdPromo(idPromo)
+                .stream()
+                .map(ModuleMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public ModuleDto createModule(ModuleDto moduleDto) {
         ModuleEntity moduleEntity = ModuleMapper.toEntity(moduleDto);
 

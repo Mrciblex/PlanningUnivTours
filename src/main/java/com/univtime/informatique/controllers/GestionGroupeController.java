@@ -43,6 +43,17 @@ public class GestionGroupeController {
         model.addAttribute("groupe", groupe);
         return "gestionnaire_edt/groupeDetail";
     }
+    @GetMapping("/promo/{idPromo}")
+    public String listGroupesByPromo(@PathVariable Integer idPromo, Model model) {
+
+        List<GroupeDto> groupes ;
+        groupes = groupeService.findGroupeDtoByIdPromo(idPromo);
+
+        model.addAttribute("groupes", groupes);
+        model.addAttribute("idPromo", idPromo);
+
+        return "gestionnaire_edt/gestion_groupes";
+    }
 
     @PostMapping("/new")
     public String createGroupe(@ModelAttribute GroupeDto groupeDto) {

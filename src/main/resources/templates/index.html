@@ -27,7 +27,7 @@
                             </svg>
                         </div>
                     </button>
-                    <div class="avatar-label text-center">Ancien EDT</div>
+                    <div class="avatar-label text-center text-white">Ancien EDT</div>
                 </div>
 
                 <!-- Cercle 2: Nouveau EDT -->
@@ -40,33 +40,42 @@
                             </svg>
                         </div>
                     </button>
-                    <div class="avatar-label text-center">Nouveau EDT</div>
+                    <div class="avatar-label text-center text-white">Nouveau EDT</div>
                 </div>
             </div>
 
             <!-- Sélection des promotions les plus récentes -->
             <div id="selection_promo_recente" class="dropdown-container">
                 <div class="dropdown-list">
-                    <div th:each="promo : ${promotions}"
-                         th:onclick="|accessPromo('${promo.id}')|"
-                         class="promo-item">
-                        <div class="promo-icon" th:text="${promo.code}">L3</div>
+                    <div th:each="promo : ${promotions}" class="promo-item">
+                        <!--<div class="promo-icon" th:text="${promo.code}">L3</div> -->
                         <div class="promo-info">
-                            <div class="promo-name" th:text="${promo.nom}">Licence 3 Informatique</div>
+                            <div class="promo-name" th:text="${promo.nomPromo}">Licence 3 Informatique</div>
                             <div class="promo-meta">
-                                <span th:text="${promo.annee}">2024-2025</span>
-                                <span th:if="${promo.nbEtudiants != null}"> • </span>
-                                <span th:if="${promo.nbEtudiants != null}" th:text="${promo.nbEtudiants + ' étudiants'}">45 étudiants</span>
+                                <span th:text="${promo.anneePromo}">2024-2025</span>
+                                <span th:if="${promo.nbEtuPromo != null}"> • </span>
+                                <span th:if="${promo.nbEtuPromo != null}" th:text="${promo.nbEtuPromo + ' étudiants'}">45 étudiants</span>
+                                <!-- th:href="@{/gestionnaire-edt/edt/{id}(id=${promo.idPromo})}" -->
                             </div>
                         </div>
-                        <div class="promo-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
+                        <div>
+                            <a class="promo-arrow flex" th:if="${promo.debutS1Promo != null && promo.finS1Promo != null}" th:href="@{/gestionnaire-edt/edt/{idPromo}/1(idPromo=${promo.idPromo})}">
+                                <span>S1</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </a>
+                            <a class="promo-arrow flex" th:if="${promo.debutS2Promo != null && promo.finS2Promo != null}" th:href="@{/gestionnaire-edt/edt/{idPromo}/2(idPromo=${promo.idPromo})}">
+                                <span>S2</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </a>
                         </div>
                     </div>
 
                     <!-- Static -->
+                    <!--
                     <div class="promo-item" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
                         <div class="promo-icon">L3</div>
                         <div class="promo-info">
@@ -79,22 +88,10 @@
                             </svg>
                         </div>
                     </div>
+                    -->
 
-                    <div class="promo-item" onclick="window.location.href='/univtime/gestionnaire-edt/edt'">
-                        <div class="promo-icon">M1</div>
-                        <div class="promo-info">
-                            <div class="promo-name">Master 1 Data Science</div>
-                            <div class="promo-meta">2024-2025 • 32 étudiants</div>
-                        </div>
-                        <div class="promo-arrow">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div class="promo-plus text-center text-slate-400" onclick="window.location.href='/univtime/gestion-promos'">
-                        Ici pour voir +
+                    <div th:if="${!#lists.isEmpty(promotions)}" class="text-center text-slate-400 scroll-indicator cursor-pointer" onclick="window.location.href='/univtime/gestion-promos'">
+                        VOIR PLUS
                     </div>
 
                     <!-- Empty state -->
