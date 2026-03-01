@@ -20,7 +20,7 @@ public class GestionModuleController {
     public String listAllModules(Model model) {
         List<ModuleDto> modules = moduleService.findAllModules();
         model.addAttribute("modules", modules);
-        return "gestionnaire_edt/gestionnaire_modules";
+        return "gestionnaire_edt/gestion_modules";
     }
     @GetMapping("/promo/{idPromo}")
     public String listModulesByPromo(@PathVariable Integer idPromo, Model model) {

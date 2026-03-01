@@ -21,7 +21,7 @@ public class GestionComposanteController {
         this.moduleService = moduleService;
     }
     /**
-     * URL : /gestionnaire-edt/composante
+     * URL : /gestionnaire-edt/composantes
      */
     @GetMapping
     public String listAllComposantes(Model model) {
