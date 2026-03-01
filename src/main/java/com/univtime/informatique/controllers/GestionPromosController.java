@@ -17,6 +17,7 @@ public class GestionPromosController {
     public GestionPromosController(PromoService promoService) {
         this.promoService = promoService;
     }
+
     @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
@@ -30,7 +31,7 @@ public class GestionPromosController {
     public String createPromo(@ModelAttribute PromoDto promoDto) {
         promoService.createPromo(promoDto);
         // Redirige vers la méthode qui liste toutes les promos
-        return "redirect:/gestion-promos";
+        return "redirect:/gestion-promo";
     }
 
     @PostMapping("/{id}/edit")
@@ -39,7 +40,7 @@ public class GestionPromosController {
         promoDto.setIdPromo(id);
         promoService.updatePromo(new PromoDto());
 
-        return "redirect:/gestion-promos";
+        return "redirect:/gestion-promo";
     }
 
     @GetMapping("/{id}/delete")
