@@ -57,7 +57,6 @@
 /* Calendar Table */
 .calendar-scroll {
     flex: 1;
-    overflow: auto;
     background: #fafafa;
 }
 
@@ -87,25 +86,33 @@
     z-index: 11;
 }
 
+#calendar-body tr{
+    width: 100%;
+}
+
 .calendar-table tbody th {
     background: #2c3e50;
     color: white;
-    padding: 4px;
     text-align: center;
     font-size: 11px;
     font-weight: 600;
     width: 70px;
-    height: 20px;
+
     border-bottom: 1px solid #34495e;
+
+    height: 30px;
+    box-sizing: border-box;
 }
 
 .calendar-table tbody td {
     border: 1px solid #e0e0e0;
-    height: 20px;
     position: relative;
     background: white;
     padding: 0;
     vertical-align: top;
+
+    height: 30px;
+    box-sizing: border-box;
 }
 
 .calendar-table tbody td:hover::before {
@@ -114,7 +121,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #5b7fc7;
+    font-size: 32px;
+    color: #00A99B;
     font-weight: 300;
     opacity: 0.5;
     pointer-events: none;
@@ -125,23 +133,29 @@
     cursor: pointer;
 }
 
-/* Course Block */
 .course-block {
-    position: absolute;
-    left: 4px;
-    right: 4px;
+    position: relative;
+    flex: 1;
+    box-sizing: border-box;
+
     border-radius: 6px;
-    padding: 8px;
-    font-size: 12px;
+    padding: 4px 6px;
+    font-size: 11px;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    pointer-events: auto;
+
+    background-color: #5b7fc7;
+    color: white;
+    border-left: 3px solid #3a5795;
 }
 
 .course-block:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 20;
 }
 
 .course-title {
