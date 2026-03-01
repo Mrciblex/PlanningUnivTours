@@ -20,7 +20,7 @@ public class PromoEntity {
     @Column(name = "anneePromo", nullable = false)
     private Integer anneePromo;
 
-    @Column(name = "nbEtuPromo", nullable = false)
+    @Column(name = "nbEtuPromo")
     private Integer nbEtuPromo;
 
     @Column(name = "debutS1Promo", nullable = false)
