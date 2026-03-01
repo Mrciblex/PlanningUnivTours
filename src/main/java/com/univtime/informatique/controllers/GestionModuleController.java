@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/gestionnaire-edt/module")
+@RequestMapping("/gestionnaire-edt/modules")
 public class GestionModuleController {
     private ModuleService moduleService ;
 
