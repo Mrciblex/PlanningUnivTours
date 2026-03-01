@@ -21,15 +21,15 @@
                         <div class="promo-recap-content">
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Nom</span>
-                                <span class="promo-stat-value" id="currentPromoNom">L3 Informatique</span>
+                                <span class="promo-stat-value" id="currentPromoNom" th:text="${promo.nomPromo}">L3</span>
                             </div>
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Année</span>
-                                <span class="promo-stat-value" id="currentPromoAnnee">2024-2025</span>
+                                <span class="promo-stat-value" id="currentPromoAnnee" th:text="${promo.anneePromo}">2026</span>
                             </div>
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Étudiants</span>
-                                <span class="promo-stat-value" id="currentPromoEtudiants">45</span>
+                                <span class="promo-stat-value" id="currentPromoEtudiants" th:text="${promo.nbEtuPromo}">45</span>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <!-- Main Dashboard -->
+            <!-- Affichage récap de la maquette -->
             <div class="dashboard-container scrollbar">
                 <table class="planning-table">
                     <thead>
@@ -58,47 +58,64 @@
                     </tr>
                     </thead>
                     <tbody id="planningTableBody">
-                    <!-- Example Row -->
-                    <tr>
-                        <td class="matiere-cell">Algorithmique avancée</td>
-                        <td class="prof-cell">
-                            <span class="prof-badge">Pr. Martin</span>
-                            <span class="prof-badge">Dr. Dupont</span>
-                        </td>
-                        <td>Informatique</td>
-                        <td>
-                            <span class="type-badge type-cm">2 CM</span>
-                            <span class="type-badge type-td">1 TD</span>
-                        </td>
-                        <td>
-                            <span class="type-badge type-cm">2 CM</span>
-                            <span class="type-badge type-td">2 TD</span>
-                        </td>
-                        <td>
-                            <span class="type-badge type-td">1 TD</span>
-                            <span class="type-badge type-tp">2 TP</span>
-                        </td>
-                        <td>
-                            <span class="type-badge type-cm">1 CM</span>
-                            <span class="type-badge type-tp">2 TP</span>
-                        </td>
-                        <td>-</td>
-                        <td>
-                            <span class="type-badge type-td">1 TD</span>
-                        </td>
-                        <td>
-                            <button onclick="openEditModal(1)" class="btn-action btn-edit mr-2">Modifier</button>
-                            <button onclick="deleteMatiere(1)" class="btn-action btn-delete">Supprimer</button>
-                        </td>
-                    </tr>
+                        <tr th:each="composante : ${composantes}">
+                            <td class="matiere-cell" th:text="${composante.nomComposante}"></td>
+                            <td class="prof-cell">
+                                <span class="prof-badge" th:each="enseignant : ${composante.}" th:text="${professeur.nomProf} ${professeur.prenomProf}"></span>
+                            </td>
+                            <td th:text="${matiere.module.nom}">Informatique</td>
+                            <td th:each="sem : ${matiere.semestres}">
+                                <span th:text="${sem.volumeHoraire}"></span>
+                            </td>
+                            <td>
+                                <button th:onclick="'openEditModal(' + ${composante.idComposante} + ')'" class="btn-action btn-edit mr-2">Modifier</button>
+                                <button th:onclick="'deleteMatiere(' + ${composante.idComposante} + ')'" class="btn-action btn-delete">Supprimer</button>
+                            </td>
+                        </tr>
+
+                        <!-- Static -->
+                        <!--
+                        <tr>
+                            <td class="matiere-cell">Algorithmique avancée</td>
+                            <td class="prof-cell">
+                                <span class="prof-badge">Pr. Martin</span>
+                                <span class="prof-badge">Dr. Dupont</span>
+                            </td>
+                            <td>Informatique</td>
+                            <td>
+                                <span class="type-badge type-cm">2 CM</span>
+                                <span class="type-badge type-td">1 TD</span>
+                            </td>
+                            <td>
+                                <span class="type-badge type-cm">2 CM</span>
+                                <span class="type-badge type-td">2 TD</span>
+                            </td>
+                            <td>
+                                <span class="type-badge type-td">1 TD</span>
+                                <span class="type-badge type-tp">2 TP</span>
+                            </td>
+                            <td>
+                                <span class="type-badge type-cm">1 CM</span>
+                                <span class="type-badge type-tp">2 TP</span>
+                            </td>
+                            <td>-</td>
+                            <td>
+                                <span class="type-badge type-td">1 TD</span>
+                            </td>
+                            <td>
+                                <button onclick="openEditModal(1)" class="btn-action btn-edit mr-2">Modifier</button>
+                                <button onclick="deleteMatiere(1)" class="btn-action btn-delete">Supprimer</button>
+                            </td>
+                        </tr>
+                        -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Right Sidebar with 5 Selection Blocks -->
+            <!-- Les 5 sélections pour la maquette -->
             <div class="selection-sidebar scrollbar">
 
-                <!-- Block 1: Modules -->
+                <!-- Bloc 1: Modules -->
                 <div class="selection-block">
                     <div class="block-header">
                         <span class="block-title">Modules</span>
@@ -109,7 +126,7 @@
                     </div>
                 </div>
 
-                <!-- Block 2: Composantes -->
+                <!-- Bloc 2: Composantes -->
                 <div class="selection-block">
                     <div class="block-header">
                         <span class="block-title">Composantes</span>
@@ -120,7 +137,7 @@
                     </div>
                 </div>
 
-                <!-- Block 3: Enseignants -->
+                <!-- Bloc 3: Enseignants -->
                 <div class="selection-block">
                     <div class="block-header">
                         <span class="block-title">Enseignants</span>
@@ -131,7 +148,7 @@
                     </div>
                 </div>
 
-                <!-- Block 4: Groupes -->
+                <!-- Bloc 4: Groupes -->
                 <div class="selection-block">
                     <div class="block-header">
                         <span class="block-title">Groupes</span>
@@ -142,7 +159,7 @@
                     </div>
                 </div>
 
-                <!-- Block 5: Sous-groupes -->
+                <!-- Bloc 5: Sous-groupes -->
                 <div class="selection-block">
                     <div class="block-header">
                         <span class="block-title">Sous-groupes</span>
