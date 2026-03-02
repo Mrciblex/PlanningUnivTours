@@ -79,7 +79,7 @@
                             </td>
 
                             <!-- Volumes par semaine (CM, TD, TP) -->
-                            <td th:each="sem : ${#numbers.sequence(1, 12)}">
+                            <td th:each="sem : ${#numbers.sequence(1, 15)}">
                                 <th:block th:with="cm=${composante.cmNbParSem[sem] ?: 0},
                                                    td=${composante.tdNbParSem[sem] ?: 0},
                                                    tp=${composante.tpNbParSem[sem] ?: 0}">
@@ -244,16 +244,18 @@
             </div>
         </div>
 
-        <!-- Modal Selection -->
+        <!-- Selection -->
         <div id="selectionModal" class="modal">
             <div class="modal-content selection-modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="selectionModalTitle">Sélectionner</h2>
+                    <button class="btn-add" onclick="">+ Ajouter un nouvel élément</button>
+                    <!-- le onclick doit rediriger vers la vue de création adéquat -->
                     <button class="modal-close" onclick="closeSelectionModal()">&times;</button>
                 </div>
 
                 <div class="checkbox-list" id="checkboxList">
-                    <!-- Checkboxes will be generated here -->
+                    <!-- Pour l'instant en js à rendre dyna -->
                 </div>
 
                 <div class="modal-actions">
@@ -271,7 +273,7 @@
                 </div>
 
                 <form id="matiereForm">
-                    <!-- Section 1: Sélection Composante et Module -->
+                    <!-- Section 1: Sélection Composante -->
                     <div class="form-section">
                         <div class="form-section-title">Informations générales</div>
                         <div class="form-row">
@@ -280,10 +282,10 @@
                                 <select class="form-select" id="matiereComposante" required>
                                     <option value="">Sélectionner une composante</option>
 
-                               <!--     <option th:each="composante : ${composantes}"
+                                    <option th:each="composante : ${composantes}"
                                             th:value="${composante.idComposante}"
                                             th:text="${composante.nomComposante}">
-                                    </option>-->
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -300,7 +302,7 @@
                                 <button type="button" onclick="addEnseignantRow('cm')" class="btn-add-small">+ Ajouter un enseignant</button>
                             </div>
                             <div id="cmEnseignants" class="enseignant-rows">
-                                <!-- CM rows will be added here -->
+
                             </div>
                         </div>
 
@@ -311,7 +313,7 @@
                                 <button type="button" onclick="addEnseignantRow('td')" class="btn-add-small">+ Ajouter un enseignant</button>
                             </div>
                             <div id="tdEnseignants" class="enseignant-rows">
-                                <!-- TD rows will be added here -->
+
                             </div>
                         </div>
 
@@ -322,7 +324,7 @@
                                 <button type="button" onclick="addEnseignantRow('tp')" class="btn-add-small">+ Ajouter un enseignant</button>
                             </div>
                             <div id="tpEnseignants" class="enseignant-rows">
-                                <!-- TP rows will be added here -->
+
                             </div>
                         </div>
                     </div>
@@ -331,7 +333,7 @@
                     <div class="form-section">
                         <div class="form-section-title">Volumes horaires par semaine</div>
                         <div class="weeks-grid" id="weeksGrid">
-                            <!-- Généré pour chaque semaine -->
+                            <!-- Généré pour chaque semaine // pareil que le menu -->
                         </div>
                     </div>
 

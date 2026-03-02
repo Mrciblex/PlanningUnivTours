@@ -367,8 +367,6 @@ if (matiereForm) {
         }
 
         console.log('Form submitted:', data);
-        // TODO: Send to server
-
         closeMatiereModal();
     });
 }

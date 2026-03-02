@@ -195,16 +195,22 @@ window.closeMaquetteMatierePopUp = function() {
     document.getElementById('matiereModal').classList.remove('active');
 };
 
-// Add Enseignant Row
+// Ajout d'une nouvelle ligne d'enseignant
 window.addEnseignantRow = function(type) {
-    const container = document.getElementById(`${type}Enseignants`);
-    if (!container) return;
+    const container = document.getElementById(`${type}Professeurs`);
+    if (!container) {
+        return;
+    }
 
     let counter;
 
-    if (type === 'cm') counter = cmCounter++;
-    else if (type === 'td') counter = tdCounter++;
-    else counter = tpCounter++;
+    if (type === 'cm') {
+        counter = cmCounter++;
+    } else if (type === 'td') {
+        counter = tdCounter++;
+    } else {
+        counter = tpCounter++;
+    }
 
     const rowId = `${type}_row_${counter}`;
     const row = document.createElement('div');
@@ -216,14 +222,14 @@ window.addEnseignantRow = function(type) {
                     <option value="">Choisir un enseignant</option>
             `;
 
-    // Add enseignants from selections
-    selections.enseignant.forEach(ens => {
-        rowHTML += `<option value="${ens.id}">${ens.name}</option>`;
+    // Ajout d'un enseignant depuis la sélection
+    selections.enseignant.forEach(enseignant => {
+        rowHTML += `<option value="${enseignant.id}">${enseignant.name}</option>`;
     });
 
     rowHTML += `</select>`;
 
-    // For TD: add groupe dropdown
+    // Pour les TD / groupe
     if (type === 'td') {
         rowHTML += `
                     <select class="form-select" name="${type}_groupe_${counter}" required>
@@ -235,7 +241,7 @@ window.addEnseignantRow = function(type) {
         rowHTML += `</select>`;
     }
 
-    // For TP: add sous-groupe dropdown
+    // Pour les TP / sous-groupe
     if (type === 'tp') {
         rowHTML += `
                     <select class="form-select" name="${type}_sousgroupe_${counter}" required>
@@ -247,7 +253,7 @@ window.addEnseignantRow = function(type) {
         rowHTML += `</select>`;
     }
 
-    // Add duration checkboxes
+    // Nouvelle ckeckbox
     rowHTML += `
                 <div class="duration-checkboxes">
                     <label class="duration-checkbox">
@@ -271,7 +277,7 @@ window.addEnseignantRow = function(type) {
     container.appendChild(row);
 };
 
-// Remove Enseignant Row
+// Supprimer un ligne enseignant
 window.removeEnseignantRow = function(rowId) {
     const row = document.getElementById(rowId);
     if (row) row.remove();
