@@ -1,5 +1,7 @@
 package com.univtime.informatique.dto.composanteDto;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,6 +21,10 @@ public class ComposanteDto {
     private Set<TPComposanteDto> tpDto;
     private Set<CoursComposanteDto> coursDto;
     private Set<BesoinSalleComposanteDto> besoinSalleDto;
+
+    private Map<Integer, Integer> cmNbParSem = new HashMap<>();;
+    private Map<Integer, Integer> tdNbParSem = new HashMap<>();;
+    private Map<Integer, Integer> tpNbParSem = new HashMap<>();;
 
     public ComposanteDto(){
 
@@ -174,6 +180,30 @@ public class ComposanteDto {
 
     public void setBesoinSalleDto(Set<BesoinSalleComposanteDto> besoinSalleDto) {
         this.besoinSalleDto = besoinSalleDto;
+    }
+
+    public Map<Integer, Integer> getCmNbParSem() {
+        return cmNbParSem;
+    }
+
+    public void setCmNbParSem(Map<Integer, Integer> cmNbParSem) {
+        this.cmNbParSem = cmNbParSem;
+    }
+
+    public Map<Integer, Integer> getTdNbParSem() {
+        return tdNbParSem;
+    }
+
+    public void setTdNbParSem(Map<Integer, Integer> tdNbParSem) {
+        this.tdNbParSem = tdNbParSem;
+    }
+
+    public Map<Integer, Integer> getTpNbParSem() {
+        return tpNbParSem;
+    }
+
+    public void setTpNbParSem(Map<Integer, Integer> tpNbParSem) {
+        this.tpNbParSem = tpNbParSem;
     }
 
     @Override

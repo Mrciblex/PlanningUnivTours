@@ -16,20 +16,20 @@
                     <h1 class="text-xl font-bold text-white mb-2">Maquette Pédagogique</h1>
 
                     <!-- Recap de la promo -->
-                    <div class="promo-recap">
+                    <div class="promo-recap" th:if="${promo != null}">
                         <div class="promo-recap-title">Promotion sélectionnée</div>
                         <div class="promo-recap-content">
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Nom</span>
-                                <span class="promo-stat-value" id="currentPromoNom" th:text="${promo.nomPromo}">L3</span>
+                                <span class="promo-stat-value" id="currentPromoNom" th:text="${promo.nomPromo}"></span>
                             </div>
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Année</span>
-                                <span class="promo-stat-value" id="currentPromoAnnee" th:text="${promo.anneePromo}">2026</span>
+                                <span class="promo-stat-value" id="currentPromoAnnee" th:text="${promo.anneePromo}"></span>
                             </div>
                             <div class="promo-stat">
                                 <span class="promo-stat-label">Étudiants</span>
-                                <span class="promo-stat-value" id="currentPromoEtudiants" th:text="${promo.nbEtuPromo}">45</span>
+                                <span class="promo-stat-value" id="currentPromoEtudiants" th:text="${promo.nbEtuPromo}"></span>
                             </div>
                         </div>
                     </div>
@@ -44,32 +44,89 @@
             <div class="dashboard-container scrollbar">
                 <table class="planning-table">
                     <thead>
-                    <tr>
-                        <th style="width: 200px;">Matière</th>
-                        <th style="width: 200px;">Enseignants</th>
-                        <th style="width: 120px;">Module</th>
-                        <th class="week-header" style="width: 100px;">Sem. 1</th>
-                        <th class="week-header" style="width: 100px;">Sem. 2</th>
-                        <th class="week-header" style="width: 100px;">Sem. 3</th>
-                        <th class="week-header" style="width: 100px;">Sem. 4</th>
-                        <th class="week-header" style="width: 100px;">Sem. 5</th>
-                        <th class="week-header" style="width: 100px;">Sem. 6</th>
-                        <th style="width: 120px;">Actions</th>
-                    </tr>
+                        <tr>
+                            <th style="width: 200px;">Matière</th>
+                            <th style="width: 200px;">Enseignants</th>
+                            <th style="width: 120px;">Module</th>
+                            <th class="week-header" style="width: 100px;"
+                                th:each="sem : ${#numbers.sequence(1, 12)}"
+                                    th:text="'Sem. ' + ${sem}">Sem</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
                     </thead>
                     <tbody id="planningTableBody">
                         <tr th:each="composante : ${composantes}">
                             <td class="matiere-cell" th:text="${composante.nomComposante}"></td>
+
                             <td class="prof-cell">
-                                <span class="prof-badge" th:each="enseignant : ${composante.}" th:text="${professeur.nomProf} ${professeur.prenomProf}"></span>
+                                <!-- CM -->
+                                <span class="prof-badge"
+                                      th:each="cm : ${composante.cmDto}"
+                                      th:text="${cm.nomProf + ' ' + cm.prenomProf}">
+                                </span>
+
+                                <!-- TD -->
+                                <span class="prof-badge"
+                                      th:each="td : ${composante.tdDto}"
+                                      th:text="${td.nomProf + ' ' + td.prenomProf}">
+                                </span>
+
+                                <!-- TP -->
+                                <span class="prof-badge"
+                                      th:each="tp : ${composante.tpDto}"
+                                      th:text="${tp.nomProf + ' ' + tp.prenomProf}">
+                                </span>
                             </td>
-                            <td th:text="${matiere.module.nom}">Informatique</td>
-                            <td th:each="sem : ${matiere.semestres}">
-                                <span th:text="${sem.volumeHoraire}"></span>
+
+                            <!-- Volumes par semaine (CM, TD, TP) -->
+                            <td th:each="sem : ${#numbers.sequence(1, 12)}">
+                                <th:block th:with="cm=${composante.cmNbParSem[sem] ?: 0},
+                                                   td=${composante.tdNbParSem[sem] ?: 0},
+                                                   tp=${composante.tpNbParSem[sem] ?: 0}">
+
+                                    <span th:if="${cm > 0}"></span>
+                                    <span th:if="${td > 0}"></span>
+                                    <span th:if="${tp > 0}"></span>
+                                    <span th:if="${cm == 0 and td == 0 and tp == 0}">-</span>
+                                </th:block>
+                                <!--
+                                <span th:if="${composante.cmNbParSem[sem] > 0}"
+                                      class="type-badge type-cm"
+                                      th:text="${composante.cmNbParSem[sem] + ' CM'}"></span>
+
+                                <span th:if="${composante.tdNbParSem[sem] > 0}"
+                                      class="type-badge type-td"
+                                      th:text="${composante.tdNbParSem[sem] + ' TD'}"></span>
+
+                                <span th:if="${composante.tpNbParSem[sem] > 0}"
+                                      class="type-badge type-tp"
+                                      th:text="${composante.tpNbParSem[sem] + ' TP'}"></span>
+
+                                <span th:if="${composante.cmNbParSem[sem] == 0 and
+                                             composante.tdNbParSem[sem] == 0 and
+                                             composante.tpNbParSem[sem] == 0}">
+                                    -
+                                </span>
+                                -->
                             </td>
+
                             <td>
-                                <button th:onclick="'openEditModal(' + ${composante.idComposante} + ')'" class="btn-action btn-edit mr-2">Modifier</button>
-                                <button th:onclick="'deleteMatiere(' + ${composante.idComposante} + ')'" class="btn-action btn-delete">Supprimer</button>
+                                <button
+                                        th:onclick="'openEditModal(' + ${composante.idComposante} + ')'"
+                                        class="btn-action btn-edit mr-2">
+                                    Modifier
+                                </button>
+                                <button
+                                        th:onclick="'deleteMatiere(' + ${composante.idComposante} + ')'"
+                                        class="btn-action btn-delete">
+                                    Supprimer
+                                </button>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(composantes)}">
+                            <td colspan="16" class="text-center py-12 text-red-600">
+                                Aucune matière configurée
                             </td>
                         </tr>
 
@@ -122,7 +179,12 @@
                         <button onclick="openSelectionModal('module')" class="btn-add-small">+ Ajouter</button>
                     </div>
                     <div class="selected-items" id="selectedModules">
-                        <div class="empty-selection">Aucun module sélectionné</div>
+                        <div th:if="${#lists.isEmpty(modules)}" class="empty-selection">Aucun module sélectionné</div>
+
+                        <div th:each="module : ${modules}" class="selected-item">
+                            <span th:text="${module.nomModule}"></span>
+                            <button class="btn-remove" th:onclick="removeModule(${module.idModule})" title="Retirer">x</button>
+                        </div>
                     </div>
                 </div>
 
@@ -133,7 +195,10 @@
                         <button onclick="openSelectionModal('composante')" class="btn-add-small">+ Ajouter</button>
                     </div>
                     <div class="selected-items" id="selectedComposantes">
-                        <div class="empty-selection">Aucune composante sélectionnée</div>
+                        <div th:if="${#lists.isEmpty(composantes)}" class="empty-selection">Aucune composante sélectionnée</div>
+                        <div th:each="comp : ${composantes}" class="selected-item">
+                            <span th:text="${comp.nomComposante}"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -144,7 +209,10 @@
                         <button onclick="openSelectionModal('enseignant')" class="btn-add-small">+ Ajouter</button>
                     </div>
                     <div class="selected-items" id="selectedEnseignants">
-                        <div class="empty-selection">Aucun enseignant sélectionné</div>
+                        <div th:if="${#lists.isEmpty(professeurs)}" class="empty-selection">Aucun enseignant sélectionné</div>
+                        <div th:each="prof : ${professeurs}" class="selected-item">
+                            <span th:text="${prof.nomProf}"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -155,7 +223,10 @@
                         <button onclick="openSelectionModal('groupe')" class="btn-add-small">+ Ajouter</button>
                     </div>
                     <div class="selected-items" id="selectedGroupes">
-                        <div class="empty-selection">Aucun groupe sélectionné</div>
+                        <div th:if="${promo?.groupeEntities == null || #lists.isEmpty(promo.groupeEntities)}" class="empty-selection">Aucun groupe sélectionné</div>
+                        <div th:each="groupe : ${promo?.groupeEntities}" class="selected-item">
+                            <span th:text="${groupe.nomGroupe}"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -173,7 +244,7 @@
             </div>
         </div>
 
-        <!-- Modal Selection (for adding items to blocks) -->
+        <!-- Modal Selection -->
         <div id="selectionModal" class="modal">
             <div class="modal-content selection-modal-content">
                 <div class="modal-header">
@@ -192,12 +263,11 @@
             </div>
         </div>
 
-        <!-- Modal Add/Edit Matière -->
+        <!-- Bouton + Ajouter une matière -->
         <div id="matiereModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title" id="matiereModalTitle">Ajouter une matière</h2>
-                    <button class="modal-close" onclick="openMaquetteMatierePopUp()">&times;</button>
                 </div>
 
                 <form id="matiereForm">
@@ -209,14 +279,11 @@
                                 <label class="form-label">Composante *</label>
                                 <select class="form-select" id="matiereComposante" required>
                                     <option value="">Sélectionner une composante</option>
-                                    <!-- Populated from selected composantes -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Module *</label>
-                                <select class="form-select" id="matiereModule" required>
-                                    <option value="">Sélectionner un module</option>
-                                    <!-- Populated from selected modules -->
+
+                               <!--     <option th:each="composante : ${composantes}"
+                                            th:value="${composante.idComposante}"
+                                            th:text="${composante.nomComposante}">
+                                    </option>-->
                                 </select>
                             </div>
                         </div>
