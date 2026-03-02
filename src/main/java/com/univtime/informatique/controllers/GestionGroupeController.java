@@ -43,7 +43,7 @@ public class GestionGroupeController {
         model.addAttribute("groupe", groupe);
         return "gestionnaire_edt/groupeDetail";
     }
-    @GetMapping("/promo/{idPromo}")
+    @GetMapping("/{idPromo}")
     public String listGroupesByPromo(@PathVariable Integer idPromo, Model model) {
 
         List<GroupeDto> groupes ;
@@ -60,6 +60,11 @@ public class GestionGroupeController {
         GroupeDto saved = groupeService.createGroupe(groupeDto);
         return "redirect:/gestionnaire-edt/groupes/" + saved.getIdGroupe();
     }
+    @PostMapping("{idpromo}/new")
+    public String createGroupe(@PathVariable Integer idpromo,@ModelAttribute GroupeDto groupeDto) {
+        GroupeDto saved = groupeService.createGroupe(groupeDto);
+        return "redirect:/gestionnaire-edt/groupes/" + idpromo;
+    }
 
     @PostMapping("/{id}/edit")
     public String updateGroupe(@PathVariable Integer id, @ModelAttribute GroupeDto groupeDto) {
@@ -69,7 +74,20 @@ public class GestionGroupeController {
 
         return "redirect:/gestionnaire-edt/groupes/" + id;
     }
+    @PostMapping("/{idpromo}/{id}/edit")
+    public String updateGroupe(@PathVariable Integer idpromo,@PathVariable Integer id, @ModelAttribute GroupeDto groupeDto) {
 
+        groupeDto.setIdGroupe(id);
+        groupeService.updateGroupe(groupeDto);
+
+        return "redirect:/gestionnaire-edt/groupes/" + idpromo;
+    }
+
+    @GetMapping("/{idpromo}/{id}/delete")
+    public String deleteGroupe(@PathVariable Integer idpromo,@PathVariable Integer id) {
+        groupeService.deleteGroupeById(id);
+        return "redirect:/gestionnaire-edt/groupes"+idpromo;
+    }
     @GetMapping("/{id}/delete")
     public String deleteGroupe(@PathVariable Integer id) {
         groupeService.deleteGroupeById(id);

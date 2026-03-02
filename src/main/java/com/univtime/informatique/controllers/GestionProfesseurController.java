@@ -22,7 +22,7 @@ public class GestionProfesseurController {
         model.addAttribute("professeurs", professeurs);
         return "gestionnaire_edt/gestion_professeurs";
     }
-    @GetMapping("/promo/{idPromo}")// pour avoir la liste des profs en fonction de la promo
+    @GetMapping("/{idPromo}")// pour avoir la liste des profs en fonction de la promo
     public String listProfesseursByPromo(@PathVariable Integer idPromo, Model model) {
 
         List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
@@ -51,6 +51,12 @@ public class GestionProfesseurController {
         ProfesseurDto saved = professeurService.createProfesseur(professeurDto);
         return "redirect:/professeurs/" + saved.getIdProf();
     }
+    @PostMapping("/{idPromo}/new")
+    public String createProfesseur(@PathVariable Integer idPromo,
+                                   @ModelAttribute ProfesseurDto professeurDto) {
+        professeurService.createProfesseur(professeurDto);
+        return "redirect:/gestionnaire-edt/professeurs/" + idPromo;
+    }
 
     @GetMapping("/{id}/edit")
     public String formDeModification(@PathVariable Integer id, Model model) {
@@ -68,10 +74,24 @@ public class GestionProfesseurController {
 
         return "redirect:/gestion_professeurs/" + id;
     }
+    @PostMapping("/{idpromo}/{id}/edit")
+    public String updateProfesseur(@PathVariable Integer idpromo,@PathVariable Integer id,
+                                   @ModelAttribute ProfesseurDto professeurDto) {
+
+        professeurDto.setIdProf(id);
+        professeurService.updateProfesseur(professeurDto);
+
+        return "redirect:/gestion_professeurs/" + idpromo;
+    }
 
     @GetMapping("/{id}/delete")
     public String deleteProfesseur(@PathVariable Integer id) {
         professeurService.deleteProfesseurById(id);
         return "redirect:/gestion_professeurs";
+    }
+    @GetMapping("/{promo}/{id}/delete")
+    public String deleteProfesseur(@PathVariable Integer idpromo,@PathVariable Integer id) {
+        professeurService.deleteProfesseurById(id);
+        return "redirect:/gestion_professeurs"+idpromo;
     }
 }
