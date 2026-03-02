@@ -53,6 +53,7 @@ public class EdtController {
         model.addAttribute("promo", promo);
 
         model.addAttribute("cours", cours);
+        model.addAttribute("numSemestre", numSemestre);
         return "gestionnaire_edt/edt";
     }
 
@@ -70,6 +71,7 @@ public class EdtController {
 
         model.addAttribute("cours", cours);
         model.addAttribute("promo", promo);
+        model.addAttribute("numSemestre", numSemestre);
 
         return "gestionnaire_edt/edt";
     }

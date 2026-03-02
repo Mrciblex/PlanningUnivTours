@@ -52,6 +52,9 @@
     font-size: 16px;
     font-weight: 600;
     color: white;
+    min-width: 25em;
+    max-width: 25em;
+    text-align: center;
 }
 
 /* Calendar Table */
@@ -97,25 +100,22 @@
     font-size: 11px;
     font-weight: 600;
     width: 70px;
-
     border-bottom: 1px solid #34495e;
-
-    height: 30px;
+    height: 15px;
     box-sizing: border-box;
 }
 
-.calendar-table tbody td {
+.time-slot {
     border: 1px solid #e0e0e0;
     position: relative;
     background: white;
     padding: 0;
     vertical-align: top;
-
-    height: 30px;
+    height: 15px;
     box-sizing: border-box;
 }
 
-.calendar-table tbody td:hover::before {
+.time-slot:hover::before {
     content: '+';
     position: absolute;
     top: 50%;
@@ -128,7 +128,7 @@
     pointer-events: none;
 }
 
-.calendar-table tbody td:hover {
+.time-slot:hover {
     background: #f0f7ff;
     cursor: pointer;
 }
@@ -137,7 +137,6 @@
     position: relative;
     flex: 1;
     box-sizing: border-box;
-
     border-radius: 6px;
     padding: 4px 6px;
     font-size: 11px;
@@ -150,6 +149,24 @@
     background-color: #5b7fc7;
     color: white;
     border-left: 3px solid #3a5795;
+}
+
+.course-block.type-cm {
+    background-color: #007bff;
+    border-left: 5px solid #004085;
+    color: #e3f2fd;
+}
+
+.course-block.type-td {
+    background-color: #28a745;
+    border-left: 5px solid #155724;
+    color: #e8f5e9;
+}
+
+.course-block.type-tp {
+    background-color: #fd7e14;
+    border-left: 5px solid #856404;
+    color: #fff3e0;
 }
 
 .course-block:hover {
@@ -320,7 +337,7 @@
     padding: 0;
     width: 32px;
     height: 32px;
-    transition: color 0.2s;
+    /* transition: color 0.2s; */
 }
 
 .export-popup-close:hover {
@@ -348,7 +365,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    transition: all 0.2s;
+    /*transition: all 0.1s;*/
 }
 
 .export-option-btn:hover {
@@ -381,7 +398,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    /*transition: all 0.1s;*/
 }
 
 .export-cancel-btn:hover {
