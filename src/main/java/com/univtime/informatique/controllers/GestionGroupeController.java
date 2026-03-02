@@ -83,12 +83,12 @@ public class GestionGroupeController {
         return "redirect:/gestionnaire-edt/groupes/" + idpromo;
     }
 
-    @GetMapping("/{idpromo}/{id}/delete")
+    @PostMapping("/{idpromo}/{id}/delete")
     public String deleteGroupe(@PathVariable Integer idpromo,@PathVariable Integer id) {
         groupeService.deleteGroupeById(id);
         return "redirect:/gestionnaire-edt/groupes"+idpromo;
     }
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteGroupe(@PathVariable Integer id) {
         groupeService.deleteGroupeById(id);
         return "redirect:/gestionnaire-edt/groupes";

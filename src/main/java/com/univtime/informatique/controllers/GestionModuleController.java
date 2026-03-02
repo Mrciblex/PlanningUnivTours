@@ -58,10 +58,23 @@ public class GestionModuleController {
 
         return "redirect:/gestionnaire-edt/modules/" + id;
     }
+    @PostMapping("/{idpromo}/{id}/edit")
+    public String updateModule(@PathVariable Integer idpromo,@PathVariable Integer id, @ModelAttribute ModuleDto moduleDto) {
+
+        moduleDto.setIdModule(id);
+        moduleService.updateModule(moduleDto);
+
+        return "redirect:/gestionnaire-edt/modules/" + idpromo;
+    }
 
     @GetMapping("/{id}/delete")
     public String deleteModule(@PathVariable Integer id) {
         moduleService.deleteModuleById(id);
         return "redirect:/gestionnaire-edt/modules";
+    }
+    @PostMapping("/{idpromo}/{id}/delete")
+    public String deleteModule(@PathVariable Integer idpromo,@PathVariable Integer id) {
+        moduleService.deleteModuleById(id);
+        return "redirect:/gestionnaire-edt/modules"+idpromo;
     }
 }

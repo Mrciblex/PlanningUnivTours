@@ -21,17 +21,28 @@ public class MaquetteController {
     private final ProfesseurService professeurService;
     private final GroupeService groupeService;
     private final SousGroupeService sousGroupeService;
+    private final CMService cmService;
+    private final TDService tdService;
+    private final TPService tpService;
 
-    public MaquetteController(ModuleService moduleService,
-                              ComposanteService composanteService,
-                              ProfesseurService professeurService,
-                              GroupeService groupeService,
-                              SousGroupeService sousGroupeService) {
-        this.moduleService = moduleService;
-        this.composanteService = composanteService;
-        this.professeurService = professeurService;
-        this.groupeService = groupeService;
-        this.sousGroupeService = sousGroupeService;
+    public MaquetteController(
+            ModuleService moduleService,
+            ComposanteService composanteService,
+            ProfesseurService professeurService,
+            GroupeService groupeService,
+            SousGroupeService sousGroupeService,
+            CMService cmService,
+            TDService tdService,
+            TPService tpService)
+    {
+                this.moduleService = moduleService;
+                this.composanteService = composanteService;
+                this.professeurService = professeurService;
+                this.groupeService = groupeService;
+                this.sousGroupeService = sousGroupeService;
+                this.cmService = cmService;
+                this.tdService = tdService;
+                this.tpService = tpService;
     }
     @GetMapping
     public String afficherMaquettes() {
@@ -45,6 +56,10 @@ public class MaquetteController {
         model.addAttribute("professeurs", professeurService.findProfesseurDtoByIdPromo(idPromo));
         model.addAttribute("groupes", groupeService.findGroupeDtoByIdPromo(idPromo));
         model.addAttribute("sousGroupes", sousGroupeService.findSousGroupesDtoByIdPromo(idPromo));
+
+        model.addAttribute("cms", cmService.findCMDtoByIdPromo(idPromo));
+        model.addAttribute("tds", tdService.findTDDtoByIdPromo(idPromo));
+        model.addAttribute("tps", tpService.findTPDtoByIdPromo(idPromo));
 
         model.addAttribute("newModule", new ModuleDto());
         model.addAttribute("newComposante", new ComposanteDto());
@@ -94,5 +109,30 @@ public class MaquetteController {
         return "redirect:/gestionnaire-edt/maquette/" + idPromo;
     }
 
+    // ----------- DELETE -----------
+
+    @PostMapping("/{idPromo}/modules/{id}/delete")
+    public String deleteModule(@PathVariable Integer idPromo, @PathVariable Integer id) {
+        moduleService.deleteModuleById(id);
+        return "redirect:/gestionnaire-edt/maquette/" + idPromo;
+    }
+
+    @PostMapping("/{idPromo}/composantes/{id}/delete")
+    public String deleteComposante(@PathVariable Integer idPromo, @PathVariable Integer id) {
+        composanteService.deleteComposanteById(id);
+        return "redirect:/gestionnaire-edt/maquette/" + idPromo;
+    }
+
+    @PostMapping("/{idPromo}/groupes/{id}/delete")
+    public String deleteGroupe(@PathVariable Integer idPromo, @PathVariable Integer id) {
+        groupeService.deleteGroupeById(id);
+        return "redirect:/gestionnaire-edt/maquette/" + idPromo;
+    }
+
+    @PostMapping("/{idPromo}/sous-groupes/{id}/delete")
+    public String deleteSousGroupe(@PathVariable Integer idPromo, @PathVariable Integer id) {
+        sousGroupeService.deleteSousGroupeById(id);
+        return "redirect:/gestionnaire-edt/maquette/" + idPromo;
+    }
 
 }

@@ -81,14 +81,14 @@ public class GestionComposanteController {
         return "redirect:/composantes/" + idpromo;
     }
 
-    @GetMapping("/{idpromo}/{id}/delete")
+    @PostMapping("/{idpromo}/{id}/delete")
     public String deleteComposante(@PathVariable Integer idpromo,@PathVariable Integer id) {
         composanteService.deleteComposanteById(id);
-        return "redirect:/composantes" + idpromo;
+        return "redirect:/gestionnaire-edt/composantes" + idpromo;
     }
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteComposante(@PathVariable Integer id) {
         composanteService.deleteComposanteById(id);
-        return "redirect:/composantes" ;
+        return "redirect:/gestionnaire-edt/composantes" ;
     }
 }

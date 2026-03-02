@@ -84,12 +84,12 @@ public class GestionProfesseurController {
         return "redirect:/gestion_professeurs/" + idpromo;
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteProfesseur(@PathVariable Integer id) {
         professeurService.deleteProfesseurById(id);
         return "redirect:/gestion_professeurs";
     }
-    @GetMapping("/{promo}/{id}/delete")
+    @PostMapping("/{promo}/{id}/delete")
     public String deleteProfesseur(@PathVariable Integer idpromo,@PathVariable Integer id) {
         professeurService.deleteProfesseurById(id);
         return "redirect:/gestion_professeurs"+idpromo;
