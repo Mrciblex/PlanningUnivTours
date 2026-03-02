@@ -40,10 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* Gestionnaire de promo */
 function openPromoPopUp() {
-    document.getElementById('promoAdd').classList.add('active');
-}
-/**
-function openPromoPopUp() {
     document.getElementById('popUpTitleA').textContent = 'Ajouter une promotion';
     document.getElementById('promoIdA').value = '';
     document.getElementById('nomA').value = '';
@@ -54,28 +50,8 @@ function openPromoPopUp() {
     document.getElementById('dateFinS2A').value = '';
     document.getElementById('promoAdd').classList.add('active');
 //    console.log('Pop Up classes:', this.className);
-}*/
-function editPromoPopUp(btn) {
-
-    const id = btn.dataset.id;
-    const nom = btn.dataset.nom;
-    const annee = btn.dataset.annee;
-    const debutS1 = btn.dataset.debutS1;
-    const finS1 = btn.dataset.finS1;
-    const debutS2 = btn.dataset.debutS2;
-    const finS2 = btn.dataset.finS2;
-
-    document.getElementById("promoIdU").value = id;
-    document.getElementById("nomU").value = nom;
-    document.getElementById("anneeU").value = annee;
-    document.getElementById("dateDebutS1U").value = debutS1;
-    document.getElementById("dateFinS1U").value = finS1;
-    document.getElementById("dateDebutS2U").value = debutS2;
-    document.getElementById("dateFinS2U").value = finS2;
-
-    document.getElementById("promoUpdate").style.display = "flex";
 }
-/**
+
 function editPromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
     document.getElementById('popUpTitleU').textContent = 'Modifier la promotion';
     document.getElementById('promoIdU').value = id;
@@ -86,15 +62,8 @@ function editPromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dat
     document.getElementById('dateDebutS2U').value = dateDebutS2 || '';
     document.getElementById('dateFinS2U').value = dateFinS2 || '';
     document.getElementById('promoUpdate').classList.add('active');
-}*/
-
-function deletePromoPopUp(btn) {
-
-    document.getElementById("nomD").textContent = btn.dataset.nom;
-
-    document.getElementById("promoDelete").style.display = "flex";
 }
-/**
+
 function deletePromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
     deletePromoId = id;
     document.getElementById('nomD').textContent = nom;
@@ -113,19 +82,13 @@ function deletePromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, d
         ? formatDate(dateDebutS2) + ' - ' + formatDate(dateFinS2)
         : 'Non défini';
     document.getElementById('deleteS2').textContent = s2;
-
+*/
     document.getElementById('promoDelete').classList.add('active');
 }
-*/
-function closePopUp() {
-    document.getElementById('promoAdd').classList.remove('active');
-    document.getElementById('promoUpdate').classList.remove('active');
-    document.getElementById('promoDelete').classList.remove('active');
-}
-/**
+
 function closePopUp() {
     document.getElementById('promoAdd' || 'promoUpdate' || 'promoDelete').classList.remove('active');
-}*/
+}
 
 // EDT
 let currentDate = new Date();
@@ -372,6 +335,6 @@ function selectDate(year, month, day) {
     loadCourses();
 }
 
-// Initialisation
+// Initialize
 updateWeekInfo();
 renderMiniCalendar();
