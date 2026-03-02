@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CoursRepository extends JpaRepository<CoursEntity, Integer> {
-    @Query(value = "SELECT c.* FROM Cours c " +
+    @Query(value = "SELECT DISTINCT c.* FROM Cours c " +
             "INNER JOIN ParticipeA pa ON c.idCours = pa.idCours " +
             "INNER JOIN SousGroupes sg ON pa.idSousGroupe = sg.idSousGroupe " +
             "INNER JOIN Groupes g ON sg.idGroupe = g.idGroupe " +
