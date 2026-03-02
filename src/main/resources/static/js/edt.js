@@ -86,7 +86,11 @@ function loadCourses() {
     // AFFICHER DATA A COTE DES TH JOUR
     // RENDRE EXCEL ET CSV BIEN
     // PDF DEJA BIEN
-    document.querySelector(".th-day-1").
+    document.querySelector(".th-day-1").innerHTML = "Lundi " + weekStart.getDate();
+    document.querySelector(".th-day-2").innerHTML = "Mardi " + (weekStart.getDate() + 1);
+    document.querySelector(".th-day-3").innerHTML = "Mercredi " + (weekStart.getDate() + 2);
+    document.querySelector(".th-day-4").innerHTML = "Jeudi " + (weekStart.getDate() + 3);
+    document.querySelector(".th-day-5").innerHTML = "Vendredi " + (weekStart.getDate() + 4);
 
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 5); // Jusqu'au vendredi soir
@@ -200,16 +204,9 @@ window.openSettings = function() {
 };
 
 // --- POP-UP ET EXPORTS ---
+window.exportEDT = function() { document.getElementById('exportPopUp').style.display = 'flex'; };
+window.closeExportModal = function() { document.getElementById('exportPopUp').style.display = 'none'; };
 
-window.exportEDT = function() {
-    document.getElementById('exportPopUp').style.display = 'flex';
-};
-
-window.closeExportModal = function() {
-    document.getElementById('exportPopUp').style.display = 'none';
-};
-
-// Récupère toutes les semaines entre le début et la fin du semestre
 function getToutesLesSemaines() {
     let current = getWeekStart(debutSemestre);
     const end = getWeekStart(finSemestre);
@@ -221,7 +218,6 @@ function getToutesLesSemaines() {
     return weeks;
 }
 
-// Fonction centrale pour générer la matrice des cours d'une semaine (gère rowspan et colspan)
 function getWeekMatrixData(weekStart) {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 4);
@@ -233,16 +229,13 @@ function getWeekMatrixData(weekStart) {
     });
 
     const days = [];
-    // Boucle sur Lundi(1) à Vendredi(5)
     for (let d = 1; d <= 5; d++) {
         const dayDate = new Date(weekStart);
         dayDate.setDate(dayDate.getDate() + (d - 1));
         const dayCourses = weekCourses.filter(c => parseDate(c.heureDebutCours).getDay() === d);
 
-        // Trier par heure de début
         dayCourses.sort((a, b) => parseDate(a.heureDebutCours).getTime() - parseDate(b.heureDebutCours).getTime());
 
-        // Répartition en "pistes" (tracks) pour gérer les cours qui se chevauchent (côte à côte)
         const tracks = [];
         dayCourses.forEach(c => {
             const startMins = parseDate(c.heureDebutCours).getHours() * 60 + parseDate(c.heureDebutCours).getMinutes();
@@ -250,7 +243,6 @@ function getWeekMatrixData(weekStart) {
 
             let placed = false;
             for (let t = 0; t < tracks.length; t++) {
-                // Vérifie si le cours chevauche un autre cours sur cette piste
                 const overlap = tracks[t].some(tc => {
                     const tcStartMins = parseDate(tc.heureDebutCours).getHours() * 60 + parseDate(tc.heureDebutCours).getMinutes();
                     const tcEndMins = parseDate(tc.heureFinCours).getHours() * 60 + parseDate(tc.heureFinCours).getMinutes();
@@ -262,24 +254,23 @@ function getWeekMatrixData(weekStart) {
                     break;
                 }
             }
-            if (!placed) tracks.push([c]); // Nouvelle colonne s'il n'y a pas de place
+            if (!placed) tracks.push([c]);
         });
 
-        if (tracks.length === 0) tracks.push([]); // Au moins une piste par jour
+        if (tracks.length === 0) tracks.push([]);
         days.push({ date: dayDate, tracks: tracks });
     }
 
     const START_MINS = 7 * 60;
-    const TOTAL_SLOTS = 53; // De 7h00 à 20h00, pas de 15 min
+    const TOTAL_SLOTS = 53;
 
-    // Création de la grille vierge
     const cellMap = Array(TOTAL_SLOTS).fill(null).map(() =>
         Array(5).fill(null).map((_, dayIdx) =>
             Array(days[dayIdx].tracks.length).fill(null)
         )
     );
 
-    // Remplissage avec les fusions (rowspan)
+    // 1. Placement des cours et Rowspan
     days.forEach((day, dayIdx) => {
         day.tracks.forEach((track, trackIdx) => {
             track.forEach(course => {
@@ -291,7 +282,7 @@ function getWeekMatrixData(weekStart) {
                 const rowspan = endSlot - startSlot;
 
                 if (rowspan > 0 && startSlot < TOTAL_SLOTS) {
-                    cellMap[startSlot][dayIdx][trackIdx] = { type: 'start', rowspan, course };
+                    cellMap[startSlot][dayIdx][trackIdx] = { type: 'start', rowspan, colspan: 1, course };
                     for (let s = startSlot + 1; s < endSlot; s++) {
                         if (s < TOTAL_SLOTS) cellMap[s][dayIdx][trackIdx] = { type: 'covered' };
                     }
@@ -300,27 +291,64 @@ function getWeekMatrixData(weekStart) {
         });
     });
 
+    // 2. Calcul du Colspan dynamique
+    for (let dayIdx = 0; dayIdx < 5; dayIdx++) {
+        const tracksCount = days[dayIdx].tracks.length;
+        for (let s = 0; s < TOTAL_SLOTS; s++) {
+            for (let t = 0; t < tracksCount; t++) {
+                const cell = cellMap[s][dayIdx][t];
+                if (cell && cell.type === 'start') {
+                    let colspan = 1;
+                    for (let nextT = t + 1; nextT < tracksCount; nextT++) {
+                        let canExpand = true;
+                        for (let r = s; r < s + cell.rowspan; r++) {
+                            if (r < TOTAL_SLOTS && cellMap[r][dayIdx][nextT] !== null) {
+                                canExpand = false;
+                                break;
+                            }
+                        }
+                        if (canExpand) {
+                            colspan++;
+                            for (let r = s; r < s + cell.rowspan; r++) {
+                                // On passe "isStartRow" pour l'astuce de répétition dans le CSV
+                                if (r < TOTAL_SLOTS) cellMap[r][dayIdx][nextT] = { type: 'covered_col', isStartRow: (r === s), course: cell.course };
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    cell.colspan = colspan;
+                }
+            }
+        }
+    }
+
     const title = `Semaine du ${weekStart.toLocaleDateString('fr-FR')} au ${weekEnd.toLocaleDateString('fr-FR')}`;
     return { title, days, cellMap, TOTAL_SLOTS, START_MINS };
 }
 
-// Générateur HTML partagé pour Excel et PDF
 function generateHTMLTable(weekData) {
-    let html = `<table border="1" style="border-collapse: collapse; table-layout: fixed; width: 100%; text-align: center; font-family: Arial, sans-serif; font-size: 11px;">`;
+    let html = `<table border="1" style="border-collapse: collapse; table-layout: fixed; width: 100%; font-family: Arial, sans-serif; font-size: 11px; margin-bottom: 30px;">`;
 
-    // THEAD : En-têtes de colonnes (avec colspan selon le nombre de pistes)
-    html += `<thead><tr><th style="width: 60px; background-color: #00A99B; color: white;">Heure</th>`;
-    const totalTracks = weekData.days.reduce((sum, day) => sum + day.tracks.length, 0);
-    const baseColWidth = 100 / totalTracks; // Pourcentage équitable
+    // ASTUCE COLGROUP : Assure que chaque journée fait exactement la même taille globale (19%), peu importe ses pistes
+    html += `<colgroup><col style="width: 15%;">`;
+    weekData.days.forEach(day => {
+        const trackWidth = 85 / day.tracks.length;
+        for(let i=0; i<day.tracks.length; i++) {
+            html += `<col style="width: ${trackWidth}%;">`;
+        }
+    });
+    html += `</colgroup>`;
+
+    html += `<thead><tr><th style="background-color: #2F3E47; color: white; text-align: center; vertical-align: middle;">Heure</th>`;
 
     weekData.days.forEach(day => {
         const colspan = day.tracks.length;
         const dateStr = day.date.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' });
-        html += `<th colspan="${colspan}" style="background-color: #00A99B; color: white; padding: 5px;">${dateStr}</th>`;
+        html += `<th colspan="${colspan}" style="background-color: #00A99B; color: white; padding: 8px; border: 1px solid #1F635E; text-align: center; vertical-align: middle;">${dateStr}</th>`;
     });
     html += `</tr></thead><tbody>`;
 
-    // TBODY : Lignes de 15 minutes
     for (let s = 0; s < weekData.TOTAL_SLOTS; s++) {
         html += `<tr>`;
         const currentMins = weekData.START_MINS + s * 15;
@@ -328,45 +356,45 @@ function generateHTMLTable(weekData) {
         const min = currentMins % 60;
         const timeStr = `${hour}:${min === 0 ? '00' : (min < 10 ? '0' + min : min)}`;
 
-        // Affichage de l'heure
-        html += `<th style="background-color: #2c3e50; color: white; width: 60px; height: 18px;">${timeStr}</th>`;
+        html += `<th style="background-color: #2c3e50; color: white; border: 1px solid #1a252f; height: 20px; text-align: center; vertical-align: middle;">${timeStr}</th>`;
 
-        // Affichage des cellules
+        const rowBgColor = s % 2 === 0 ? '#f9fafb' : '#ffffff';
+
         for (let dayIdx = 0; dayIdx < 5; dayIdx++) {
             const tracksCount = weekData.days[dayIdx].tracks.length;
-            const width = baseColWidth * tracksCount;
-
             for (let trackIdx = 0; trackIdx < tracksCount; trackIdx++) {
                 const cell = weekData.cellMap[s][dayIdx][trackIdx];
 
                 if (cell === null) {
-                    html += `<td style="border: 1px solid #ddd;"></td>`;
+                    html += `<td style="border: 1px solid #e5e7eb; background-color: ${rowBgColor};"></td>`;
                 } else if (cell.type === 'start') {
                     const c = cell.course;
                     const nom = c.composanteDto ? c.composanteDto.nomComposante : 'Cours';
                     const type = c.typeCoursEnum || '';
 
-                    let bgColor = '#5b7fc7'; // Default
+                    let bgColor = '#5b7fc7';
                     if(type.toLowerCase() === 'cm') bgColor = '#007bff';
                     else if(type.toLowerCase() === 'td') bgColor = '#28a745';
                     else if(type.toLowerCase() === 'tp') bgColor = '#fd7e14';
 
-                    const formatT = (d) => { const x = parseDate(d); return `${x.getHours()}:${x.getMinutes()<10?'0':''}${x.getMinutes()}`; };
+                    const formatT = (d) => {
+                        const x = parseDate(d);
+                        return `${x.getHours()}:${x.getMinutes()<10?'0':''}${x.getMinutes()}`;
+                    };
 
-                    // Fusion ROWSPAN et application des contraintes de taille + wrapping de texte
-                    html += `<td rowspan="${cell.rowspan}" style="background-color: ${bgColor}; color: white; border: 1px solid #fff; border-left: 4px solid rgba(0,0,0,0.3); vertical-align: top; padding: 4px; border-radius: 4px; white-space: normal !important; word-wrap: break-word; overflow-wrap: break-word;">
-                        <div style="width: 100%; white-space: normal !important;">
-                            <strong>${nom} - ${type}</strong><br>
-                            <span style="font-size: 9px;">${formatT(c.heureDebutCours)} - ${formatT(c.heureFinCours)}</span>
+                    // Ajout du wrapping textuel forcé (mso-style-text-wrap) et de l'alignement parfait pour Excel
+                    html += `<td rowspan="${cell.rowspan}" colspan="${cell.colspan}" style="background-color: ${bgColor}; color: white; border: 1px solid #ffffff; border-left: 4px solid #1a252f; vertical-align: middle; text-align: center; padding: 4px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); white-space: normal !important; word-wrap: break-word; mso-style-text-wrap: yes;">
+                        <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow-wrap: break-word; line-height: 1.2;">
+                            <strong style="font-size: 11px; margin-bottom: 2px;">${nom} - ${type}</strong>
+                            <span style="font-size: 9px; opacity: 0.9;">${formatT(c.heureDebutCours)} - ${formatT(c.heureFinCours)}</span>
                         </div>
                     </td>`;
                 }
-                // Si 'covered', la cellule est absorbée par le rowspan, on ne dessine rien.
             }
         }
         html += `</tr>`;
     }
-    html += `</tbody></table><br><br>`;
+    html += `</tbody></table>`;
     return html;
 }
 
@@ -375,13 +403,16 @@ window.exportToExcel = function() {
     let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
     <head>
         <meta charset="utf-8">
-        <style> td { mso-number-format: "\@"; } </style>
-    </head><body>
-    <h1 style="text-align: center; font-family: Arial;">Emploi du temps - Promo S${numSemestre}</h1>`;
+        <style> 
+            /* Forces Excel to wrap text in merged cells */
+            td { mso-number-format: "\@"; mso-style-text-wrap: yes; vertical-align: middle; text-align: center; } 
+        </style>
+    </head><body style="font-family: Arial, sans-serif;">
+    <h1 style="text-align: center;">Emploi du temps - ${promoData.nomPromo} S${numSemestre}</h1>`;
 
     weeks.forEach(weekStart => {
         const weekData = getWeekMatrixData(weekStart);
-        html += `<h2 style="font-family: Arial;">${weekData.title}</h2>`;
+        html += `<h2>${weekData.title}</h2>`;
         html += generateHTMLTable(weekData);
     });
 
@@ -402,13 +433,13 @@ window.exportToPDF = function() {
 
     printWindow.document.write('<html><head><title>Emploi du temps Semestre</title>');
     printWindow.document.write('<style>');
-    printWindow.document.write('body { font-family: Arial, sans-serif; margin: 10px; }');
-    printWindow.document.write('h1 { text-align: center; color: #333; }');
-    printWindow.document.write('h2 { color: #5b7fc7; margin-top: 20px; page-break-before: always; }');
+    printWindow.document.write('body { font-family: "Segoe UI", Arial, sans-serif; margin: 20px; color: #333; }');
+    printWindow.document.write('h1 { text-align: center; color: #1f2937; margin-bottom: 30px; }');
+    printWindow.document.write('h2 { color: #00A99B; margin-top: 30px; margin-bottom: 10px; font-size: 18px; page-break-before: always; }');
     printWindow.document.write('h2:first-of-type { page-break-before: auto; }');
-    printWindow.document.write('@media print { @page { margin: 1cm; size: landscape; } }');
+    printWindow.document.write('@media print { @page { margin: 10mm; size: landscape; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }');
     printWindow.document.write('</style></head><body>');
-    printWindow.document.write(`<h1>Emploi du temps - S${numSemestre}</h1>`);
+    printWindow.document.write(`<h1>Emploi du temps - Semestre ${numSemestre}</h1>`);
 
     weeks.forEach(weekStart => {
         const weekData = getWeekMatrixData(weekStart);
@@ -427,8 +458,8 @@ window.exportToPDF = function() {
 
 window.exportToCSV = function() {
     const weeks = getToutesLesSemaines();
-    let csvContent = '\uFEFF';
-    csvContent += `Emploi du temps - Promo S${numSemestre}\n\n`;
+    let csvContent = '\uFEFF'; // Pour l'encodage UTF-8 sous Excel
+    csvContent += `Emploi du temps - ${promoData.nomPromo} S${numSemestre}\n\n`;
 
     weeks.forEach(weekStart => {
         const weekData = getWeekMatrixData(weekStart);
@@ -452,10 +483,11 @@ window.exportToCSV = function() {
                     const cell = weekData.cellMap[s][dayIdx][trackIdx];
                     if (cell && cell.type === 'start') {
                         const c = cell.course;
-                        const nom = c.composanteDto ? c.composanteDto.nomComposante : 'Cours';
+                        const nom = c.composanteDto ? c.composanteDto.nomComposante + ' - ' + c.typeCoursEnum + ' - ' + c.heureDebutCours + ' - ' + c.heureFinCours : 'Cours';
                         rowText.push(`${nom} - ${c.typeCoursEnum || ''}`);
                     } else {
-                        rowText.push(''); // Laisse vide pour les cellules couvertes (CSV ne gère pas le rowspan)
+                        // Laisse vide pour les covered_col et covered (CSV ne fusionne pas)
+                        rowText.push('');
                     }
                 }
             }
