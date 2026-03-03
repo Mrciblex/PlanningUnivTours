@@ -14,16 +14,4 @@ public interface CMRepository extends JpaRepository<CMEntity, CMId> {
            nativeQuery = true)
     public List<CMEntity> findByIdPromo(@Param("idPromo") Integer idPromo);
 
-    @Query("SELECT SUM(r.qteTypeCours * (comp.blocHoraireCM / 60.0)) " +
-            "FROM CMEntity cm " +
-            "JOIN cm.repartitionSemaine r " +
-            "JOIN cm.composante comp " +
-            "WHERE cm.promo.idPromo = :idPromo " +
-            "AND cm.composante.idComposante = :idComp " +
-            "AND r.numSemaine BETWEEN :startW AND :endW")
-    Double sumVolumeCMBySemestre(@Param("idPromo") Integer idPromo,
-                                 @Param("idComp") Integer idComp,
-                                 @Param("startW") int startW,
-                                 @Param("endW") int endW);
-
 }

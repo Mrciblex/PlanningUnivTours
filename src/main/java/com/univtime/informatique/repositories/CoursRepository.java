@@ -22,21 +22,4 @@ public interface CoursRepository extends JpaRepository<CoursEntity, Integer> {
             ")",
            nativeQuery = true)
     public List<CoursEntity> findByIdPromoBySemestre(@Param("idPromo") Integer idPromo, @Param("numSemestre") Integer numSemestre);
-
-    @Query(value = "SELECT c.idcomposante, c.typecours, " +
-            "SUM(EXTRACT(EPOCH FROM (c.heurefincours - c.heuredebutcours)) / 3600.0) " +
-            "FROM cours c " +
-            "WHERE c.heuredebutcours BETWEEN :debutSemestre AND :finSemestre " +
-            "AND EXISTS ( " +
-            "    SELECT 1 FROM participea pa " +
-            "    JOIN sousgroupes sg ON pa.idsousgroupe = sg.idsousgroupe " +
-            "    JOIN groupes g ON sg.idgroupe = g.idgroupe " +
-            "    WHERE pa.idcours = c.idcours AND g.idpromo = :idPromo " +
-            ") " +
-            "GROUP BY c.idcomposante, c.typecours",
-           nativeQuery = true)
-    List<Object[]> getVolumePlaceParMatiereSemestre(
-            @Param("idPromo") Integer idPromo,
-            @Param("debutSemestre") LocalDateTime debut,
-            @Param("finSemestre") LocalDateTime fin);
 }

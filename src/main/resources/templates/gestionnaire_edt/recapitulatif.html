@@ -1,124 +1,267 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
     <link rel="stylesheet" th:href="@{/css/recapitulatif.css}">
-    <title>UnivTime - Récapitulatif</title>
+
+    <title>UnivTime - Recapitulatif</title>
 </head>
 <body class="bg-[#2F3E47]">
 <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
 <div class="recap-container">
 
+    <!-- Header with Promo Info -->
     <div class="recap-header">
-        <h1 class="promo-title" th:text="${promo.nomPromo}">Nom de la Promo</h1>
-        <p class="promo-subtitle">
-            Année universitaire <span th:text="${promo.anneePromo}"></span> •
-            Semestre <span th:text="${numSemestre}"></span>
-        </p>
+        <h1 class="promo-title">Licence 3 Informatique</h1>
+        <p class="promo-subtitle">Année universitaire 2024-2025 • Semestre 1</p>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Étudiants</div>
-                <div class="stat-value" th:text="${recap.nbEtudiants}">0</div>
+                <div class="stat-value">45</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Groupes / Sous-Groupes</div>
-                <div class="stat-value" th:text="${recap.nbGroupes} + ' / ' + ${recap.nbSousGroupes}">0 / 0</div>
+                <div class="stat-value">3 / 6</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Matières</div>
-                <div class="stat-value" th:text="${recap.nbMatieres}">0</div>
+                <div class="stat-value">12</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Enseignants</div>
-                <div class="stat-value" th:text="${recap.nbEnseignants}">0</div>
+                <div class="stat-value">18</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Semaines</div>
-                <div class="stat-value" th:text="${recap.nbSemaines}">0</div>
+                <div class="stat-value">12</div>
             </div>
         </div>
     </div>
 
+    <!-- Volume Horaire par Matière -->
     <div class="volume-section">
         <h2 class="section-title">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
-            Volume horaire par matière (Placé / Attendu)
+            Volume horaire par matière
         </h2>
 
         <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div th:each="matiere : ${recap.matieres}" class="matiere-volume-card">
+            <!-- Matière 1 -->
+            <div class="matiere-volume-card">
                 <div class="matiere-header">
-                    <span class="matiere-name" th:text="${matiere.nom}">Nom Matière</span>
-                    <span class="matiere-total"
-                          th:text="'Total: ' + ${matiere.totalReel} + 'h / ' + ${matiere.totalPrevu} + 'h'"></span>
+                    <span class="matiere-name">Algorithmique avancée</span>
+                    <span class="matiere-total">Total: 48h / 60h</span>
                 </div>
 
                 <div class="matiere-details">
-
-                    <div class="matiere-type" th:if="${matiere.cm.prevu > 0}">
+                    <div class="matiere-type">
                         <span class="volume-type type-cm">CM</span>
                         <div class="matiere-progress">
                             <div class="progress-label">
-                                <span class="progress-current" th:text="${matiere.cm.reel} + 'h'">0h</span>
-                                <span class="progress-target" th:text="' / ' + ${matiere.cm.prevu} + 'h'"> / 0h</span>
+                                <span class="progress-current">18h</span>
+                                <span class="progress-target">/ 24h</span>
                             </div>
                             <div class="progress-bar">
-                                <div class="progress-fill"
-                                     th:classappend="${matiere.cm.percent > 100 ? 'over' : (matiere.cm.percent == 100 ? 'complete' : 'cm')}"
-                                     th:style="'width: ' + (${matiere.cm.percent > 100 ? 100 : matiere.cm.percent}) + '%;'"></div>
+                                <div class="progress-fill cm" style="width: 75%;"></div>
                             </div>
-                            <span class="progress-percent"
-                                  th:style="${matiere.cm.percent > 100 ? 'color: #ef5350;' : ''}"
-                                  th:text="${matiere.cm.percent} + '%'">0%</span>
+                            <span class="progress-percent">75%</span>
                         </div>
                     </div>
 
-                    <div class="matiere-type" th:if="${matiere.td.prevu > 0}">
+                    <div class="matiere-type">
                         <span class="volume-type type-td">TD</span>
                         <div class="matiere-progress">
                             <div class="progress-label">
-                                <span class="progress-current" th:text="${matiere.td.reel} + 'h'">0h</span>
-                                <span class="progress-target" th:text="' / ' + ${matiere.td.prevu} + 'h'"> / 0h</span>
+                                <span class="progress-current">24h</span>
+                                <span class="progress-target">/ 24h</span>
                             </div>
                             <div class="progress-bar">
-                                <div class="progress-fill"
-                                     th:classappend="${matiere.td.percent > 100 ? 'over' : (matiere.td.percent == 100 ? 'complete' : 'td')}"
-                                     th:style="'width: ' + (${matiere.td.percent > 100 ? 100 : matiere.td.percent}) + '%;'"></div>
+                                <div class="progress-fill complete" style="width: 100%;"></div>
                             </div>
-                            <span class="progress-percent"
-                                  th:style="${matiere.td.percent > 100 ? 'color: #ef5350;' : ''}"
-                                  th:text="${matiere.td.percent} + '%'">0%</span>
+                            <span class="progress-percent">100%</span>
                         </div>
                     </div>
 
-                    <div class="matiere-type" th:if="${matiere.tp.prevu > 0}">
+                    <div class="matiere-type">
                         <span class="volume-type type-tp">TP</span>
                         <div class="matiere-progress">
                             <div class="progress-label">
-                                <span class="progress-current" th:text="${matiere.tp.reel} + 'h'">0h</span>
-                                <span class="progress-target" th:text="' / ' + ${matiere.tp.prevu} + 'h'"> / 0h</span>
+                                <span class="progress-current">6h</span>
+                                <span class="progress-target">/ 12h</span>
                             </div>
                             <div class="progress-bar">
-                                <div class="progress-fill"
-                                     th:classappend="${matiere.tp.percent > 100 ? 'over' : (matiere.tp.percent == 100 ? 'complete' : 'tp')}"
-                                     th:style="'width: ' + (${matiere.tp.percent > 100 ? 100 : matiere.tp.percent}) + '%;'"></div>
+                                <div class="progress-fill tp" style="width: 50%;"></div>
                             </div>
-                            <span class="progress-percent"
-                                  th:style="${matiere.tp.percent > 100 ? 'color: #ef5350;' : ''}"
-                                  th:text="${matiere.tp.percent} + '%'">0%</span>
+                            <span class="progress-percent">50%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matière 2 -->
+            <div class="matiere-volume-card">
+                <div class="matiere-header">
+                    <span class="matiere-name">Base de données relationnelles</span>
+                    <span class="matiere-total">Total: 52h / 48h</span>
+                </div>
+
+                <div class="matiere-details">
+                    <div class="matiere-type">
+                        <span class="volume-type type-cm">CM</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">20h</span>
+                                <span class="progress-target">/ 18h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill over" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent" style="color: #ef5350;">111%</span>
                         </div>
                     </div>
 
+                    <div class="matiere-type">
+                        <span class="volume-type type-td">TD</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">18h</span>
+                                <span class="progress-target">/ 18h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill complete" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="matiere-type">
+                        <span class="volume-type type-tp">TP</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">14h</span>
+                                <span class="progress-target">/ 12h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill over" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent" style="color: #ef5350;">117%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matière 3 -->
+            <div class="matiere-volume-card">
+                <div class="matiere-header">
+                    <span class="matiere-name">Programmation orientée objet</span>
+                    <span class="matiere-total">Total: 42h / 54h</span>
+                </div>
+
+                <div class="matiere-details">
+                    <div class="matiere-type">
+                        <span class="volume-type type-cm">CM</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">12h</span>
+                                <span class="progress-target">/ 18h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill cm" style="width: 67%;"></div>
+                            </div>
+                            <span class="progress-percent">67%</span>
+                        </div>
+                    </div>
+
+                    <div class="matiere-type">
+                        <span class="volume-type type-td">TD</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">12h</span>
+                                <span class="progress-target">/ 18h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill td" style="width: 67%;"></div>
+                            </div>
+                            <span class="progress-percent">67%</span>
+                        </div>
+                    </div>
+
+                    <div class="matiere-type">
+                        <span class="volume-type type-tp">TP</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">18h</span>
+                                <span class="progress-target">/ 18h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill complete" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matière 4 -->
+            <div class="matiere-volume-card">
+                <div class="matiere-header">
+                    <span class="matiere-name">Réseaux et protocoles</span>
+                    <span class="matiere-total">Total: 36h / 36h</span>
+                </div>
+
+                <div class="matiere-details">
+                    <div class="matiere-type">
+                        <span class="volume-type type-cm">CM</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">12h</span>
+                                <span class="progress-target">/ 12h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill complete" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="matiere-type">
+                        <span class="volume-type type-td">TD</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">12h</span>
+                                <span class="progress-target">/ 12h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill complete" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent">100%</span>
+                        </div>
+                    </div>
+
+                    <div class="matiere-type">
+                        <span class="volume-type type-tp">TP</span>
+                        <div class="matiere-progress">
+                            <div class="progress-label">
+                                <span class="progress-current">12h</span>
+                                <span class="progress-target">/ 12h</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill complete" style="width: 100%;"></div>
+                            </div>
+                            <span class="progress-percent">100%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Professors Table -->
     <div class="profs-table-container">
         <div style="padding: 24px 24px 16px 24px;">
             <h2 class="section-title" style="margin: 0;">
@@ -139,50 +282,133 @@
                 <th>CM</th>
                 <th>TD</th>
                 <th>TP</th>
-                <th>Total Placé</th>
+                <th>Total</th>
                 <th>Statut</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="prof : ${recap.profs}">
-                <td class="prof-name" th:text="${prof.nomComplet}">Nom Prof</td>
-
+            <!-- Example Row 1 -->
+            <tr>
+                <td class="prof-name">Pr. Martin Dupont</td>
                 <td>
                     <div class="hours-cell">
-                        <span class="hours-value" th:text="${prof.cmH} + 'h / ' + ${prof.cmMax} + 'h'">0h / 0h</span>
-                        <div class="mini-progress" th:if="${prof.cmMax > 0}">
-                            <div class="mini-progress-fill"
-                                 th:style="'width: ' + (${prof.cmH * 100 / prof.cmMax > 100 ? 100 : prof.cmH * 100 / prof.cmMax}) + '%; background: linear-gradient(90deg, #2e7d32, #43a047);'"></div>
+                        <span class="hours-value">24h / 30h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 80%; background: linear-gradient(90deg, #2e7d32, #43a047);"></div>
                         </div>
                     </div>
                 </td>
-
                 <td>
                     <div class="hours-cell">
-                        <span class="hours-value" th:text="${prof.tdH} + 'h / ' + ${prof.tdMax} + 'h'">0h / 0h</span>
-                        <div class="mini-progress" th:if="${prof.tdMax > 0}">
-                            <div class="mini-progress-fill"
-                                 th:style="'width: ' + (${prof.tdH * 100 / prof.tdMax > 100 ? 100 : prof.tdH * 100 / prof.tdMax}) + '%; background: linear-gradient(90deg, #1976d2, #2196f3);'"></div>
+                        <span class="hours-value">36h / 40h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 90%; background: linear-gradient(90deg, #1976d2, #2196f3);"></div>
                         </div>
                     </div>
                 </td>
-
                 <td>
                     <div class="hours-cell">
-                        <span class="hours-value" th:text="${prof.tpH} + 'h / ' + ${prof.tpMax} + 'h'">0h / 0h</span>
-                        <div class="mini-progress" th:if="${prof.tpMax > 0}">
-                            <div class="mini-progress-fill"
-                                 th:style="'width: ' + (${prof.tpH * 100 / prof.tpMax > 100 ? 100 : prof.tpH * 100 / prof.tpMax}) + '%; background: linear-gradient(90deg, #f57c00, #ff9800);'"></div>
+                        <span class="hours-value">0h / 20h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 0%;"></div>
                         </div>
                     </div>
                 </td>
+                <td style="font-weight: 600;">60h / 90h</td>
+                <td><span class="status-badge status-ok">En cours</span></td>
+            </tr>
 
-                <td style="font-weight: 600;" th:text="${prof.totalH} + 'h / ' + ${prof.quotaMax} + 'h'">0h / 0h</td>
+            <!-- Example Row 2 -->
+            <tr>
+                <td class="prof-name">Dr. Sophie Bernard</td>
                 <td>
-                    <span class="status-badge"
-                          th:classappend="${prof.isOverloaded()} ? 'status-alert' : 'status-ok'"
-                          th:text="${prof.status}">Statut</span>
+                    <div class="hours-cell">
+                        <span class="hours-value">18h / 20h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 90%; background: linear-gradient(90deg, #2e7d32, #43a047);"></div>
+                        </div>
+                    </div>
                 </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">48h / 40h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 100%; background: linear-gradient(90deg, #d32f2f, #f44336);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">24h / 30h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 80%; background: linear-gradient(90deg, #f57c00, #ff9800);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td style="font-weight: 600;">90h / 90h</td>
+                <td><span class="status-badge status-warning">Surchargé TD</span></td>
+            </tr>
+
+            <!-- Example Row 3 -->
+            <tr>
+                <td class="prof-name">Dr. Jean Moreau</td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">0h / 0h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">32h / 40h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 80%; background: linear-gradient(90deg, #1976d2, #2196f3);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">48h / 50h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 96%; background: linear-gradient(90deg, #f57c00, #ff9800);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td style="font-weight: 600;">80h / 90h</td>
+                <td><span class="status-badge status-ok">En cours</span></td>
+            </tr>
+
+            <!-- Example Row 4 -->
+            <tr>
+                <td class="prof-name">Pr. Marie Leroy</td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">40h / 30h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 100%; background: linear-gradient(90deg, #d32f2f, #f44336);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">20h / 30h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 67%; background: linear-gradient(90deg, #1976d2, #2196f3);"></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="hours-cell">
+                        <span class="hours-value">0h / 0h</span>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </td>
+                <td style="font-weight: 600;">60h / 60h</td>
+                <td><span class="status-badge status-alert">Dépassement CM</span></td>
             </tr>
             </tbody>
         </table>
