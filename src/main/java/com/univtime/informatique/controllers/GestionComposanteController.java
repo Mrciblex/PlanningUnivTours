@@ -30,7 +30,7 @@ public class GestionComposanteController {
         return "gestionnaire_edt/gestion_composantes";
     }
 
-    @GetMapping("/{idpromo}")
+    @GetMapping("/promo/{idPromo}")
     public String listAllComposantes(@PathVariable Integer idpromo,Model model) {
         List<ComposanteDto> composantes = composanteService.findAllComposantes();
         model.addAttribute("composantes", composantes);
