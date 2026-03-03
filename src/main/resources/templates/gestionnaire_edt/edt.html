@@ -61,10 +61,10 @@
 
     <div class="sidebar">
         <button class="btn-primary" onclick="addCourse()">+ Ajouter un cours</button>
-        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/modules/{id}/(id=${promo.idPromo}">+ Modules</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/modules/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Modules</a>
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">+ Composantes</button>
-        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">+ Enseignants</button>
-        <button class="btn-primary" th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">+ Groupes</button>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/professeurs/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Enseignants</a>
+        <button class="btn-primary" th:href="@{/gestionnaire-edt/groupes}">+ Groupes</button>
         <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/maquette/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">+ Maquette</a>
         <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/recapitulatif/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">Récapitulatif</a>
         <button class="btn-primary" onclick="openSettings()">Générateur</button>
