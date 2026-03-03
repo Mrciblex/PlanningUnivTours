@@ -61,7 +61,7 @@
 
     <div class="sidebar">
         <button class="btn-primary" onclick="addCourse()">+ Ajouter un cours</button>
-        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_modules'">+ Modules</button>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/modules/{id}/(id=${promo.idPromo}">+ Modules</a>
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">+ Composantes</button>
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">+ Enseignants</button>
         <button class="btn-primary" th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">+ Groupes</button>

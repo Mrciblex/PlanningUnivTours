@@ -77,12 +77,17 @@ function deletePromoPopUp(btn) {
  document.getElementById('promoDelete').classList.add('active');
  }
  */
-function closePopUp() {
+
+// Fermer les pop up
+function closePopUpAdd() {
     document.getElementById('promoAdd').classList.remove('active');
+}
+
+function closePopUpUpdate() {
     document.getElementById('promoUpdate').classList.remove('active');
+}
+
+function closePopUpDelete() {
     document.getElementById('promoDelete').classList.remove('active');
 }
-/**
- function closePopUp() {
- document.getElementById('promoAdd' || 'promoUpdate' || 'promoDelete').classList.remove('active');
- }*/
+
