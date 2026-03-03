@@ -22,6 +22,10 @@ public class ProfesseurTDDto {
 
     }
 
+    public ProfesseurTDDto(Integer idProf) {
+        this.idProf = idProf;
+    }
+
     public ProfesseurTDDto(Integer idProf,
                            String nomProf,
                            String prenomProf,

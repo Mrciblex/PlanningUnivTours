@@ -232,7 +232,13 @@ public class SousGroupeMapper {
             part.setTypeCours(entity.getCours().getTypeCours());
             part.setComposanteCoursId(entity.getCours().getComposante().getIdComposante());
             part.setProfesseurCoursId(entity.getCours().getProfesseur().getIdProf());
-            part.setSalleCoursId(entity.getCours().getSalle().getIdSalle());
+
+            if (entity.getCours().getSalle() != null){
+                part.setSalleCoursId(entity.getCours().getSalle().getIdSalle());
+            }else{
+                part.setSalleCoursId(null);
+            }
+
             part.setParticipeACoursIds(entity.getCours().getParticipeAEntities()
                     .stream()
                     .map(participeAEntity -> {

@@ -17,6 +17,10 @@ public class SousGroupeTPDto {
 
     }
 
+    public SousGroupeTPDto(Integer idSousGroupe) {
+        this.idSousGroupe = idSousGroupe;
+    }
+
     public SousGroupeTPDto(Integer idSousGroupe,
                            String nomSousGroupe,
                            Integer nbEtuSousGroupe,

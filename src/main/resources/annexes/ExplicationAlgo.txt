@@ -1,0 +1,20 @@
+
+On génère X emplois du temps.
+
+On essaie de placer le cours partout dans la semaine (potentiellement déjà rempli petit à petit). 
+
+Ensuite on prend tout les slots avec score >= Max(score) - Max(score) * 0.2.
+Soit 20% des meilleurs résultats ici.
+
+On choisit aléatoirement parmi les meilleures slots sélectionnés.
+
+On place le cour ! 
+
+Ensuite on fait pareil pour tout les autres slots.
+
+Une fois la semaine terminé, si pas possible alors retenté Y fois encore puis abandonné si on dépasse la limite Z de tentatives.
+
+Si la semaine marche, alors il faut relocaliser pour améliorer.
+
+Référence première semaine, si un cours a déjà été posé (Prof, Composante, Groupe || SousGroupe || Promo), alors on priorise la dateHeure pour reposer au même endroit (peu importe le score). Si possible, on repose là, sinon on refait tourné l'algo pour poser qq part ou c'est possible cette semaine.
+

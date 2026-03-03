@@ -29,6 +29,10 @@ public class ComposanteTPDto {
 
     }
 
+    public ComposanteTPDto(Integer idComposante){
+        this.idComposante = idComposante;
+    }
+
     public ComposanteTPDto(Integer idComposante,
                            String nomComposante,
                            Integer volumeHoraireTotal,

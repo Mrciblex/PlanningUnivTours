@@ -1,26 +1,39 @@
 package com.univtime.informatique.controllers;
 
+import com.univtime.informatique.dto.cmDto.*;
 import com.univtime.informatique.dto.composanteDto.CMComposanteDto;
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.dto.composanteDto.TDComposanteDto;
 import com.univtime.informatique.dto.composanteDto.TPComposanteDto;
 import com.univtime.informatique.dto.groupeDto.GroupeDto;
+import com.univtime.informatique.dto.maquetteDto.MaquetteAssignationDto;
+import com.univtime.informatique.dto.maquetteDto.MaquetteLigneDto;
+import com.univtime.informatique.dto.maquetteDto.MaquetteSaveRequestDto;
 import com.univtime.informatique.dto.moduleDto.ModuleDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
+import com.univtime.informatique.dto.promoDto.GroupePromoDto;
 import com.univtime.informatique.dto.promoDto.PromoDto;
+import com.univtime.informatique.dto.repartitionSemaineDto.RepartitionSemaineDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
+import com.univtime.informatique.dto.tdDto.*;
+import com.univtime.informatique.dto.tpDto.*;
+import com.univtime.informatique.entities.ComposanteEntity;
+import com.univtime.informatique.entities.ProfesseurEntity;
+import com.univtime.informatique.entities.PromoEntity;
+import com.univtime.informatique.entities.RepartitionSemaineEntity;
 import com.univtime.informatique.services.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/maquette")
@@ -37,6 +50,7 @@ public class MaquetteController {
     private final TDService tdService;
     private final TPService tpService;
     private final PromoService promoService;
+    private final RepartitionSemaineService repartitionSemaineService;
 
     public MaquetteController(
             ModuleService moduleService,
@@ -47,7 +61,8 @@ public class MaquetteController {
             CMService cmService,
             TDService tdService,
             TPService tpService,
-            PromoService promoService) {
+            PromoService promoService,
+            RepartitionSemaineService repartitionSemaineService) {
         this.moduleService = moduleService;
         this.composanteService = composanteService;
         this.professeurService = professeurService;
@@ -57,71 +72,128 @@ public class MaquetteController {
         this.tdService = tdService;
         this.tpService = tpService;
         this.promoService = promoService;
+        this.repartitionSemaineService = repartitionSemaineService;
     }
 
-    @GetMapping("/{idPromo}/{numSemestre}")
-    public String afficherMaquette(@PathVariable Integer idPromo,
-                                   @PathVariable Integer numSemestre,
+    @GetMapping("/{promoId}/{semestre}")
+    public String afficherMaquette(@PathVariable Integer promoId,
+                                   @PathVariable Integer semestre,
                                    Model model) {
 
-        List<ComposanteDto> composantes = composanteService.findComposantesDtoByIdPromo(idPromo);
+        // Configuration de base de la maquette (Ex: 15 semaines de 0 à 14 ou 1 à 15)
 
-        for (ComposanteDto c : composantes) {
+        PromoDto promo = promoService.findPromoDtoById(promoId);
+        model.addAttribute("promo", promo);
+        model.addAttribute("numSemestre", semestre);
 
-            // ===== CM =====
-            c.setCmNbParSem(
-                    nbParSem(
-                            c.getCmDto(),
-                            CMComposanteDto::getNumSemaine
-                    )
-            );
+        int nbSemaines = semestre == 1 ?
+                (int) ChronoUnit.WEEKS.between(promo.getDebutS1Promo(), promo.getFinS1Promo())
+                : (int) ChronoUnit.WEEKS.between(promo.getDebutS2Promo(), promo.getFinS2Promo());
 
-            // ===== TD =====
-            c.setTdNbParSem(
-                    nbParSem(
-                            c.getTdDto(),
-                            TDComposanteDto::getNumSemaine
-                    )
-            );
+        model.addAttribute("nbsem", nbSemaines);
 
-            // ===== TP =====
-            c.setTpNbParSem(
-                    nbParSem(
-                            c.getTpDto(),
-                            TPComposanteDto::getNumSemaine
-                    )
-            );
-        }
+        // Données globales disponibles pour l'importation dans la vue JS
+        model.addAttribute("modulesDispos", moduleService.findAllModules());
+        model.addAttribute("composantesDispos", composanteService.findAllComposantes());
+        model.addAttribute("professeursDispos", professeurService.findAllProfesseurs());
+        model.addAttribute("groupesDispos", groupeService.findGroupeDtoByIdPromo(promoId));
 
-        model.addAttribute("modules", moduleService.findModuleDtoByIdPromo(idPromo));
-        model.addAttribute("composantes", composantes);
-        model.addAttribute("professeurs", professeurService.findProfesseurDtoByIdPromo(idPromo));
-        model.addAttribute("groupes", groupeService.findGroupeDtoByIdPromo(idPromo));
-        model.addAttribute("sousGroupes", sousGroupeService.findSousGroupesDtoByIdPromo(idPromo));
+        List<CMDto> existingCms = cmService.findCMDtoByIdPromo(promoId);
 
-        model.addAttribute("cms", cmService.findCMDtoByIdPromo(idPromo));
-        model.addAttribute("tds", tdService.findTDDtoByIdPromo(idPromo));
-        model.addAttribute("tps", tpService.findTPDtoByIdPromo(idPromo));
+        List<TDDto> existingTds = tdService.findTDDtoByIdPromo(promoId);
 
-        model.addAttribute("newModule", new ModuleDto());
-        model.addAttribute("newComposante", new ComposanteDto());
-        model.addAttribute("newProfesseur", new ProfesseurDto());
-        model.addAttribute("newGroupe", new GroupeDto());
-        model.addAttribute("newSousGroupe", new SousGroupeDto());
+        List<TPDto> existingTps = tpService.findTPDtoByIdPromo(promoId);
 
-        PromoDto promo = promoService.findPromoDtoById(idPromo);
-        model.addAttribute("promo", promoService.findPromoDtoById(idPromo));
-
-        LocalDate dateDebut = numSemestre == 1 ?
-                promo.getDebutS1Promo() : promo.getDebutS2Promo();
-
-        LocalDate dateFin = numSemestre == 1 ?
-                promo.getFinS1Promo() : promo.getFinS2Promo();
-
-        long nombreDeSemaines = ChronoUnit.WEEKS.between(dateDebut, dateFin);
-        model.addAttribute("nbsem", nombreDeSemaines + 1);
+        model.addAttribute("existingCms", existingCms);
+        model.addAttribute("existingTds", existingTds);
+        model.addAttribute("existingTps", existingTps);
 
         return "gestionnaire_edt/maquette";
+    }
+
+    @PostMapping("/save")
+    @Transactional
+    public ResponseEntity<?> saveMaquette(@RequestBody MaquetteSaveRequestDto request) {
+        try {
+            PromoDto promo = promoService.findPromoDtoById(Math.toIntExact(request.getIdPromo()));
+            if (promo == null) {
+                return ResponseEntity.badRequest().body("Promotion introuvable.");
+            }
+
+            // Nettoyage de la base pour cette promo (CM, TD, TP)
+            List <CMDto> cms = cmService.findCMDtoByIdPromo(promo.getIdPromo());
+            cms.forEach(cm -> cmService.deleteCMById(cm.getCMId()));
+
+            List <TDDto> tds = tdService.findTDDtoByIdPromo(promo.getIdPromo());
+            tds.forEach(td -> tdService.deleteTDById(td.getTDId()));
+
+            List <TPDto> tps = tpService.findTPDtoByIdPromo(promo.getIdPromo());
+            tps.forEach(tp -> tpService.deleteTPById(tp.getTPId()));
+
+            // Injection des nouvelles données
+            for (MaquetteLigneDto ligne : request.getLignes()) {
+                ComposanteDto composante = composanteService.findComposanteDtoById(Math.toIntExact(ligne.getIdComposante()));
+                if (composante == null) continue;
+
+                for (MaquetteAssignationDto assign : ligne.getAssignations()) {
+                    ProfesseurDto prof = professeurService.findProfesseurDtoById(Math.toIntExact(assign.getIdProf()));
+                    if (prof == null) continue;
+
+                    for (Map.Entry<Integer, Double> entry : assign.getVolumes().entrySet()) {
+                        Integer semaine = entry.getKey();
+                        Double volume = entry.getValue();
+
+                        if (volume == null || volume <= 0) continue;
+
+                        // Création d'une nouvelle Répartition unique
+                        RepartitionSemaineDto repSem = new RepartitionSemaineDto();
+                        repSem.setNumSemaine(semaine);
+                        repSem.setQteTypeCours(volume.intValue());
+                        repSem = repartitionSemaineService.createRepartitionSemaine(repSem);
+
+                        // Injection selon le type
+                        if ("CM".equals(assign.getType())) {
+                            CMDto cm = new CMDto();
+                            cm.setPromoDto(new PromoCMDto(promo.getIdPromo()));
+                            cm.setComposanteDto(new ComposanteCMDto(composante.getIdComposante()));
+                            cm.setProfesseurDto(new ProfesseurCMDto(prof.getIdProf()));
+                            cm.setRepartitionSemaineDto(new RepartitionSemaineCMDto(repSem.getIdRepartitionSemaine()));
+                            cmService.createCM(cm);
+
+                        } else if ("TD".equals(assign.getType())) {
+                            // cibleId = "GRP_12"
+                            int idGroupe = Integer.parseInt(assign.getCibleId().split("_")[1]);
+                            GroupeDto groupe = groupeService.findGroupeDtoById(idGroupe);
+
+                            TDDto td = new TDDto();
+                            td.setGroupeDto(new GroupeTDDto(groupe.getIdGroupe()));
+                            td.setComposanteDto(new ComposanteTDDto(composante.getIdComposante()));
+                            td.setProfesseurDto(new ProfesseurTDDto(prof.getIdProf()));
+                            td.setRepartitionSemaineDto(new RepartitionSemaineTDDto(repSem.getIdRepartitionSemaine()));
+                            tdService.createTD(td);
+
+                        } else if ("TP".equals(assign.getType())) {
+                            // cibleId = "SG_45"
+                            Integer idSousGroupe = Integer.parseInt(assign.getCibleId().split("_")[1]);
+                            SousGroupeDto sg = sousGroupeService.findSousGroupeDtoById(idSousGroupe);
+
+                            TPDto tp = new TPDto();
+                            tp.setSousGroupeDto(new SousGroupeTPDto(sg.getIdSousGroupe()));
+                            tp.setComposanteDto(new ComposanteTPDto(composante.getIdComposante()));
+                            tp.setProfesseurDto(new ProfesseurTPDto(prof.getIdProf()));
+                            tp.setRepartitionSemaineDto(new RepartitionSemaineTPDto(repSem.getIdRepartitionSemaine()));
+                            tpService.createTP(tp);
+                        }
+                    }
+                }
+            }
+
+            return ResponseEntity.ok("Sauvegarde réussie.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return ResponseEntity.internalServerError().body("Erreur serveur : " + e.getMessage());
+        }
     }
 
     // ----------- CREATE -----------

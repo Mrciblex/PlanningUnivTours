@@ -30,6 +30,10 @@ public class ComposanteCMDto {
 
     }
 
+    public ComposanteCMDto(Integer idComposante){
+        this.idComposante = idComposante;
+    }
+
     public ComposanteCMDto(Integer idComposante,
                            String nomComposante,
                            Integer volumeHoraireTotal,

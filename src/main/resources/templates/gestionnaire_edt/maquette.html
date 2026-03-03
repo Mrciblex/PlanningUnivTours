@@ -1,349 +1,151 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
-        <link rel="stylesheet" th:href="@{/css/maquette.css}">
-        <script th:src="@{/js/maquette.js}" defer></script>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/maquette.css}">
+    <script th:src="@{/js/maquette.js}" defer></script>
+    <title>UnivTime - Maquette Pédagogique</title>
+</head>
 
-        <title>UnivTime - Maquette</title>
-    </head>
-    <body class="bg-[#2F3E47]">
-        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+<body class="bg-[#2F3E47]" th:data-nbsem="${nbsem}">
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <div class="planning-container">
-            <!-- Titre + Recap -->
-            <div class="planning-header">
-                <div class="header-left">
-                    <h1 class="text-xl font-bold text-white mb-2">Maquette Pédagogique</h1>
+<script th:inline="javascript">
+    const currentPromo = /*[[${promo != null ? promo : null}]]*/ null;
 
-                    <!-- Recap de la promo -->
-                    <div class="promo-recap" th:if="${promo != null}">
-                        <div class="promo-recap-title">Promotion sélectionnée</div>
-                        <div class="promo-recap-content">
-                            <div class="promo-stat">
-                                <span class="promo-stat-label">Nom</span>
-                                <span class="promo-stat-value" id="currentPromoNom" th:text="${promo.nomPromo}"></span>
-                            </div>
-                            <div class="promo-stat">
-                                <span class="promo-stat-label">Année</span>
-                                <span class="promo-stat-value" id="currentPromoAnnee" th:text="${promo.anneePromo}"></span>
-                            </div>
-                            <div class="promo-stat">
-                                <span class="promo-stat-label">Étudiants</span>
-                                <span class="promo-stat-value" id="currentPromoEtudiants" th:text="${promo.nbEtuPromo}"></span>
-                            </div>
-                        </div>
+    const existingCms = /*[[${existingCms != null ? existingCms : '[]'}]]*/ [];
+    const existingTds = /*[[${existingTds != null ? existingTds : '[]'}]]*/ [];
+    const existingTps = /*[[${existingTps != null ? existingTps : '[]'}]]*/ [];
+
+    const baseUrl = /*[[@{/}]]*/ '/';
+
+    const availableData = {
+        modules: /*[[${modulesDispos != null ? modulesDispos : '[]'}]]*/ [],
+        composantes: /*[[${composantesDispos != null ? composantesDispos : '[]'}]]*/ [],
+        professeurs: /*[[${professeursDispos != null ? professeursDispos : '[]'}]]*/ [],
+        groupes: /*[[${groupesDispos != null ? groupesDispos : '[]'}]]*/ []
+    };
+</script>
+
+<div class="planning-container">
+    <div class="planning-header">
+        <div class="header-left">
+            <h1 class="text-xl font-bold text-white mb-2">Maquette Pédagogique (S<span th:text="${numSemestre}"></span>)</h1>
+            <div class="promo-recap" th:if="${promo != null}">
+                <div class="promo-recap-title">Promotion sélectionnée</div>
+                <div class="promo-recap-content">
+                    <div class="promo-stat">
+                        <span class="promo-stat-label">Nom</span>
+                        <span class="promo-stat-value" th:text="${promo.nomPromo}"></span>
                     </div>
-                </div>
-
-                <div class="flex items-start">
-                    <button onclick="openMaquetteMatierePopUp()" class="btn-add">+ Ajouter une matière</button>
-                </div>
-            </div>
-
-            <!-- Affichage récap de la maquette -->
-            <div class="dashboard-container scrollbar">
-                <table class="planning-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 200px;">Matière</th>
-                            <th style="width: 200px;">Enseignants</th>
-                            <th style="width: 120px;">Module</th>
-                            <th class="week-header" style="width: 100px;"
-                                th:each="sem : ${#numbers.sequence(1, nbsem)}"
-                                    th:text="'Sem. ' + ${sem}">Sem</th>
-                            <th style="width: 120px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="planningTableBody">
-                        <tr th:each="composante : ${composantes}">
-                            <td class="matiere-cell" th:text="${composante.nomComposante}"></td>
-
-                            <td class="prof-cell">
-                                <!-- CM -->
-                                <span class="prof-badge"
-                                      th:each="cm : ${composante.cmDto}"
-                                      th:text="${cm.nomProf + ' ' + cm.prenomProf}">
-                                </span>
-
-                                <!-- TD -->
-                                <span class="prof-badge"
-                                      th:each="td : ${composante.tdDto}"
-                                      th:text="${td.nomProf + ' ' + td.prenomProf}">
-                                </span>
-
-                                <!-- TP -->
-                                <span class="prof-badge"
-                                      th:each="tp : ${composante.tpDto}"
-                                      th:text="${tp.nomProf + ' ' + tp.prenomProf}">
-                                </span>
-                            </td>
-
-                            <!-- Volumes par semaine (CM, TD, TP) -->
-                            <td th:each="sem : ${#numbers.sequence(1, nbsem)}">
-                                <th:block th:with="cm=${composante != null ? composante.cmNbParSem.get(sem) : 0},
-                                                   td=${composante != null ? composante.tdNbParSem.get(sem) : 0},
-                                                   tp=${composante != null ? composante.tpNbParSem.get(sem) : 0}">
-
-                                    <span th:if="${cm > 0}"></span>
-                                    <span th:if="${td > 0}"></span>
-                                    <span th:if="${tp > 0}"></span>
-                                    <span th:if="${cm == 0 and td == 0 and tp == 0}">-</span>
-                                </th:block>
-                                <!--
-                                <span th:if="${composante.cmNbParSem[sem] > 0}"
-                                      class="type-badge type-cm"
-                                      th:text="${composante.cmNbParSem[sem] + ' CM'}"></span>
-
-                                <span th:if="${composante.tdNbParSem[sem] > 0}"
-                                      class="type-badge type-td"
-                                      th:text="${composante.tdNbParSem[sem] + ' TD'}"></span>
-
-                                <span th:if="${composante.tpNbParSem[sem] > 0}"
-                                      class="type-badge type-tp"
-                                      th:text="${composante.tpNbParSem[sem] + ' TP'}"></span>
-
-                                <span th:if="${composante.cmNbParSem[sem] == 0 and
-                                             composante.tdNbParSem[sem] == 0 and
-                                             composante.tpNbParSem[sem] == 0}">
-                                    -
-                                </span>
-                                -->
-                            </td>
-
-                            <td>
-                                <button
-                                        th:onclick="'openEditModal(' + ${composante.idComposante} + ')'"
-                                        class="btn-action btn-edit mr-2">
-                                    Modifier
-                                </button>
-                                <button
-                                        th:onclick="'deleteMatiere(' + ${composante.idComposante} + ')'"
-                                        class="btn-action btn-delete">
-                                    Supprimer
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr th:if="${#lists.isEmpty(composantes)}">
-                            <td colspan="16" class="text-center py-12 text-red-600">
-                                Aucune matière configurée
-                            </td>
-                        </tr>
-
-                        <!-- Static -->
-                        <!--
-                        <tr>
-                            <td class="matiere-cell">Algorithmique avancée</td>
-                            <td class="prof-cell">
-                                <span class="prof-badge">Pr. Martin</span>
-                                <span class="prof-badge">Dr. Dupont</span>
-                            </td>
-                            <td>Informatique</td>
-                            <td>
-                                <span class="type-badge type-cm">2 CM</span>
-                                <span class="type-badge type-td">1 TD</span>
-                            </td>
-                            <td>
-                                <span class="type-badge type-cm">2 CM</span>
-                                <span class="type-badge type-td">2 TD</span>
-                            </td>
-                            <td>
-                                <span class="type-badge type-td">1 TD</span>
-                                <span class="type-badge type-tp">2 TP</span>
-                            </td>
-                            <td>
-                                <span class="type-badge type-cm">1 CM</span>
-                                <span class="type-badge type-tp">2 TP</span>
-                            </td>
-                            <td>-</td>
-                            <td>
-                                <span class="type-badge type-td">1 TD</span>
-                            </td>
-                            <td>
-                                <button onclick="openEditModal(1)" class="btn-action btn-edit mr-2">Modifier</button>
-                                <button onclick="deleteMatiere(1)" class="btn-action btn-delete">Supprimer</button>
-                            </td>
-                        </tr>
-                        -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Les 5 sélections pour la maquette -->
-            <div class="selection-sidebar scrollbar">
-
-                <!-- Bloc 1: Modules -->
-                <div class="selection-block">
-                    <div class="block-header">
-                        <span class="block-title">Modules</span>
-                        <button onclick="openSelectionModal('module')" class="btn-add-small">+ Ajouter</button>
-                    </div>
-                    <div class="selected-items" id="selectedModules">
-                        <div th:if="${#lists.isEmpty(modules)}" class="empty-selection">Aucun module sélectionné</div>
-
-                        <div th:each="module : ${modules}" class="selected-item">
-                            <span th:text="${module.nomModule}"></span>
-                            <button class="btn-remove" th:onclick="removeModule(${module.idModule})" title="Retirer">x</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bloc 2: Composantes -->
-                <div class="selection-block">
-                    <div class="block-header">
-                        <span class="block-title">Composantes</span>
-                        <button onclick="openSelectionModal('composante')" class="btn-add-small">+ Ajouter</button>
-                    </div>
-                    <div class="selected-items" id="selectedComposantes">
-                        <div th:if="${#lists.isEmpty(composantes)}" class="empty-selection">Aucune composante sélectionnée</div>
-                        <div th:each="comp : ${composantes}" class="selected-item">
-                            <span th:text="${comp.nomComposante}"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bloc 3: Enseignants -->
-                <div class="selection-block">
-                    <div class="block-header">
-                        <span class="block-title">Enseignants</span>
-                        <button onclick="openSelectionModal('enseignant')" class="btn-add-small">+ Ajouter</button>
-                    </div>
-                    <div class="selected-items" id="selectedEnseignants">
-                        <div th:if="${#lists.isEmpty(professeurs)}" class="empty-selection">Aucun enseignant sélectionné</div>
-                        <div th:each="prof : ${professeurs}" class="selected-item">
-                            <span th:text="${prof.nomProf}"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bloc 4: Groupes -->
-                <div class="selection-block">
-                    <div class="block-header">
-                        <span class="block-title">Groupes</span>
-                        <button onclick="openSelectionModal('groupe')" class="btn-add-small">+ Ajouter</button>
-                    </div>
-                    <div class="selected-items" id="selectedGroupes">
-                        <div th:if="${promo?.groupeEntities == null || #lists.isEmpty(promo.groupeEntities)}" class="empty-selection">Aucun groupe sélectionné</div>
-                        <div th:each="groupe : ${promo?.groupeEntities}" class="selected-item">
-                            <span th:text="${groupe.nomGroupe}"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bloc 5: Sous-groupes -->
-                <div class="selection-block">
-                    <div class="block-header">
-                        <span class="block-title">Sous-groupes</span>
-                        <button onclick="openSelectionModal('sousgroupe')" class="btn-add-small">+ Ajouter</button>
-                    </div>
-                    <div class="selected-items" id="selectedSousGroupes">
-                        <div class="empty-selection">Aucun sous-groupe sélectionné</div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Selection -->
-        <div id="selectionModal" class="modal">
-            <div class="modal-content selection-modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="selectionModalTitle">Sélectionner</h2>
-                    <button class="btn-add" onclick="">+ Ajouter un nouvel élément</button>
-                    <!-- le onclick doit rediriger vers la vue de création adéquat -->
-                    <button class="modal-close" onclick="closeSelectionModal()">&times;</button>
-                </div>
-
-                <div class="checkbox-list" id="checkboxList">
-                    <!-- Pour l'instant en js à rendre dyna -->
-                </div>
-
-                <div class="modal-actions">
-                    <button type="button" onclick="closeSelectionModal()" class="btn-cancel">Annuler</button>
-                    <button type="button" onclick="confirmSelection()" class="btn-save">Valider</button>
                 </div>
             </div>
         </div>
 
-        <!-- Bouton + Ajouter une matière -->
-        <div id="matiereModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title" id="matiereModalTitle">Ajouter une matière</h2>
+        <div class="flex items-start gap-3">
+            <button onclick="resetMaquette()" class="btn-cancel bg-red-900/40 text-red-400 border border-red-500/30 hover:bg-red-900/60">Réinitialiser tout</button>
+            <button onclick="saveMaquette()" class="btn-add transform-gpu">Sauvegarder</button>
+            <button onclick="openMaquetteMatierePopUp()" class="btn-add transform-gpu">+ Configurer une matière</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container scrollbar">
+        <table class="planning-table">
+            <thead>
+            <tr>
+                <th style="width: 150px;">Matière</th>
+                <th style="width: 250px;">Lignes d'enseignement</th>
+                <th class="week-header" th:each="sem : ${#numbers.sequence(1, nbsem)}" th:text="'S' + ${sem}"></th>
+                <th style="width: 100px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="planningTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="selection-sidebar scrollbar">
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Modules</span>
+                <button onclick="openSelectionModal('modules')" class="btn-add-small transform-gpu">+ Importer</button>
+            </div>
+            <div class="selected-items" id="selectedModules"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Composantes</span>
+            </div>
+            <div class="selected-items" id="selectedComposantes"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Enseignants</span>
+                <button onclick="openSelectionModal('professeurs')" class="btn-add-small transform-gpu">+ Importer</button>
+            </div>
+            <div class="selected-items" id="selectedEnseignants"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Groupes de la Promo</span>
+            </div>
+            <div class="selected-items" id="selectedGroupes"></div>
+        </div>
+    </div>
+</div>
+
+<div id="selectionModal" class="modal transform-gpu">
+    <div class="modal-content selection-modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="selectionModalTitle">Sélectionner</h2>
+            <button class="modal-close" type="button" onclick="closeSelectionModal()">&times;</button>
+        </div>
+
+        <div class="checkbox-list scrollbar" id="checkboxList"></div>
+
+        <div class="modal-actions">
+            <button type="button" onclick="closeSelectionModal()" class="btn-cancel">Annuler</button>
+            <button type="button" onclick="confirmSelection()" class="btn-save">Valider</button>
+        </div>
+    </div>
+</div>
+
+<div id="matiereModal" class="modal transform-gpu">
+    <div class="modal-content" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Configurer une matière</h2>
+            <button class="modal-close" type="button" onclick="closeMaquetteMatierePopUp()">&times;</button>
+        </div>
+
+        <form id="matiereForm">
+            <div class="form-section">
+                <div class="form-section-title">1. Sélection de la composante</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <select class="form-select" id="matiereComposante" required></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title flex justify-between items-center">
+                    <span>2. Lignes d'enseignement (Professeur / Cible / Volumes)</span>
+                    <button type="button" onclick="addAssignationRow()" class="btn-add-small">+ Ajouter une ligne</button>
                 </div>
 
-                <form id="matiereForm">
-                    <!-- Section 1: Sélection Composante -->
-                    <div class="form-section">
-                        <div class="form-section-title">Informations générales</div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Composante *</label>
-                                <select class="form-select" id="matiereComposante" required>
-                                    <option value="">Sélectionner une composante</option>
-
-                                    <option th:each="composante : ${composantes}"
-                                            th:value="${composante.idComposante}"
-                                            th:text="${composante.nomComposante}">
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 2: Enseignants par type -->
-                    <div class="form-section">
-                        <div class="form-section-title">Enseignants</div>
-
-                        <!-- CM -->
-                        <div class="enseignant-type-block">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="type-badge type-cm" style="font-size: 14px; padding: 6px 12px;">CM - Cours Magistral</span>
-                                <button type="button" onclick="addEnseignantRow('cm')" class="btn-add-small">+ Ajouter un enseignant</button>
-                            </div>
-                            <div id="cmEnseignants" class="enseignant-rows">
-
-                            </div>
-                        </div>
-
-                        <!-- TD -->
-                        <div class="enseignant-type-block">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="type-badge type-td" style="font-size: 14px; padding: 6px 12px;">TD - Travaux Dirigés</span>
-                                <button type="button" onclick="addEnseignantRow('td')" class="btn-add-small">+ Ajouter un enseignant</button>
-                            </div>
-                            <div id="tdEnseignants" class="enseignant-rows">
-
-                            </div>
-                        </div>
-
-                        <!-- TP -->
-                        <div class="enseignant-type-block">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="type-badge type-tp" style="font-size: 14px; padding: 6px 12px;">TP - Travaux Pratiques</span>
-                                <button type="button" onclick="addEnseignantRow('tp')" class="btn-add-small">+ Ajouter un enseignant</button>
-                            </div>
-                            <div id="tpEnseignants" class="enseignant-rows">
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section 3: Volumes horaires par semaine -->
-                    <div class="form-section">
-                        <div class="form-section-title">Volumes horaires par semaine</div>
-                        <div class="weeks-grid" id="weeksGrid">
-                            <!-- Généré pour chaque semaine // pareil que le menu -->
-                        </div>
-                    </div>
-
-                    <div class="modal-actions">
-                        <button type="button" onclick="closeMaquetteMatierePopUp()" class="btn-cancel">Annuler</button>
-                        <button type="submit" class="btn-save">Enregistrer</button>
-                    </div>
-                </form>
+                <div id="assignationsContainer" class="flex flex-col gap-4 mt-4">
+                </div>
             </div>
-        </div>
-    </body>
+
+            <div class="modal-actions">
+                <button type="button" onclick="closeMaquetteMatierePopUp()" class="btn-cancel">Annuler</button>
+                <button type="submit" class="btn-save">Valider et Ajouter au tableau</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
 </html>

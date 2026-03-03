@@ -14,6 +14,10 @@ public class GroupeTDDto {
     public GroupeTDDto() {
     }
 
+    public GroupeTDDto(Integer idGroupe) {
+        this.idGroupe = idGroupe;
+    }
+
     public GroupeTDDto(Integer idGroupe,
                        String nomGroupe,
                        Integer nbEtuGroupe,

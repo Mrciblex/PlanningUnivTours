@@ -19,6 +19,10 @@ public class RepartitionSemaineCMDto {
 
     }
 
+    public RepartitionSemaineCMDto(Integer idRepartitionSemaine) {
+        this.idRepartitionSemaine = idRepartitionSemaine;
+    }
+
     public RepartitionSemaineCMDto(Integer idRepartitionSemaine,
                                    Integer numSemaine,
                                    Integer qteTypeCours,

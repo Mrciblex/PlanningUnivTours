@@ -18,6 +18,10 @@ public class RepartitionSemaineTPDto {
 
     }
 
+    public RepartitionSemaineTPDto(Integer idRepartitionSemaine) {
+        this.idRepartitionSemaine = idRepartitionSemaine;
+    }
+
     public RepartitionSemaineTPDto(Integer idRepartitionSemaine,
                                    Integer numSemaine,
                                    Integer qteTypeCours,

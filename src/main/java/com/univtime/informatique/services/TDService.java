@@ -92,19 +92,19 @@ public class TDService {
 
     public TDDto createTD(TDDto tdDto) {
         // Vérifie la clé étrangère de professeur, groupe, composante et répartition semaine
-        if (tdDto.getProfesseurDto() != null ||tdDto.getProfesseurDto().getIdProf() == null) {
+        if (tdDto.getProfesseurDto() == null || tdDto.getProfesseurDto().getIdProf() == null) {
             throw new ResourceNotFoundException("L'id du professeur est obligatoire");
         }
 
-        if (tdDto.getGroupeDto() != null || tdDto.getGroupeDto().getIdGroupe() == null) {
+        if (tdDto.getGroupeDto() == null || tdDto.getGroupeDto().getIdGroupe() == null) {
             throw new ResourceNotFoundException("L'id du groupe est obligatoire");
         }
 
-        if (tdDto.getComposanteDto() != null || tdDto.getComposanteDto().getIdComposante() == null) {
+        if (tdDto.getComposanteDto() == null || tdDto.getComposanteDto().getIdComposante() == null) {
             throw new ResourceNotFoundException("L'id de la composante est obligatoire");
         }
 
-        if (tdDto.getRepartitionSemaineDto() != null || tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
+        if (tdDto.getRepartitionSemaineDto() == null || tdDto.getRepartitionSemaineDto().getIdRepartitionSemaine() == null) {
             throw new ResourceNotFoundException("L'id de la repartition semaine est obligatoire");
         }
 

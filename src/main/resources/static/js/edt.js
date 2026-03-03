@@ -218,11 +218,11 @@ window.addCourseAt = function(cell) {
 
 // --- GÉNÉRATEUR ---
 window.openSettings = function() {
-    document.getElementById('generatorPopUp').style.display = 'flex';
+    document.getElementById('generatorPopUp').classList.add('active');
 };
 
 window.closeGeneratorModal = function() {
-    document.getElementById('generatorPopUp').style.display = 'none';
+    document.getElementById('generatorPopUp').classList.remove('active');
 };
 
 let responsePopUp = document.querySelector(".generator-response");
@@ -276,7 +276,7 @@ function runGenerator(target) {
             btn.style.cursor = "pointer";
             btn.innerText = "Terminer";
             btn.onclick = endGeneration;
-            cancelBtns.forEach(cancelBtn => cancelBtn.style.display = "none");
+            cancelBtns.forEach(cancelBtn => cancelBtn.classList.remove("active"));
             document.querySelector(".generator-form").style.display = "none";
 
             // Gestion des cours non placés
@@ -288,18 +288,20 @@ function runGenerator(target) {
                     totalUnimplemented += data.unImplementedCours[week].length;
                 }
                 const responsePopUpText = document.createElement("p");
-                msg += `<br><br>TOTAL : ${totalUnimplemented} cours restant(s) | Voir <button style="cursor: pointer;" onclick="getRecapitulatif()"><b><u>récapitulatif</u></b></button> pour plus de détails`;
+                msg += `<br><br>TOTAL : ${totalUnimplemented} cours restant(s) | Voir <a style="text-align: center" href="${baseUrl}gestionnaire-edt/maquette/${promoData.idPromo}/${numSemestre}"><b><u>récapitulatif</u></b></a> pour plus de détails`;
                 responsePopUpText.innerHTML = `${msg}`;
+                responsePopUp.style.display = "flex";
                 responsePopUp.appendChild(responsePopUpText);
                 //alert(msg);
             } else {
                 //alert(`Succès ! Tous les cours ont été placés (${data.executionTime}).`);
                 const responsePopUpText = document.createElement("p");
                 responsePopUpText.textContent = `Tous les cours ont été placés (${data.executionTime}).`
+                responsePopUp.style.display = "flex";
                 responsePopUp.appendChild(responsePopUpText);
             }
 
-            responsePopUp.style.display = "grid";
+            responsePopUp.classList.add("active");
 
         })
         .catch(error => {
@@ -314,13 +316,13 @@ function endGeneration(){
     location.reload();
 }
 
-function getRecapitulatif(){
-    location.reload();
-}
-
 // --- POP-UP ET EXPORTS ---
-window.exportEDT = function() { document.getElementById('exportPopUp').style.display = 'flex'; };
-window.closeExportModal = function() { document.getElementById('exportPopUp').style.display = 'none'; };
+window.exportEDT = function() {
+    document.getElementById('exportPopUp').classList.add('active');
+};
+window.closeExportModal = function() {
+    document.getElementById('exportPopUp').classList.remove('active');
+};
 
 function getToutesLesSemaines() {
     let current = getWeekStart(debutSemestre);

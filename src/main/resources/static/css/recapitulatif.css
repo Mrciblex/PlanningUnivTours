@@ -11,7 +11,7 @@
 /* Header Section */
 .recap-header {
     background: rgba(55, 71, 79, 0.6);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 16px;
     padding: 32px;
@@ -60,7 +60,7 @@
 /* Volume Horaire par matière - Section */
 .volume-section {
     background: rgba(55, 71, 79, 0.6);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 16px;
     padding: 24px;
@@ -220,7 +220,7 @@
 /* Professors Table */
 .profs-table-container {
     background: rgba(55, 71, 79, 0.6);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 16px;
     overflow: hidden;

@@ -12,7 +12,7 @@
 .planning-header {
     grid-column: 1 / -1;
     background: rgba(55, 71, 79, 0.6);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 16px;
     padding: 24px;
@@ -75,7 +75,7 @@
 
 .selection-block {
     background: rgba(55, 71, 79, 0.4);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 12px;
     padding: 16px;
@@ -104,7 +104,6 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .btn-add-small:hover {
@@ -121,7 +120,7 @@
 
 .selected-item {
     display: flex;
-    justify-content: space-between;
+    gap: 0.5em;
     align-items: center;
     padding: 8px 10px;
     background: rgba(84, 110, 122, 0.2);
@@ -129,6 +128,15 @@
     border-radius: 8px;
     font-size: 13px;
     color: #eceff1;
+}
+
+.sg-selected-item{
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.selected-item-title{
+    font-size: 15px;
 }
 
 .btn-remove {
@@ -179,7 +187,6 @@
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .checkbox-item:hover {
@@ -320,24 +327,22 @@
 .dashboard-container {
     flex: 1;
     overflow-y: auto;
+    max-height: calc(100vh - 180px);
     background: rgba(55, 71, 79, 0.4);
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 16px;
-    padding: 20px;
 }
 
 /* Big Table */
 .planning-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: rgba(45, 62, 80, 0.5);
     border-radius: 12px;
-    overflow: hidden;
 }
 
 .planning-table thead {
-    background: rgba(0, 169, 155, 0.2);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -351,27 +356,25 @@
     color: #00A99B;
     text-transform: uppercase;
     border-bottom: 2px solid rgba(0, 169, 155, 0.3);
+    background: #2b3b46;
 }
 
-.planning-table th.week-header {
-    text-align: center;
-    background: rgba(84, 110, 122, 0.2);
-    color: #78909c;
+.planning-table th:first-child {
+    border-top-left-radius: 12px;
+}
+.planning-table th:last-child {
+    border-top-right-radius: 12px;
 }
 
-.planning-table tbody tr {
+.planning-table tbody td {
     border-bottom: 1px solid rgba(120, 144, 156, 0.2);
+}
+.planning-table tbody tr {
     transition: background 0.2s;
 }
 
-.planning-table tbody tr:hover {
-    background: rgba(46, 125, 50, 0.05);
-}
+#planningTableBody{
 
-.planning-table td {
-    padding: 14px 16px;
-    color: #eceff1;
-    font-size: 14px;
 }
 
 .matiere-cell {
@@ -455,7 +458,7 @@
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
+    /*backdrop-filter: blur(4px);*/
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -465,7 +468,7 @@
 
 .modal-content {
     background: rgba(45, 62, 80, 0.95);
-    backdrop-filter: blur(20px);
+    /*backdrop-filter: blur(20px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 20px;
     padding: 32px;
@@ -641,4 +644,60 @@
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
+}
+
+.assignation-card {
+    background: rgba(45, 62, 80, 0.6);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.assignation-header {
+    display: grid;
+    grid-template-columns: 120px 2fr 2fr 40px;
+    gap: 12px;
+    align-items: center;
+}
+
+.weeks-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 12px 0 4px 0;
+    border-top: 1px solid rgba(120, 144, 156, 0.2);
+}
+
+.week-input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 45px;
+    flex-shrink: 0;
+}
+
+.week-input-group label {
+    font-size: 11px;
+    color: #b0bec5;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.week-input-group input {
+    width: 100%;
+    padding: 6px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 6px;
+    color: #eceff1;
+    text-align: center;
+    font-size: 13px;
+}
+
+.week-input-group input:focus {
+    outline: none;
+    border-color: #00A99B;
 }

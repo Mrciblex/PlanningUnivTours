@@ -24,6 +24,10 @@ public class PromoCMDto {
 
     }
 
+    public PromoCMDto(Integer idPromo) {
+        this.idPromo = idPromo;
+    }
+
     public PromoCMDto(Integer idPromo,
                       String nomPromo,
                       Integer anneePromo,
