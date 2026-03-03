@@ -68,8 +68,14 @@
                             </td>
 
                             <td>
-                                <button class="btn-semester mr-2">S1</button>
-                                <button class="btn-semester mr-2">S2</button>
+                                <button class="btn-semester mr-2">
+                                    <!-- th:href="@{/gestionnaire-edt/edt/{idPromo}/1(idPromo=${promo.idPromo})}" -->
+                                    S1
+                                </button>
+                                <button class="btn-semester mr-2">
+                                    <!-- th:href="@{/gestionnaire-edt/edt/{idPromo}/2(idPromo=${promo.idPromo})}" -->
+                                    S2
+                                </button>
                             </td>
 
                             <td>
@@ -190,7 +196,7 @@
 
                     <div class="form-group">
                         <label>Nombre étudiant *</label>
-                        <input type="text" id="nbEtuU" name="nbetu" required placeholder="Ex: 61">
+                        <input type="text" id="nbetuU" name="nbetu" required placeholder="Ex: 61">
                     </div>
 
                     <div class="form-group">

@@ -26,7 +26,6 @@ public class GestionPromosController {
         }
         model.addAttribute("promos", promos);
 
-        // ⚠️ Objet vide pour le formulaire Ajouter
         model.addAttribute("newPromo", new PromoDto());
 
         return "gestionnaire_promos";
@@ -52,7 +51,4 @@ public class GestionPromosController {
         promoService.deletePromoById(id);;
         return "redirect:/gestion-promos";
     }
-
-
 }
-

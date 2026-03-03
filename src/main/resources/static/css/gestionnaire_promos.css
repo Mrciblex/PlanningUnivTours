@@ -103,7 +103,7 @@
     color: #ff6b6b;
 }
 
-.modal {
+.popUp {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -114,11 +114,11 @@
     justify-content: center;
 }
 
-.modal.active {
+.popUp.active {
     display: flex;
 }
 
-.modal-content {
+.popUp-content {
     background: rgba(45, 62, 80, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(120, 144, 156, 0.3);
