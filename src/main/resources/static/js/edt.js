@@ -29,6 +29,20 @@ function parseDate(dateInput, type = TypeDate.LOCALDATETIME) {
         : new Date(dateInput.year, dateInput.monthValue - 1, dateInput.dayOfMonth);
 }
 
+// Extracteur pour le front et les exports
+function extractCoursInfo(c) {
+    const nom = c.composanteDto ? c.composanteDto.nomComposante : 'Cours';
+    const type = c.typeCoursEnum || '';
+    const prof = c.professeurDto ? `${c.professeurDto.nomProf || ''} ${c.professeurDto.prenomProf || ''}`.trim() : '';
+    let salle = c.salleDto && c.salleDto.idSalle ? `Salle de ${c.salleDto.nbPlace} places `: '';
+    salle += c.salleDto && c.salleDto.salleMachine ? `${c.salleDto.salleMachine ? '| Machine ' : ''}`: '';
+    salle += c.salleDto && c.salleDto.nbPC ? `| ${c.salleDto.nbPC} PC`: '';
+    const groupes = (c.participeADto && Array.isArray(c.participeADto))
+        ? c.participeADto.map(g => g.nomSousGroupe).join(', ')
+        : '';
+    return { nom, type, prof, salle, groupes };
+}
+
 function updateWeekInfo() {
     const weekStart = new Date(currentWeekStart);
     const weekEnd = new Date(currentWeekStart);
@@ -61,7 +75,7 @@ function previousWeek() {
     if (targetDate.getTime() < getWeekStart(debutSemestre).getTime()) return;
     currentWeekStart = targetDate;
     updateWeekInfo();
-    loadCourses(); // Recharge instantanément sans rafraichir !
+    loadCourses(); // Recharge instantanément sans rafraichir
 }
 
 function nextWeek() {
@@ -70,7 +84,7 @@ function nextWeek() {
     if (targetDate.getTime() > getWeekStart(finSemestre).getTime()) return;
     currentWeekStart = targetDate;
     updateWeekInfo();
-    loadCourses(); // Recharge instantanément sans rafraichir !
+    loadCourses(); // Recharge instantanément sans rafraichir
 }
 
 function loadCourses() {
@@ -83,7 +97,7 @@ function loadCourses() {
     const weekStart = new Date(currentWeekStart);
     weekStart.setHours(0, 0, 0, 0);
 
-    // AFFICHER DATA A COTE DES TH JOUR
+    // AFFICHER DATE A COTE DES TH JOUR
     // RENDRE EXCEL ET CSV BIEN
     // PDF DEJA BIEN
     document.querySelector(".th-day-1").innerHTML = "Lundi " + weekStart.getDate();
@@ -125,7 +139,7 @@ function loadCourses() {
         const slotHour = Math.floor(slotMins / 60);
         const slotMin = slotMins % 60;
 
-        // Formatage pour correspondre à l'attribut data-time (ex: "8:00" ou "8:15")
+        // Formatage pour correspondre à l'attribut data-time ("8:00" ou "8:15")
         const timeString = `${slotHour}:${slotMin === 0 ? '00' : (slotMin < 10 ? '0' + slotMin : slotMin)}`;
 
         const targetCell = document.querySelector(`td[data-day="${dayOfWeek}"][data-time="${timeString}"]`);
@@ -136,9 +150,8 @@ function loadCourses() {
             const heightPx = (durationMins * 15) / 15 - 1;
             const marginTopPx = (offsetMins * 15) / 15;
 
-            // Préparation des classes CSS
-            const typeClass = c.typeCoursEnum ? `type-${c.typeCoursEnum.toLowerCase()}` : '';
-            const nomComposante = c.composanteDto ? c.composanteDto.nomComposante : 'Cours';
+            const info = extractCoursInfo(c);
+            const typeClass = info.type ? `type-${info.type.toLowerCase()}` : '';
 
             // Création du conteneur de cours (gère les collisions par défaut en flex row)
             let container = targetCell.querySelector('.courses-container');
@@ -171,12 +184,16 @@ function loadCourses() {
 
             const titleDiv = document.createElement('div');
             titleDiv.className = 'course-title';
-            titleDiv.textContent = `${nomComposante} - ${c.typeCoursEnum || ''}`;
+            titleDiv.textContent = `${info.nom} - ${info.type}`;
 
             const detailsDiv = document.createElement('div');
             detailsDiv.className = 'course-details';
             const formatTime = (d) => d.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-            detailsDiv.innerHTML = `<span>${formatTime(debut)} - ${formatTime(fin)}</span>`;
+            let detailsHtml = `<span>${formatTime(debut)} - ${formatTime(fin)}</span>`;
+            detailsHtml += `<br><span style="font-size: 11px; opacity: 0.9; font-weight:bold;">${info.prof}</span>`;
+            detailsHtml += `<br><span style="font-size: 11px; opacity: 0.85;">${info.groupes}</span>`;
+            if (info.salle) detailsHtml += `<br><span style="font-size: 11px;">${info.salle}</span>`;
+            detailsDiv.innerHTML = detailsHtml;
 
             courseDiv.appendChild(titleDiv);
             courseDiv.appendChild(detailsDiv);
@@ -199,9 +216,107 @@ window.addCourseAt = function(cell) {
     alert('Ajouter un cours le jour ' + day + ' à ' + time);
 };
 
+// --- GÉNÉRATEUR ---
 window.openSettings = function() {
-    alert('Paramètres - Pop Up à implémenter');
+    document.getElementById('generatorPopUp').style.display = 'flex';
 };
+
+window.closeGeneratorModal = function() {
+    document.getElementById('generatorPopUp').style.display = 'none';
+};
+
+let responsePopUp = document.querySelector(".generator-response");
+
+function runGenerator(target) {
+    if(!confirm("Attention : Cela va supprimer tous les cours actuels de ce semestre pour cette promo. Continuer ?")) return;
+
+    const requestData = {
+        weights: {
+            repetition: parseFloat(document.getElementById('w_repetition').value),
+            tot: parseFloat(document.getElementById('w_tot').value),
+            matin: parseFloat(document.getElementById('w_matin').value),
+            tard: parseFloat(document.getElementById('w_tard').value),
+            trous: parseFloat(document.getElementById('w_trous').value),
+            regu: parseFloat(document.getElementById('w_regu').value)
+        },
+        // On envoie la liste des IDs pour que le serveur sache quoi supprimer précisément
+        existingCourseIds: coursData.map(c => c.idCours).filter(id => id != null)
+    };
+
+    // On affiche un loader si tu en as un, sinon le bouton change
+    const btn = target;
+    const originalText = btn.innerText;
+    btn.innerText = "Génération en cours...";
+    btn.disabled = true;
+    btn.style.cursor = "not-allowed";
+    let cancelBtns = document.querySelectorAll(".generator-cancel-btn");
+    const weightInputs = document.querySelectorAll(".generator-weight-input");
+
+    weightInputs.forEach(input => {
+        input.disabled = true;
+        input.style.cursor = "not-allowed";
+        input.style.opacity = "0.4";
+    });
+
+    cancelBtns.forEach(cancelBtn => {
+        cancelBtn.disabled = true;
+        cancelBtn.style.cursor = "not-allowed";
+        cancelBtn.style.opacity = "0.4";
+    });
+
+    fetch(`${baseUrl}gestionnaire-edt/edt/generate/${promoData.idPromo}/${numSemestre}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    })
+        .then(response => response.json())
+        .then(data => {
+            // Success
+            btn.disabled = false;
+            btn.style.cursor = "pointer";
+            btn.innerText = "Terminer";
+            btn.onclick = endGeneration;
+            cancelBtns.forEach(cancelBtn => cancelBtn.style.display = "none");
+            document.querySelector(".generator-form").style.display = "none";
+
+            // Gestion des cours non placés
+            let totalUnimplemented = 0;
+            if (Object.keys(data.unImplementedCours).length > 0) {
+                let msg = `Génération terminée en ${data.executionTime}.<br> Certains cours n'ont pas pu être placés :<br>`;
+                for (const week in data.unImplementedCours) {
+                    msg += `<br>- Semaine ${week}: ${data.unImplementedCours[week].length} cours restant(s)`;
+                    totalUnimplemented += data.unImplementedCours[week].length;
+                }
+                const responsePopUpText = document.createElement("p");
+                msg += `<br><br>TOTAL : ${totalUnimplemented} cours restant(s) | Voir <button style="cursor: pointer;" onclick="getRecapitulatif()"><b><u>récapitulatif</u></b></button> pour plus de détails`;
+                responsePopUpText.innerHTML = `${msg}`;
+                responsePopUp.appendChild(responsePopUpText);
+                //alert(msg);
+            } else {
+                //alert(`Succès ! Tous les cours ont été placés (${data.executionTime}).`);
+                const responsePopUpText = document.createElement("p");
+                responsePopUpText.textContent = `Tous les cours ont été placés (${data.executionTime}).`
+                responsePopUp.appendChild(responsePopUpText);
+            }
+
+            responsePopUp.style.display = "grid";
+
+        })
+        .catch(error => {
+            console.log(error);
+            alert("Erreur lors de la génération.");
+            btn.innerText = originalText;
+            btn.disabled = false;
+        });
+}
+
+function endGeneration(){
+    location.reload();
+}
+
+function getRecapitulatif(){
+    location.reload();
+}
 
 // --- POP-UP ET EXPORTS ---
 window.exportEDT = function() { document.getElementById('exportPopUp').style.display = 'flex'; };
@@ -310,7 +425,6 @@ function getWeekMatrixData(weekStart) {
                         if (canExpand) {
                             colspan++;
                             for (let r = s; r < s + cell.rowspan; r++) {
-                                // On passe "isStartRow" pour l'astuce de répétition dans le CSV
                                 if (r < TOTAL_SLOTS) cellMap[r][dayIdx][nextT] = { type: 'covered_col', isStartRow: (r === s), course: cell.course };
                             }
                         } else {
@@ -330,22 +444,22 @@ function getWeekMatrixData(weekStart) {
 function generateHTMLTable(weekData) {
     let html = `<table border="1" style="border-collapse: collapse; table-layout: fixed; width: 100%; font-family: Arial, sans-serif; font-size: 11px; margin-bottom: 30px;">`;
 
-    // ASTUCE COLGROUP : Assure que chaque journée fait exactement la même taille globale (19%), peu importe ses pistes
-    html += `<colgroup><col style="width: 15%;">`;
+    // ASTUCE COLGROUP
+    html += `<colgroup><col style="width: 14%;">`;
     weekData.days.forEach(day => {
-        const trackWidth = 85 / day.tracks.length;
+        const trackWidth = 86 / day.tracks.length; // Répartition de l'espace restant
         for(let i=0; i<day.tracks.length; i++) {
             html += `<col style="width: ${trackWidth}%;">`;
         }
     });
     html += `</colgroup>`;
 
-    html += `<thead><tr><th style="background-color: #2F3E47; color: white; text-align: center; vertical-align: middle;">Heure</th>`;
+    html += `<thead><tr><th style="background-color: #2F3E47; color: white; text-align: center; vertical-align: middle; height: 30px;">Heure</th>`;
 
     weekData.days.forEach(day => {
         const colspan = day.tracks.length;
         const dateStr = day.date.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' });
-        html += `<th colspan="${colspan}" style="background-color: #00A99B; color: white; padding: 8px; border: 1px solid #1F635E; text-align: center; vertical-align: middle;">${dateStr}</th>`;
+        html += `<th colspan="${colspan}" style="background-color: #00A99B; color: white; border: 1px solid #1F635E; text-align: center; vertical-align: middle;">${dateStr}</th>`;
     });
     html += `</tr></thead><tbody>`;
 
@@ -356,7 +470,8 @@ function generateHTMLTable(weekData) {
         const min = currentMins % 60;
         const timeStr = `${hour}:${min === 0 ? '00' : (min < 10 ? '0' + min : min)}`;
 
-        html += `<th style="background-color: #2c3e50; color: white; border: 1px solid #1a252f; height: 20px; text-align: center; vertical-align: middle;">${timeStr}</th>`;
+        // Hauteur de ligne fixée pour garantir le quadrillage
+        html += `<th style="background-color: #2c3e50; color: white; border: 1px solid #1a252f; height: 25px; text-align: center; vertical-align: middle;">${timeStr}</th>`;
 
         const rowBgColor = s % 2 === 0 ? '#f9fafb' : '#ffffff';
 
@@ -369,24 +484,30 @@ function generateHTMLTable(weekData) {
                     html += `<td style="border: 1px solid #e5e7eb; background-color: ${rowBgColor};"></td>`;
                 } else if (cell.type === 'start') {
                     const c = cell.course;
-                    const nom = c.composanteDto ? c.composanteDto.nomComposante : 'Cours';
-                    const type = c.typeCoursEnum || '';
+                    const info = extractCoursInfo(c);
 
                     let bgColor = '#5b7fc7';
-                    if(type.toLowerCase() === 'cm') bgColor = '#007bff';
-                    else if(type.toLowerCase() === 'td') bgColor = '#28a745';
-                    else if(type.toLowerCase() === 'tp') bgColor = '#fd7e14';
+                    if(info.type.toLowerCase() === 'cm') bgColor = '#007bff';
+                    else if(info.type.toLowerCase() === 'td') bgColor = '#28a745';
+                    else if(info.type.toLowerCase() === 'tp') bgColor = '#fd7e14';
 
                     const formatT = (d) => {
                         const x = parseDate(d);
                         return `${x.getHours()}:${x.getMinutes()<10?'0':''}${x.getMinutes()}`;
                     };
 
-                    // Ajout du wrapping textuel forcé (mso-style-text-wrap) et de l'alignement parfait pour Excel
+                    /*
+                    html += `<td rowspan="${cell.rowspan}" colspan="${cell.colspan}" style="background-color: ${bgColor}; color: white; border: 1px solid #ffffff; border-left: 4px solid #1a252f; vertical-align: middle; text-align: center; padding: 4px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); white-space: normal !important; word-wrap: break-word; mso-style-text-wrap: yes;">
+                        ${contentHtml}
+                    </td>`;
+                     */
                     html += `<td rowspan="${cell.rowspan}" colspan="${cell.colspan}" style="background-color: ${bgColor}; color: white; border: 1px solid #ffffff; border-left: 4px solid #1a252f; vertical-align: middle; text-align: center; padding: 4px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); white-space: normal !important; word-wrap: break-word; mso-style-text-wrap: yes;">
                         <div style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow-wrap: break-word; line-height: 1.2;">
-                            <strong style="font-size: 11px; margin-bottom: 2px;">${nom} - ${type}</strong>
-                            <span style="font-size: 9px; opacity: 0.9;">${formatT(c.heureDebutCours)} - ${formatT(c.heureFinCours)}</span>
+                            <strong style="font-size: 13px; margin-bottom: 2px; display: block;">${info.nom} - ${info.type}</strong>
+                            <span style="font-size:11px; opacity: 0.9; display: block;">${formatT(c.heureDebutCours)} - ${formatT(c.heureFinCours)}</span>
+                            <span style="font-size: 11px; opacity: 0.9; font-weight:bold; display: block;">${info.prof}</span>
+                            <span style="font-size: 11px; opacity: 0.9; display: block;">${info.groupes}</span>
+                            <span style="font-size: 11px; opacity: 0.9; display: block;">${info.salle}</span>
                         </div>
                     </td>`;
                 }
@@ -402,23 +523,26 @@ window.exportToExcel = function() {
     const weeks = getToutesLesSemaines();
     let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
     <head>
-        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">
         <style> 
             /* Forces Excel to wrap text in merged cells */
-            td { mso-number-format: "\@"; mso-style-text-wrap: yes; vertical-align: middle; text-align: center; } 
+            td { mso-style-text-wrap: yes; vertical-align: middle; text-align: center; } 
+            br { mso-data-placement: same-cell; }
         </style>
     </head><body style="font-family: Arial, sans-serif;">
-    <h1 style="text-align: center;">Emploi du temps - ${promoData.nomPromo} S${numSemestre}</h1>`;
+    <h1 style="text-align: center;">Emploi du temps - ${promoData.nomPromo} S${numSemestre} ${promoData.anneePromo}</h1>`;
 
     weeks.forEach(weekStart => {
         const weekData = getWeekMatrixData(weekStart);
-        html += `<h2>${weekData.title}</h2>`;
+        html += `<h2 style="text-align: center; color: #333;">${weekData.title}</h2>`;
         html += generateHTMLTable(weekData);
+        html += `<br><br>`; // Espace entre les semaines
     });
 
     html += '</body></html>';
 
-    const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+    // Encodage utf-8
+    const blob = new Blob(['\uFEFF' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `EDT_Semestre_${numSemestre}.xls`;
@@ -429,7 +553,7 @@ window.exportToExcel = function() {
 window.exportToPDF = function() {
     closeExportModal();
     const weeks = getToutesLesSemaines();
-    const printWindow = window.open('', '', 'height=800,width=1200');
+    const printWindow = window.open('', '', 'height=1080,width=1920');
 
     printWindow.document.write('<html><head><title>Emploi du temps Semestre</title>');
     printWindow.document.write('<style>');
@@ -439,7 +563,7 @@ window.exportToPDF = function() {
     printWindow.document.write('h2:first-of-type { page-break-before: auto; }');
     printWindow.document.write('@media print { @page { margin: 10mm; size: landscape; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }');
     printWindow.document.write('</style></head><body>');
-    printWindow.document.write(`<h1>Emploi du temps - Semestre ${numSemestre}</h1>`);
+    printWindow.document.write(`<h1>Emploi du temps - ${promoData.nomPromo} S${numSemestre} ${promoData.anneePromo}</h1>`);
 
     weeks.forEach(weekStart => {
         const weekData = getWeekMatrixData(weekStart);
@@ -457,49 +581,48 @@ window.exportToPDF = function() {
 };
 
 window.exportToCSV = function() {
-    const weeks = getToutesLesSemaines();
     let csvContent = '\uFEFF'; // Pour l'encodage UTF-8 sous Excel
-    csvContent += `Emploi du temps - ${promoData.nomPromo} S${numSemestre}\n\n`;
 
-    weeks.forEach(weekStart => {
-        const weekData = getWeekMatrixData(weekStart);
-        csvContent += `"${weekData.title}"\n`;
+    // Entêtes BDD
+    const headers = ['ID Cours', 'Date', 'Heure Début', 'Heure Fin', 'Type', 'Composante', 'Professeur', 'Salle', 'Groupes'];
+    csvContent += headers.map(h => `"${h}"`).join(';') + '\n';
 
-        const headers = ['Heure'];
-        weekData.days.forEach(day => {
-            const dateStr = day.date.toLocaleDateString('fr-FR', { weekday: 'long', day: '2-digit', month: '2-digit' });
-            for(let i = 0; i < day.tracks.length; i++) headers.push(dateStr + (day.tracks.length > 1 ? ` (Piste ${i+1})` : ''));
+    if (typeof coursData !== 'undefined' && Array.isArray(coursData)) {
+        const sortedCourses = [...coursData].sort((a,b) => parseDate(a.heureDebutCours).getTime() - parseDate(b.heureDebutCours).getTime());
+
+        sortedCourses.forEach(c => {
+            const debut = parseDate(c.heureDebutCours);
+            const fin = parseDate(c.heureFinCours);
+
+            const dateStr = debut.toLocaleDateString('fr-FR');
+            const hdStr = debut.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            const hfStr = fin.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+
+            const info = extractCoursInfo(c);
+
+            // Formatage
+            const escapeCSV = (str) => `"${String(str).replace(/"/g, '""')}"`;
+
+            const row = [
+                c.idCours || '',
+                dateStr,
+                hdStr,
+                hfStr,
+                info.type,
+                info.nom,
+                info.prof,
+                info.salle,
+                info.groupes
+            ].map(escapeCSV);
+
+            csvContent += row.join(';') + '\n';
         });
-        csvContent += headers.map(h => `"${h}"`).join(';') + '\n';
-
-        for (let s = 0; s < weekData.TOTAL_SLOTS; s++) {
-            const currentMins = weekData.START_MINS + s * 15;
-            const hour = Math.floor(currentMins / 60);
-            const min = currentMins % 60;
-            const rowText = [`${hour}:${min === 0 ? '00' : (min < 10 ? '0' + min : min)}`];
-
-            for (let dayIdx = 0; dayIdx < 5; dayIdx++) {
-                for (let trackIdx = 0; trackIdx < weekData.days[dayIdx].tracks.length; trackIdx++) {
-                    const cell = weekData.cellMap[s][dayIdx][trackIdx];
-                    if (cell && cell.type === 'start') {
-                        const c = cell.course;
-                        const nom = c.composanteDto ? c.composanteDto.nomComposante + ' - ' + c.typeCoursEnum + ' - ' + c.heureDebutCours + ' - ' + c.heureFinCours : 'Cours';
-                        rowText.push(`${nom} - ${c.typeCoursEnum || ''}`);
-                    } else {
-                        // Laisse vide pour les covered_col et covered (CSV ne fusionne pas)
-                        rowText.push('');
-                    }
-                }
-            }
-            csvContent += rowText.map(t => `"${t}"`).join(';') + '\n';
-        }
-        csvContent += '\n\n';
-    });
+    }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `EDT_Semestre_${numSemestre}.csv`;
+    link.download = `Data_Cours_Semestre_${numSemestre}.csv`;
     link.click();
     closeExportModal();
 };

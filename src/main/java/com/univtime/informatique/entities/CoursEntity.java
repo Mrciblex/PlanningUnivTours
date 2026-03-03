@@ -2,6 +2,9 @@ package com.univtime.informatique.entities;
 
 import com.univtime.informatique.constants.TypeCours;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.type.PostgreSQLEnumJdbcType;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +24,8 @@ public class CoursEntity {
     private LocalDateTime heureFinCours;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "typeCours", nullable = false, length = 150)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "typeCours", columnDefinition = "type_cours", nullable = false, length = 150)
     private TypeCours typeCours;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +37,7 @@ public class CoursEntity {
     private ProfesseurEntity professeur;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idSalle", nullable = false)
+    @JoinColumn(name = "idSalle")
     private SalleEntity salle;
 
     @OneToMany(mappedBy = "cours", fetch = FetchType.LAZY)

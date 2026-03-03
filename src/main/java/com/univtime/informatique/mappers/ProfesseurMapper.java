@@ -469,7 +469,11 @@ public class ProfesseurMapper {
             cours.setHeureFinCours(entity.getHeureFinCours());
             cours.setTypeCours(entity.getTypeCours());
             cours.setComposanteId(entity.getComposante().getIdComposante());
-            cours.setSalleId(entity.getSalle().getIdSalle());
+            if (entity.getSalle() != null) {
+                cours.setSalleId(entity.getSalle().getIdSalle());
+            } else {
+                cours.setSalleId(null);
+            }
             cours.setParticipeAIds(entity.getParticipeAEntities()
                     .stream()
                     .map(participeAEntity -> {

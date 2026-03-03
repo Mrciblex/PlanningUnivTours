@@ -1,13 +1,13 @@
 package com.univtime.informatique.services;
 
 import com.univtime.informatique.dto.coursDto.CoursDto;
-import com.univtime.informatique.entities.ComposanteEntity;
-import com.univtime.informatique.entities.CoursEntity;
-import com.univtime.informatique.entities.ProfesseurEntity;
-import com.univtime.informatique.entities.SalleEntity;
+import com.univtime.informatique.dto.coursDto.ParticipeACoursDto;
+import com.univtime.informatique.entities.*;
+import com.univtime.informatique.entities.ids.ParticipeAId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.CoursMapper;
 import com.univtime.informatique.repositories.CoursRepository;
+import com.univtime.informatique.repositories.ParticipeARepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,14 +25,22 @@ public class CoursService {
 
     private final SalleService salleService;
 
+    private final ParticipeARepository participeARepository;
+
+    private final SousGroupeService sousGroupeService;
+
     public CoursService(CoursRepository coursRepository,
                         ComposanteService composanteService,
                         ProfesseurService professeurService,
-                        SalleService salleService) {
+                        SalleService salleService,
+                        ParticipeARepository participeARepository,
+                        SousGroupeService sousGroupeService) {
         this.coursRepository = coursRepository;
         this.composanteService = composanteService;
         this.professeurService = professeurService;
         this.salleService = salleService;
+        this.participeARepository = participeARepository;
+        this.sousGroupeService = sousGroupeService;
     }
 
     public List<CoursDto> findAllCours() {
@@ -74,9 +82,11 @@ public class CoursService {
             throw new ResourceNotFoundException("L'id du professeur est obligatoire");
         }
 
+        /*
         if (coursDto.getSalleDto() == null || coursDto.getSalleDto().getIdSalle() == null) {
             throw new ResourceNotFoundException("L'id de la salle est obligatoire");
         }
+        */
 
         CoursEntity coursEntity = CoursMapper.toEntity(coursDto);
 
@@ -91,11 +101,36 @@ public class CoursService {
         coursEntity.setProfesseur(professeurEntity);
 
         // Salle
-        Integer idSalleR = coursDto.getSalleDto().getIdSalle();
-        SalleEntity salleEntity = salleService.findSalleEntityById(idSalleR);
-        coursEntity.setSalle(salleEntity);
+        Integer idSalleR = coursDto.getSalleDto() != null ? coursDto.getSalleDto().getIdSalle() : null;
+        if (idSalleR != null){
+            SalleEntity salleEntity = salleService.findSalleEntityById(idSalleR);
+            coursEntity.setSalle(salleEntity);
+        }else{
+            coursEntity.setSalle(null);
+        }
 
         CoursEntity savedCours = coursRepository.save(coursEntity);
+
+        if (coursDto.getParticipeADto() != null && !coursDto.getParticipeADto().isEmpty()) {
+            for (ParticipeACoursDto participant : coursDto.getParticipeADto()) {
+                ParticipeAEntity participation = new ParticipeAEntity();
+
+                // Création de l'ID composé (si tu utilises ParticipeAId)
+                ParticipeAId partId = new ParticipeAId();
+                partId.setIdCours(savedCours.getIdCours());
+                partId.setIdSousGroupe(participant.getIdSousGroupe());
+
+                participation.setIdParticipeA(partId);
+                participation.setCours(savedCours);
+
+                // Récupération de l'entité SousGroupe
+                SousGroupeEntity sg = sousGroupeService.findSousGroupeEntityById(participant.getIdSousGroupe());
+                participation.setSousGroupe(sg);
+
+                // Sauvegarde de la relation
+                participeARepository.save(participation);
+            }
+        }
 
         return CoursMapper.toDto(savedCours);
     }
@@ -147,6 +182,14 @@ public class CoursService {
         CoursEntity updatedCours = coursRepository.save(coursEntity);
 
         return CoursMapper.toDto(updatedCours);
+    }
+
+    public void deleteCoursByIdWithRelations(Integer id) {
+        findCoursEntityById(id);
+
+        participeARepository.deleteAllByCoursIdCours(id);
+
+        coursRepository.deleteById(id);
     }
 
     public void deleteCoursById(Integer id) {

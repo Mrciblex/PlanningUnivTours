@@ -66,8 +66,8 @@
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">+ Enseignants</button>
         <button class="btn-primary" th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">+ Groupes</button>
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">+ Maquette</button>
-        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/recap'">Récapitulatif</button>
-        <button class="btn-primary" onclick="openSettings()">Paramètres</button>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/recapitulatif/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">Récapitulatif</a>
+        <button class="btn-primary" onclick="openSettings()">Générateur</button>
         <button class="btn-primary" onclick="exportEDT()">Exporter</button>
 
         <div class="mini-calendar">
@@ -141,6 +141,52 @@
                 <button onclick="closeExportModal()" class="export-cancel-btn">Annuler</button>
             </div>
         </div>
+
+        <div id="generatorPopUp" class="export-popup">
+            <div class="export-popup-content" style="max-width: 600px;">
+                <div class="export-popup-header">
+                    <h2 class="export-popup-title">Générateur d'Emploi du Temps</h2>
+                    <button onclick="closeGeneratorModal()" class="export-popup-close generator-cancel-btn">&times;</button>
+                </div>
+
+                <div class="generator-form" style="display: grid; gap: 15px; color: white;">
+                    <p class="export-popup-description">Ajustez l'importance des critères pour l'algorithme</p>
+                    <div class="weight-input">
+                        <label for="w_repetition" class="flex justify-between">Répétition dans la journée (0.5 : Neutre) <span id="val1">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_repetition" oninput="document.getElementById('val1').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_tot" class="flex justify-between">Placer le plus tôt possible (0.5 : Neutre) <span id="val2">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_tot" oninput="document.getElementById('val2').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_matin" class="flex justify-between">Priorité Matin (0.5 : Neutre) <span id="val3">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_matin" oninput="document.getElementById('val3').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_tard" class="flex justify-between">Éviter de finir tard (0 : Neutre) <span id="val4">0.0</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.0" class="w-full generator-weight-input" id="w_tard" oninput="document.getElementById('val4').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_trous" class="flex justify-between">Éviter les trous (0.5 : Neutre) <span id="val5">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_trous" oninput="document.getElementById('val5').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_regu" class="flex justify-between">Régularité (0.5 : Neutre) <span id="val6">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_regu" oninput="document.getElementById('val6').innerText=this.value">
+                    </div>
+                </div>
+
+                <div class="generator-response" style="display: none; gap: 15px; color: white;">
+
+                </div>
+
+                <div style="margin-top: 25px; display: flex; gap: 10px;">
+                    <button onclick="runGenerator(this)" class="btn-primary" style="flex: 2; text-align: center;">Lancer la génération</button>
+                    <button onclick="closeGeneratorModal()" class="export-cancel-btn generator-cancel-btn" style="flex: 1; margin-top: 0;">Annuler</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -152,6 +198,7 @@
     const coursData = /*[[${cours}]]*/ [];
     const promoData = /*[[${promo}]]*/ [];
     const numSemestre = /*[[${numSemestre}]]*/ [];
+    const baseUrl = /*[[@{/}]]*/ '/';
 </script>
 </body>
 </html>

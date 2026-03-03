@@ -463,7 +463,11 @@ public class ComposanteMapper {
             cours.setHeureFinCours(entity.getHeureFinCours());
             cours.setTypeCours(entity.getTypeCours());
             cours.setProfesseurId(entity.getProfesseur().getIdProf());
-            cours.setSalleId(entity.getSalle().getIdSalle());
+            if (entity.getSalle() != null) {
+                cours.setSalleId(entity.getSalle().getIdSalle());
+            } else {
+                cours.setSalleId(null);
+            }
             cours.setParticipeAIds(entity.getParticipeAEntities()
                     .stream()
                     .map(participeAEntity -> {
@@ -485,7 +489,11 @@ public class ComposanteMapper {
             /*
                 Besoin Salle
              */
-            besoinSalle.setIdSalle(entity.getSalle().getIdSalle());
+            if (entity.getSalle() != null) {
+                besoinSalle.setIdSalle(entity.getSalle().getIdSalle());
+            } else {
+                besoinSalle.setIdSalle(null);
+            }
             besoinSalle.setNbPlace(entity.getSalle().getNbPlace());
             besoinSalle.setSalleMachine(entity.getSalle().isSalleMachine());
             besoinSalle.setNbPC(entity.getSalle().getNbPC());

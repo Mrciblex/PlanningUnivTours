@@ -1,5 +1,8 @@
 package com.univtime.informatique.controllers;
 
+import com.univtime.informatique.algorithme.AlgorithmeResponse;
+import com.univtime.informatique.algorithme.GenerationAlgorithme;
+import com.univtime.informatique.algorithme.WeightConfig;
 import com.univtime.informatique.dto.coursDto.CoursDto;
 import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.services.CoursService;
@@ -11,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/edt")
@@ -19,18 +23,24 @@ public class EdtController {
 
     private final PromoService promoService;
 
+    private final GenerationAlgorithme generationAlgorithme;
+
     public EdtController(CoursService coursService,
-                         PromoService promoService){
+                         PromoService promoService,
+                         GenerationAlgorithme generationAlgorithme){
         this.coursService = coursService;
 
         this.promoService = promoService;
+
+        this.generationAlgorithme = generationAlgorithme;
     }
 
     /**
      * URL : /gestionnaire-edt/edt
      */
     @GetMapping
-    public String index(@CookieValue(value = "lastPromo", required = false) String lastPromo, Model model) {
+    public String index(@CookieValue(value = "lastPromo") String lastPromo,
+                        Model model) {
         if (lastPromo == null || lastPromo.isEmpty()) {
             return "redirect:/";
         }
@@ -58,7 +68,10 @@ public class EdtController {
     }
 
     @GetMapping("/{idPromo}/{numSemestre}")
-    public String edtOfPromo(@PathVariable Integer idPromo, @PathVariable Integer numSemestre, HttpServletResponse response, Model model) {
+    public String edtOfPromo(@PathVariable Integer idPromo,
+                             @PathVariable Integer numSemestre,
+                             HttpServletResponse response,
+                             Model model) {
         if (!(numSemestre == 1 || numSemestre == 2)) return "redirect:/"; // Securite pour limite de semestre
 
         Cookie cookie = new Cookie("lastPromo", idPromo.toString() + "-" + numSemestre);
@@ -74,6 +87,41 @@ public class EdtController {
         model.addAttribute("numSemestre", numSemestre);
 
         return "gestionnaire_edt/edt";
+    }
+
+    public record GenerationRequest(
+            Map<String, Double> weights,
+            List<Integer> existingCourseIds
+    ) {}
+
+    @PostMapping(value = "/generate/{idPromo}/{numSemestre}", produces = "application/json")
+    @ResponseBody // Pour renvoyer l'AlgorithmeResponse en JSON
+    public AlgorithmeResponse generateEdt(@PathVariable Integer idPromo,
+                                          @PathVariable Integer numSemestre,
+                                          @RequestBody GenerationRequest request) {
+        Map<String, Double> w = request.weights();
+        WeightConfig.setRepetitionCoursDansJournee(w.get("repetition"));
+        WeightConfig.setPlacementPlusTotPossible(w.get("tot"));
+        WeightConfig.setPlacementMatin(w.get("matin"));
+        WeightConfig.setPlacementPasFinTard(w.get("tard"));
+        WeightConfig.setPlacementSansTrou(w.get("trous"));
+        WeightConfig.setPlacementReference(w.get("regu"));
+
+        // Supprimer les cours existants pour cette promo et ce semestre
+        if (request.existingCourseIds() != null && !request.existingCourseIds().isEmpty()) {
+            request.existingCourseIds().forEach(coursService::deleteCoursByIdWithRelations);
+        }
+
+        // Lancer l'algorithme
+        AlgorithmeResponse response = generationAlgorithme.generatePlanning(idPromo, numSemestre, null);
+        System.out.println(response.afficherCoursPlaces());
+
+        // Enregistrer les cours placés
+        for (CoursDto cours : response.implementedCours()) {
+            coursService.createCours(cours);
+        }
+
+        return response;
     }
 
     // edt promo
