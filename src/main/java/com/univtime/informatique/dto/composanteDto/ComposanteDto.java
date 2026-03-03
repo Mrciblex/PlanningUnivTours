@@ -22,9 +22,9 @@ public class ComposanteDto {
     private Set<CoursComposanteDto> coursDto;
     private Set<BesoinSalleComposanteDto> besoinSalleDto;
 
-    private Map<Integer, Integer> cmNbParSem = new HashMap<>();;
-    private Map<Integer, Integer> tdNbParSem = new HashMap<>();;
-    private Map<Integer, Integer> tpNbParSem = new HashMap<>();;
+    private Map<Integer, Integer> cmNbParSem = new HashMap<>();
+    private Map<Integer, Integer> tdNbParSem = new HashMap<>();
+    private Map<Integer, Integer> tpNbParSem = new HashMap<>();
 
     public ComposanteDto(){
 
