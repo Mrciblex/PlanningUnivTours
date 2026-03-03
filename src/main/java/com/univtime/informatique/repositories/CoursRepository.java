@@ -1,7 +1,9 @@
 package com.univtime.informatique.repositories;
 
 import com.univtime.informatique.entities.CoursEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -22,4 +24,9 @@ public interface CoursRepository extends JpaRepository<CoursEntity, Integer> {
             ")",
            nativeQuery = true)
     public List<CoursEntity> findByIdPromoBySemestre(@Param("idPromo") Integer idPromo, @Param("numSemestre") Integer numSemestre);
+    @Transactional
+    @Modifying
+    void deleteByComposante_IdComposante(Integer id);
+
+    List<CoursEntity> findByComposante_IdComposante(Integer id);
 }

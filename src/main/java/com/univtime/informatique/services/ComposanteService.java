@@ -2,10 +2,13 @@ package com.univtime.informatique.services;
 
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.entities.ComposanteEntity;
+import com.univtime.informatique.entities.CoursEntity;
 import com.univtime.informatique.entities.ModuleEntity;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.ComposanteMapper;
 import com.univtime.informatique.repositories.ComposanteRepository;
+import com.univtime.informatique.repositories.CoursRepository;
+import com.univtime.informatique.repositories.ParticipeARepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +18,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class ComposanteService {
+    private final ParticipeARepository participeARepository;
     private final ComposanteRepository composanteRepository;
-
+    private final CoursRepository coursRepository;
     private final ModuleService moduleService;
 
-    public ComposanteService(ComposanteRepository composanteRepository,
+    public ComposanteService(ParticipeARepository participeARepository, ComposanteRepository composanteRepository, CoursRepository coursRepository,
                              ModuleService moduleService) {
+        this.participeARepository = participeARepository;
         this.composanteRepository = composanteRepository;
+        this.coursRepository = coursRepository;
         this.moduleService = moduleService;
     }
 
@@ -99,8 +105,17 @@ public class ComposanteService {
         return ComposanteMapper.toDto(updatedComposante);
     }
 
+    @Transactional
     public void deleteComposanteById(Integer id) {
-        findComposanteEntityById(id);
+
+        List<CoursEntity> coursList = coursRepository.findByComposante_IdComposante(id);
+
+        for (CoursEntity cours : coursList) {
+            participeARepository.deleteByCours_IdCours(cours.getIdCours());
+        }
+
+        coursRepository.deleteByComposante_IdComposante(id);
+
         composanteRepository.deleteById(id);
     }
 }
