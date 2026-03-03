@@ -45,16 +45,16 @@ function editSousGroupePopUp(btn) {
     const id = btn.dataset.id;
     const nom = btn.dataset.nom;
 
-    document.getElementById("groupesgIdU").value = id;
-    document.getElementById("nomsgU").value = nom;
-    document.getElementById("nbetuU").value = nbetu;
+    document.getElementById("groupeSGIdU").value = id;
+    document.getElementById("nomSGU").value = nom;
+    document.getElementById("nbetuSGU").value = nbetu;
 
     document.getElementById("sousgroupeUpdate").classList.add('active');
 }
 
 function deleteSousGroupePopUp(btn) {
 
-    document.getElementById("nomsgD").textContent = btn.dataset.nom;
+    document.getElementById("nomSGD").textContent = btn.dataset.nom;
 
     document.getElementById("sousgroupeDelete").classList.add('active');
 }

@@ -136,5 +136,163 @@
                 </div>
             </div>
         </div>
+
+        <!-- Les Pop Up Groupe -->
+        <!-- Pop Up Ajouter Groupe -->
+        <div id="groupeAdd" class="popUp">
+            <div class="popUp-content">
+                <p id="popUpTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un groupe</p>
+
+                <form id="formAdd" method="post"
+                      th:action="@{/gestionnaire-edt/groupes/{idPromo}/new(idPromo=${idPromo})}">
+
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="addNom" name="nomGroupe" required placeholder="Ex: Gr1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre étudiant *</label>
+                        <input type="text" id="nbetuU" name="nbetu" required placeholder="Ex: 30">
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closePopUpAdd()" class="btn-edit flex-1">Annuler</button>
+                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pop Up Modfier -->
+        <div id="groupeUpdate" class="popUp">
+            <div class="popUp-content">
+                <p id="popUpTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un groupe</p>
+
+                <form th:action="@{/groupe/ajout}" method="post">
+                    <input type="hidden" id="profIdU" name="id">
+
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="nomU" name="nom" required placeholder="Ex: Gr1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prenom *</label>
+                        <input type="text" id="prenomU" name="prenom" required placeholder="Ex: 30">
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closePopUpUpdate()" class="btn-edit flex-1">Annuler</button>
+                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pop Up Supprimer -->
+        <div id="groupeDelete" class="popUp">
+            <div class="popUp-content">
+                <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce groupe ?</p>
+
+                <div>
+                    <div>
+                        <span class="text-white">Nom</span>
+                        <span class="text-white" id="nomD">-</span>
+                    </div>
+
+                    <div>
+                        <span class="text-white">Nombre étudiant</span>
+                        <span class="text-white" id="nbetuD">-</span>
+                    </div>
+                </div>
+
+                <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
+
+                <div class="flex gap-3">
+                    <button type="button" onclick="closePopUpDelete()" class="btn-edit flex-1">Annuler</button>
+                    <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Les Pop Up Sous Groupe -->
+        <!-- Pop Up Ajouter Groupe -->
+        <div id="sousgroupeAdd" class="popUp">
+            <div class="popUp-content">
+                <p id="popUpSGTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un sous-groupe</p>
+
+                <form id="formSGAdd" method="post"
+                      th:action="@{/gestionnaire-edt/sousgroupes/{idPromo}/new(idPromo=${idPromo})}">
+
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="addNomSG" name="nomSousGroupe" required placeholder="Ex: A">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre étudiant *</label>
+                        <input type="text" id="nbetuSGU" name="nbeSGtu" required placeholder="Ex: 15">
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closePopUpSGAdd()" class="btn-edit flex-1">Annuler</button>
+                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pop Up Modfier -->
+        <div id="sousgroupeUpdate" class="popUp">
+            <div class="popUp-content">
+                <p id="popUpSGTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un sous-groupe</p>
+
+                <form th:action="@{/sousgroupe/ajout}" method="post">
+                    <input type="hidden" id="profSGIdU" name="id">
+
+                    <div class="form-group">
+                        <label>Nom *</label>
+                        <input type="text" id="nomSGU" name="nom" required placeholder="Ex: A">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prenom *</label>
+                        <input type="text" id="prenomSGU" name="prenom" required placeholder="Ex: 15">
+                    </div>
+
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="closePopUpSGUpdate()" class="btn-edit flex-1">Annuler</button>
+                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Pop Up Supprimer -->
+        <div id="sousgroupeDelete" class="popUp">
+            <div class="popUp-content">
+                <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce sous-groupe ?</p>
+
+                <div>
+                    <div>
+                        <span class="text-white">Nom</span>
+                        <span class="text-white" id="nomDGD">-</span>
+                    </div>
+
+                    <div>
+                        <span class="text-white">Nombre étudiant</span>
+                        <span class="text-white" id="nbetuDGD">-</span>
+                    </div>
+                </div>
+
+                <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
+
+                <div class="flex gap-3">
+                    <button type="button" onclick="closePopUpSGDelete()" class="btn-edit flex-1">Annuler</button>
+                    <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
