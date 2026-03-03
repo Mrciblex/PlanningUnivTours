@@ -7,12 +7,15 @@ import com.univtime.informatique.dto.composanteDto.TPComposanteDto;
 import com.univtime.informatique.dto.groupeDto.GroupeDto;
 import com.univtime.informatique.dto.moduleDto.ModuleDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
+import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.dto.sousGroupeDto.SousGroupeDto;
 import com.univtime.informatique.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +109,17 @@ public class MaquetteController {
         model.addAttribute("newGroupe", new GroupeDto());
         model.addAttribute("newSousGroupe", new SousGroupeDto());
 
-        model.addAttribute("idPromo", idPromo);
+        PromoDto promo = promoService.findPromoDtoById(idPromo);
+        model.addAttribute("promo", promoService.findPromoDtoById(idPromo));
+
+        LocalDate dateDebut = numSemestre == 1 ?
+                promo.getDebutS1Promo() : promo.getDebutS2Promo();
+
+        LocalDate dateFin = numSemestre == 1 ?
+                promo.getFinS1Promo() : promo.getFinS2Promo();
+
+        long nombreDeSemaines = ChronoUnit.WEEKS.between(dateDebut, dateFin);
+        model.addAttribute("nbsem", nombreDeSemaines + 1);
 
         return "gestionnaire_edt/maquette";
     }

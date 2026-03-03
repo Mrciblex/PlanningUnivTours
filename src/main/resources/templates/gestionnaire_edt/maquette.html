@@ -50,7 +50,7 @@
                             <th style="width: 200px;">Enseignants</th>
                             <th style="width: 120px;">Module</th>
                             <th class="week-header" style="width: 100px;"
-                                th:each="sem : ${#numbers.sequence(1, 12)}"
+                                th:each="sem : ${#numbers.sequence(1, nbsem)}"
                                     th:text="'Sem. ' + ${sem}">Sem</th>
                             <th style="width: 120px;">Actions</th>
                         </tr>
@@ -80,10 +80,10 @@
                             </td>
 
                             <!-- Volumes par semaine (CM, TD, TP) -->
-                            <td th:each="sem : ${#numbers.sequence(1, 12)}">
-                                <th:block th:with="cm=${composante != null ? composante.cmNbParSem[Integer.valueOf(sem)] : 0},
-                                                   td=${composante != null ? composante.tdNbParSem[Integer.valueOf(sem)] : 0},
-                                                   tp=${composante != null ? composante.tpNbParSem[Integer.valueOf(sem)] : 0}">
+                            <td th:each="sem : ${#numbers.sequence(1, nbsem)}">
+                                <th:block th:with="cm=${composante != null ? composante.cmNbParSem.get(sem) : 0},
+                                                   td=${composante != null ? composante.tdNbParSem.get(sem) : 0},
+                                                   tp=${composante != null ? composante.tpNbParSem.get(sem) : 0}">
 
                                     <span th:if="${cm > 0}"></span>
                                     <span th:if="${td > 0}"></span>
