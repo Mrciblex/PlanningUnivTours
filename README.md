@@ -10,8 +10,11 @@ Une application de gestion d'emplois du temps pour l'université de Tours.
 
 # Congi launcher :
 debug : Si le mode debug est activé ou non
+
 debug-db : Efface toute la base et remet les données de test par défaut
+
 build : Si le build doit se faire ou non (automatiquement oui si le .jar non trouvé)
+
 reset-db : Reset la base et remet le schéma par défaut sans aucune donnée. Repasse automatiquement à ZÉRO après le lancement.
 
 
@@ -21,8 +24,11 @@ reset-db : Reset la base et remet le schéma par défaut sans aucune donnée. Re
 Pour exécuter PlanningUnivTours en local, assurez-vous d’avoir les éléments suivants installés sur votre machine :
 
 Java JDK 25+ (pour exécuter Spring Boot).
+
 Git (pour cloner le dépôt).
+
 Un navigateur web (Chrome, Firefox, Edge, etc.).
+
 Un système d’exploitation : Windows, macOS ou Linux.
 
 # Étapes d’Installation et de Lancement
@@ -46,6 +52,7 @@ Ce fichier démarre automatiquement la base de données PostgreSQL et le serveur
 Identifiants par défaut :
 
 Login : postgres
+
 Mot de passe : root
 
 Sinon propre à chacun
