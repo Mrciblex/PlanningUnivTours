@@ -21,8 +21,8 @@
             </div>
             <div class="flex gap-3">
                 <a th:if="${idPromo != null}"
-                   th:href="@{/gestionnaire-edt/professeurs/promo/{idPromo}(idPromo=${idPromo})}"
-                   class="btn-edit">← Tous les professeurs de la promo</a>
+                   th:href="@{/gestionnaire-edt/professeurs}"
+                   class="btn-edit">← Tous les professeurs</a>
                 <button onclick="openAddModal()" class="btn-primary">+ Ajouter un(e) enseignant(e)</button>
             </div>
         </div>

@@ -79,6 +79,7 @@ function deletePromoPopUp(btn) {
  */
 
 // Fermer les pop up
+
 function closePopUpAdd() {
     document.getElementById('promoAdd').classList.remove('active');
 }
@@ -90,4 +91,3 @@ function closePopUpUpdate() {
 function closePopUpDelete() {
     document.getElementById('promoDelete').classList.remove('active');
 }
-

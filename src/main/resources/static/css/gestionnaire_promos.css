@@ -16,18 +16,14 @@
     background: rgba(0, 169, 155, 0.3);
 }
 
-.data-table thead tr {
-    text-align: center;
-}
-
 .data-table th {
     padding: 16px 20px;
-    text-align: center;
     font-size: 13px;
     font-weight: 600;
     color: #00A99B;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(120, 144, 156, 0.2);
+    text-align: center;
 }
 
 .data-table tbody tr {

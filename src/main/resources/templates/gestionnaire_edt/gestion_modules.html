@@ -2,17 +2,18 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
     <head>
         <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
-        <link rel="stylesheet" th:href="@{/css/gestionnaire_composantes.css}">
-        <script th:src="@{/js/gestion_modulepromo.js}" defer></script>
 
-        <title>UnivTime - Gestionnaire Promos</title>
+        <link rel="stylesheet" th:href="@{/css/gestionnaire_promos.css}">
+        <script th:src="@{/js/gestion_promo.js}" defer></script>
+
+        <title>UnivTime - Gestionnaire Modules</title>
     </head>
 
     <body class="bg-[#2F3E47]">
         <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
         <div class="min-h-screen p-20">
-            <div class="container mx-auto max-w-8xl">
+            <div class="container mx-auto max-w-7xl">
                 <div class="flex justify-between items-center mb-8">
                     <h2 class="text-4xl font-bold text-white">Gestion des Promotions</h2>
                     <button onclick="openPromoPopUp()" class="btn-primary">+ Ajouter une promotion</button>
@@ -25,7 +26,6 @@
                         <tr>
                             <th>Nom</th>
                             <th>Année</th>
-                            <th>Nombre d'étudiant</th>
                             <th>Semestre 1</th>
                             <th>Semestre 2</th>
                             <th>EDT</th>
@@ -39,11 +39,10 @@
                         <tr th:each="promo : ${promos}" th:if="${promo != null}">
                             <td class="font-semibold text-white"
                                 th:text="${promo.nomPromo}">
+
                             </td>
 
                             <td class="text-white" th:text="${promo.anneePromo}"></td>
-
-                            <td class="text-white" th:text="${promo.nbEtuPromo}"></td>
 
                             <!-- Affichage condensé de la durée du S1 -->
                             <td>
@@ -80,7 +79,6 @@
                                                                     data-id=${promo.idPromo},
                                                                     data-nom=${promo.nomPromo},
                                                                     data-annee=${promo.anneePromo},
-                                                                    date-nbetu=${promo.nbEtuPromo},
                                                                     data-debut-s1=${promo.debutS1Promo},
                                                                     data-fin-s1=${promo.finS1Promo},
                                                                     data-debut-s2=${promo.debutS2Promo},
@@ -126,12 +124,7 @@
 
                     <div class="form-group">
                         <label>Année *</label>
-                        <input type="number" th:field="*{anneePromo}" required placeholder="Ex: 2026">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre étudiant *</label>
-                        <input type="number" th:field="*{nbEtuPromo}" required placeholder="Ex: 61">
+                        <input type="number" th:field="*{anneePromo}" required placeholder="Ex: 2024-2025">
                     </div>
 
                     <div class="form-group">
@@ -163,7 +156,7 @@
                     </div>
 
                     <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpAdd()" class="btn-edit flex-1">Annuler</button>
+                        <button type="button" onclick="closePopUp()" class="btn-edit flex-1">Annuler</button>
                         <button type="submit" class="btn-primary flex-1">Enregistrer</button>
                     </div>
                 </form>
@@ -185,12 +178,7 @@
 
                     <div class="form-group">
                         <label>Année *</label>
-                        <input type="text" id="anneeU" name="annee" required placeholder="Ex: 2026">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre étudiant *</label>
-                        <input type="text" id="nbEtuU" name="nbetu" required placeholder="Ex: 61">
+                        <input type="text" id="anneeU" name="annee" required placeholder="Ex: 2024-2025">
                     </div>
 
                     <div class="form-group">
@@ -234,7 +222,7 @@
             <div class="popUp-content">
                 <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer cette promotion ?</p>
 
-                <div>
+                <div class="">
                     <div>
                         <span class="text-white">Nom</span>
                         <span class="delete-recap-value" id="nomD">-</span>
@@ -242,22 +230,17 @@
 
                     <div>
                         <span class="text-white">Année</span>
-                        <span class="text-white" id="anneeD">-</span>
-                    </div>
-
-                    <div>
-                        <span class="text-white">Nombre étudiant</span>
-                        <span class="text-white" id="nbetuD">-</span>
+                        <span class="delete-recap-value" id="anneeD">-</span>
                     </div>
 
                     <div>
                         <span class="text-white">Semestre 1</span>
-                        <span class="text-white" id="dateDebutS1D">-</span>
+                        <span class="delete-recap-value" id="dateDebutS1D">-</span>
                     </div>
 
                     <div>
                         <span class="text-white">Semestre 2</span>
-                        <span class="text-white" id="dateDebutS2D">-</span>
+                        <span class="delete-recap-value" id="dateDebutS2D">-</span>
                     </div>
                 </div>
 
