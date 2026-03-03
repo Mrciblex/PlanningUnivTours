@@ -55,7 +55,6 @@ function closePopUpAdd() {
 }
 
 function closePopUpUpdate() {
-    console.log('test');
     document.getElementById('profUpdate').classList.remove('active');
 }
 

@@ -35,7 +35,7 @@ function editPromoPopUp(btn) {
     document.getElementById("dateDebutS2U").value = debutS2;
     document.getElementById("dateFinS2U").value = finS2;
 
-    document.getElementById("promoUpdate").classList.add('active');;
+    document.getElementById("promoUpdate").classList.add('active');
 }
 /**
  function editPromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
@@ -86,7 +86,6 @@ function closePopUpAdd() {
 }
 
 function closePopUpUpdate() {
-    console.log('test');
     document.getElementById('promoUpdate').classList.remove('active');
 }
 
