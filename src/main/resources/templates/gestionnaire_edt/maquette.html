@@ -3,6 +3,7 @@
     <head>
         <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
         <link rel="stylesheet" th:href="@{/css/maquette.css}">
+        <script th:src="@{/js/maquette.js}" defer></script>
 
         <title>UnivTime - Maquette</title>
     </head>
@@ -79,10 +80,10 @@
                             </td>
 
                             <!-- Volumes par semaine (CM, TD, TP) -->
-                            <td th:each="sem : ${#numbers.sequence(1, 15)}">
-                                <th:block th:with="cm=${composante.cmNbParSem[sem] ?: 0},
-                                                   td=${composante.tdNbParSem[sem] ?: 0},
-                                                   tp=${composante.tpNbParSem[sem] ?: 0}">
+                            <td th:each="sem : ${#numbers.sequence(1, 12)}">
+                                <th:block th:with="cm=${composante != null ? composante.cmNbParSem[Integer.valueOf(sem)] : 0},
+                                                   td=${composante != null ? composante.tdNbParSem[Integer.valueOf(sem)] : 0},
+                                                   tp=${composante != null ? composante.tpNbParSem[Integer.valueOf(sem)] : 0}">
 
                                     <span th:if="${cm > 0}"></span>
                                     <span th:if="${td > 0}"></span>

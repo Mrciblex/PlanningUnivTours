@@ -65,7 +65,7 @@
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_composantes'">+ Composantes</button>
         <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/gestion_professeurs'">+ Enseignants</button>
         <button class="btn-primary" th:onclick="|window.location.href='@{/gestionnaire-edt/groupes}'|">+ Groupes</button>
-        <button class="btn-primary" onclick="window.location.href='/univtime/gestionnaire-edt/maquette'">+ Maquette</button>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/maquette/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">+ Maquette</a>
         <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/recapitulatif/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">Récapitulatif</a>
         <button class="btn-primary" onclick="openSettings()">Générateur</button>
         <button class="btn-primary" onclick="exportEDT()">Exporter</button>

@@ -33,6 +33,7 @@ public class MaquetteController {
     private final CMService cmService;
     private final TDService tdService;
     private final TPService tpService;
+    private final PromoService promoService;
 
     public MaquetteController(
             ModuleService moduleService,
@@ -42,23 +43,27 @@ public class MaquetteController {
             SousGroupeService sousGroupeService,
             CMService cmService,
             TDService tdService,
-            TPService tpService)
-    {
-                this.moduleService = moduleService;
-                this.composanteService = composanteService;
-                this.professeurService = professeurService;
-                this.groupeService = groupeService;
-                this.sousGroupeService = sousGroupeService;
-                this.cmService = cmService;
-                this.tdService = tdService;
-                this.tpService = tpService;
+            TPService tpService,
+            PromoService promoService) {
+        this.moduleService = moduleService;
+        this.composanteService = composanteService;
+        this.professeurService = professeurService;
+        this.groupeService = groupeService;
+        this.sousGroupeService = sousGroupeService;
+        this.cmService = cmService;
+        this.tdService = tdService;
+        this.tpService = tpService;
+        this.promoService = promoService;
     }
-    @GetMapping
-    public String afficherMaquettes(Model model) {
-        model.addAttribute("composantes", composanteService.findAllComposantes());
-        List<ComposanteDto> composantes_weeksem = composanteService.findAllComposantes();
 
-        for (ComposanteDto c : composantes_weeksem) {
+    @GetMapping("/{idPromo}/{numSemestre}")
+    public String afficherMaquette(@PathVariable Integer idPromo,
+                                   @PathVariable Integer numSemestre,
+                                   Model model) {
+
+        List<ComposanteDto> composantes = composanteService.findComposantesDtoByIdPromo(idPromo);
+
+        for (ComposanteDto c : composantes) {
 
             // ===== CM =====
             c.setCmNbParSem(
@@ -85,14 +90,8 @@ public class MaquetteController {
             );
         }
 
-        model.addAttribute("composantes", composantes_weeksem);
-        return "gestionnaire_edt/maquette";
-    }
-    @GetMapping("/{idPromo}")
-    public String afficherMaquette(@PathVariable Integer idPromo, Model model) {
-
         model.addAttribute("modules", moduleService.findModuleDtoByIdPromo(idPromo));
-        model.addAttribute("composantes", composanteService.findComposantesDtoByIdPromo(idPromo));
+        model.addAttribute("composantes", composantes);
         model.addAttribute("professeurs", professeurService.findProfesseurDtoByIdPromo(idPromo));
         model.addAttribute("groupes", groupeService.findGroupeDtoByIdPromo(idPromo));
         model.addAttribute("sousGroupes", sousGroupeService.findSousGroupesDtoByIdPromo(idPromo));
@@ -152,25 +151,29 @@ public class MaquetteController {
     // ----------- DELETE -----------
 
     @PostMapping("/{idPromo}/modules/{id}/delete")
-    public String deleteModule(@PathVariable Integer idPromo, @PathVariable Integer id) {
+    public String deleteModule(@PathVariable Integer idPromo,
+                               @PathVariable Integer id) {
         moduleService.deleteModuleById(id);
         return "redirect:/gestionnaire-edt/maquette/" + idPromo;
     }
 
     @PostMapping("/{idPromo}/composantes/{id}/delete")
-    public String deleteComposante(@PathVariable Integer idPromo, @PathVariable Integer id) {
+    public String deleteComposante(@PathVariable Integer idPromo,
+                                   @PathVariable Integer id) {
         composanteService.deleteComposanteById(id);
         return "redirect:/gestionnaire-edt/maquette/" + idPromo;
     }
 
     @PostMapping("/{idPromo}/groupes/{id}/delete")
-    public String deleteGroupe(@PathVariable Integer idPromo, @PathVariable Integer id) {
+    public String deleteGroupe(@PathVariable Integer idPromo,
+                               @PathVariable Integer id) {
         groupeService.deleteGroupeById(id);
         return "redirect:/gestionnaire-edt/maquette/" + idPromo;
     }
 
     @PostMapping("/{idPromo}/sous-groupes/{id}/delete")
-    public String deleteSousGroupe(@PathVariable Integer idPromo, @PathVariable Integer id) {
+    public String deleteSousGroupe(@PathVariable Integer idPromo,
+                                   @PathVariable Integer id) {
         sousGroupeService.deleteSousGroupeById(id);
         return "redirect:/gestionnaire-edt/maquette/" + idPromo;
     }
