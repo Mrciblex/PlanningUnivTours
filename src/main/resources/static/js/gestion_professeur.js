@@ -1,68 +1,73 @@
+// baseUrl et idPromo sont injectés par Thymeleaf dans la page HTML
+
 // =====================
-//  MODAL AJOUTER/MODIFIER
+//  POP UP AJOUTER
 // =====================
+function openAddPopUp() {
+    document.getElementById('addNom').value    = '';
+    document.getElementById('addPrenom').value = '';
+    // reset radio à NON
+    document.querySelectorAll('#formAdd input[name="intervenantExterieur"]')
+        .forEach(r => { r.checked = r.value === 'false'; });
 
-function openAddModal() {
-    document.getElementById('modalTitle').textContent = 'Ajouter un professeur';
-    document.getElementById('profId').value = '';
-    document.getElementById('nomProf').value = '';
-    document.getElementById('prenomProf').value = '';
-    document.getElementById('intervenantNon').checked = true;
-
-    const idPromo = document.getElementById('formIdPromo').value;
-    const form = document.getElementById('profForm');
-    form.action = idPromo
-        ? `/gestionnaire-edt/professeurs/${idPromo}/new`
-        : `/gestionnaire-edt/professeurs/new`;
-
-    document.getElementById('profModal').classList.remove('hidden');
+    // L'action est déjà définie par th:action dans le HTML (idPromo injecté par Thymeleaf)
+    document.getElementById('profAdd').classList.add('active');
 }
 
-function editProfesseur(id, nom, prenom, intervenantExterieur, idPromo) {
-    document.getElementById('modalTitle').textContent = 'Modifier un professeur';
-    document.getElementById('profId').value = id;
-    document.getElementById('nomProf').value = nom;
-    document.getElementById('prenomProf').value = prenom;
+// =====================
+//  POP UP MODIFIER
+// =====================
+function openEditPopUp(btn) {
+    const id          = btn.dataset.id;
+    const nom         = btn.dataset.nom;
+    const prenom      = btn.dataset.prenom;
+    const intervenant = btn.dataset.intervenant;
 
-    if (intervenantExterieur === 'true' || intervenantExterieur === true) {
-        document.getElementById('intervenantOui').checked = true;
+    document.getElementById('updateId').value     = id;
+    document.getElementById('updateNom').value    = nom;
+    document.getElementById('updatePrenom').value = prenom;
+
+    if (intervenant === 'true') {
+        document.getElementById('updateIntervenantOui').checked = true;
     } else {
-        document.getElementById('intervenantNon').checked = true;
+        document.getElementById('updateIntervenantNon').checked = true;
     }
 
-    const form = document.getElementById('profForm');
-    form.action = idPromo
-        ? `/gestionnaire-edt/professeurs/${idPromo}/${id}/edit`
-        : `/gestionnaire-edt/professeurs/${id}/edit`;
+    // POST /gestionnaire-edt/professeurs/{idPromo}/{id}/edit
+    document.getElementById('formUpdate').action =
+        `${baseUrl}gestionnaire-edt/professeurs/${idPromo}/${id}/edit`;
 
-    document.getElementById('profModal').classList.remove('hidden');
-}
-
-function closeModal() {
-    document.getElementById('profModal').classList.add('hidden');
+    document.getElementById('profUpdate').classList.add('active');
 }
 
 // =====================
-//  MODAL SUPPRESSION
+//  POP UP SUPPRIMER
 // =====================
+function openDeletePopUp(btn) {
+    const id  = btn.dataset.id;
+    const nom = btn.dataset.nom;
 
-function deleteProfesseur(id, nom, idPromo) {
     document.getElementById('deleteNom').textContent = nom;
 
-    const form = document.getElementById('deleteForm');
-    form.action = idPromo
-        ? `/gestionnaire-edt/professeurs/${idPromo}/${id}/delete`
-        : `/gestionnaire-edt/professeurs/${id}/delete`;
+    // POST /gestionnaire-edt/professeurs/{idPromo}/{id}/delete
+    document.getElementById('formDelete').action =
+        `${baseUrl}gestionnaire-edt/professeurs/${idPromo}/${id}/delete`;
 
-    document.getElementById('deleteModal').classList.remove('hidden');
+    document.getElementById('profDelete').classList.add('active');
 }
 
-function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.add('hidden');
+// =====================
+//  FERMER TOUS LES POP UP
+// =====================
+function closePopUp() {
+    document.getElementById('profAdd').classList.remove('active');
+    document.getElementById('profUpdate').classList.remove('active');
+    document.getElementById('profDelete').classList.remove('active');
 }
 
 // Fermer en cliquant à l'extérieur
 window.addEventListener('click', function (e) {
-    if (e.target === document.getElementById('profModal')) closeModal();
-    if (e.target === document.getElementById('deleteModal')) closeDeleteModal();
+    ['profAdd', 'profUpdate', 'profDelete'].forEach(id => {
+        if (e.target === document.getElementById(id)) closePopUp();
+    });
 });

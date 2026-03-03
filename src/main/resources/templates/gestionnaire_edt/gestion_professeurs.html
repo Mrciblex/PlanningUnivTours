@@ -11,19 +11,15 @@
 <div class="min-h-screen p-20">
     <div class="container mx-auto max-w-7xl">
 
-        <!-- En-tête -->
         <div class="flex justify-between items-center mb-8">
             <div>
                 <h2 class="text-4xl font-bold text-white">Gestion des Enseignants</h2>
-                <p th:if="${idPromo != null}" class="text-tours-green-light mt-1 text-lg">
+                <p class="text-tours-green-light mt-1 text-lg">
                     Promo ID : <span th:text="${idPromo}" class="font-semibold"></span>
                 </p>
             </div>
             <div class="flex gap-3">
-                <a th:if="${idPromo != null}"
-                   th:href="@{/gestionnaire-edt/professeurs}"
-                   class="btn-edit">← Tous les professeurs</a>
-                <button onclick="openAddModal()" class="btn-primary">+ Ajouter un(e) enseignant(e)</button>
+                <button onclick="openAddPopUp()" class="btn-primary">+ Ajouter un(e) enseignant(e)</button>
             </div>
         </div>
 
@@ -47,22 +43,24 @@
                         <span th:unless="${prof.intervenantExterieur}" class="badge-non">NON</span>
                     </td>
                     <td>
-                        <button th:if="${idPromo != null}"
-                                th:onclick="|editProfesseur('${prof.idProf}', '${prof.nomProf}', '${prof.prenomProf}', '${prof.intervenantExterieur}', ${idPromo})|"
-                                class="btn-edit mr-2">Modifier</button>
-                        <button th:if="${idPromo == null}"
-                                th:onclick="|editProfesseur('${prof.idProf}', '${prof.nomProf}', '${prof.prenomProf}', '${prof.intervenantExterieur}', null)|"
-                                class="btn-edit mr-2">Modifier</button>
-
-                        <button th:if="${idPromo != null}"
-                                th:onclick="|deleteProfesseur('${prof.idProf}', '${prof.nomProf}', ${idPromo})|"
-                                class="btn-delete">Supprimer</button>
-                        <button th:if="${idPromo == null}"
-                                th:onclick="|deleteProfesseur('${prof.idProf}', '${prof.nomProf}', null)|"
-                                class="btn-delete">Supprimer</button>
+                        <button class="btn-edit mr-2"
+                                onclick="openEditPopUp(this)"
+                                th:attr="data-id=${prof.idProf},
+                                         data-nom=${prof.nomProf},
+                                         data-prenom=${prof.prenomProf},
+                                         data-intervenant=${prof.intervenantExterieur},
+                                         data-promo=${idPromo}">
+                            Modifier
+                        </button>
+                        <button class="btn-delete"
+                                onclick="openDeletePopUp(this)"
+                                th:attr="data-id=${prof.idProf},
+                                         data-nom=${prof.nomProf},
+                                         data-promo=${idPromo}">
+                            Supprimer
+                        </button>
                     </td>
                 </tr>
-
                 <tr th:if="${#lists.isEmpty(professeurs)}">
                     <td colspan="4" class="text-center text-red-700 font-bold py-6">Aucun professeur trouvé</td>
                 </tr>
@@ -73,64 +71,100 @@
     </div>
 </div>
 
-<!-- ===== Modal Ajouter / Modifier ===== -->
-<div id="profModal" class="modal hidden">
-    <div class="modal-content">
-        <p id="modalTitle" class="text-2xl font-bold mb-6 text-white">Ajouter un professeur</p>
-
-        <form id="profForm" method="post">
-            <input type="hidden" id="profId" name="id">
-            <input type="hidden" id="formIdPromo" th:value="${idPromo}">
-
+<!-- ===== Pop Up Ajouter ===== -->
+<!-- action : POST /gestionnaire-edt/professeurs/{idPromo}/new -->
+<div id="profAdd" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Ajouter un professeur</p>
+        <form id="formAdd" method="post"
+              th:action="@{/gestionnaire-edt/professeurs/{idPromo}/new(idPromo=${idPromo})}">
             <div class="form-group">
-                <label for="nomProf">Nom *</label>
-                <input type="text" id="nomProf" name="nomProf" required placeholder="Ex: DESPORT">
+                <label>Nom *</label>
+                <input type="text" id="addNom" name="nomProf" required placeholder="Ex: DESPORT">
             </div>
-
             <div class="form-group">
-                <label for="prenomProf">Prénom *</label>
-                <input type="text" id="prenomProf" name="prenomProf" required placeholder="Ex: Pierre">
+                <label>Prénom *</label>
+                <input type="text" id="addPrenom" name="prenomProf" required placeholder="Ex: Pierre">
             </div>
-
             <div class="form-group">
                 <label>Intervenant Extérieur *</label>
-                <div class="flex gap-6 mt-2">
-                    <label class="flex items-center gap-2 text-white cursor-pointer">
-                        <input type="radio" id="intervenantOui" name="intervenantExterieur" value="true">
-                        OUI
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="intervenantExterieur" value="true"> OUI
                     </label>
-                    <label class="flex items-center gap-2 text-white cursor-pointer">
-                        <input type="radio" id="intervenantNon" name="intervenantExterieur" value="false" checked>
-                        NON
+                    <label class="radio-label">
+                        <input type="radio" name="intervenantExterieur" value="false" checked> NON
                     </label>
                 </div>
             </div>
-
             <div class="flex gap-3 mt-6">
-                <button type="button" onclick="closeModal()" class="btn-edit flex-1">Annuler</button>
+                <button type="button" onclick="closePopUp()" class="btn-edit flex-1">Annuler</button>
                 <button type="submit" class="btn-primary flex-1">Enregistrer</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ===== Modal Confirmation Suppression ===== -->
-<div id="deleteModal" class="modal hidden">
-    <div class="modal-content">
-        <p class="text-2xl font-bold mb-4 text-white">Confirmer la suppression</p>
-        <p class="text-gray-300 mb-6">
-            Voulez-vous vraiment supprimer
-            <span id="deleteNom" class="font-bold text-tours-green-light"></span> ?
-        </p>
-        <form id="deleteForm" method="post">
-            <div class="flex gap-3">
-                <button type="button" onclick="closeDeleteModal()" class="btn-edit flex-1">Annuler</button>
-                <button type="submit" class="btn-delete flex-1">Supprimer</button>
+<!-- ===== Pop Up Modifier ===== -->
+<!-- action : POST /gestionnaire-edt/professeurs/{idPromo}/{id}/edit -->
+<div id="profUpdate" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Modifier un professeur</p>
+        <form id="formUpdate" method="post">
+            <input type="hidden" id="updateId" name="id">
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="updateNom" name="nomProf" required placeholder="Ex: DESPORT">
+            </div>
+            <div class="form-group">
+                <label>Prénom *</label>
+                <input type="text" id="updatePrenom" name="prenomProf" required placeholder="Ex: Pierre">
+            </div>
+            <div class="form-group">
+                <label>Intervenant Extérieur *</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" id="updateIntervenantOui" name="intervenantExterieur" value="true"> OUI
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" id="updateIntervenantNon" name="intervenantExterieur" value="false"> NON
+                    </label>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUp()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ===== Pop Up Supprimer ===== -->
+<!-- action : POST /gestionnaire-edt/professeurs/{idPromo}/{id}/delete -->
+<div id="profDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-4 text-white">Supprimer un professeur</p>
+        <p class="text-slate-300 mb-4">Êtes-vous sûr de vouloir supprimer ce professeur ?</p>
+        <div class="delete-recap">
+            <div class="delete-recap-item">
+                <span class="delete-recap-label">Nom</span>
+                <span class="delete-recap-value" id="deleteNom">-</span>
+            </div>
+        </div>
+        <p class="text-red-400 text-sm mb-6">Cette action est irréversible</p>
+        <form id="formDelete" method="post">
+            <div class="flex gap-3">
+                <button type="button" onclick="closePopUp()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-delete flex-1">Supprimer définitivement</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const baseUrl = /*[[@{/}]]*/ '/';
+    const idPromo = /*[[${idPromo}]]*/ null;
+</script>
 <script th:src="@{/js/gestion_professeur.js}"></script>
 </body>
 </html>

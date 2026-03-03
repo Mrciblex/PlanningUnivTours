@@ -18,13 +18,6 @@ public class GestionProfesseurController {
         this.professeurService = professeurService;
     }
 
-    // GET : liste tous les professeurs
-    @GetMapping
-    public String listAllProfesseurs(Model model) {
-        List<ProfesseurDto> professeurs = professeurService.findAllProfesseurs();
-        model.addAttribute("professeurs", professeurs);
-        return "gestionnaire_edt/gestion_professeurs";
-    }
 
     // GET : liste les professeurs d'une promo
     @GetMapping("/promo/{idPromo}")
@@ -35,12 +28,6 @@ public class GestionProfesseurController {
         return "gestionnaire_edt/gestion_professeurs";
     }
 
-    //POST : créer un prof (sans promo)
-    @PostMapping("/new")
-    public String createProfesseur(@ModelAttribute ProfesseurDto professeurDto) {
-        professeurService.createProfesseur(professeurDto);
-        return "redirect:/gestionnaire-edt/professeurs";
-    }
 
     //POST : créer un prof lié à une promo
     @PostMapping("/{idPromo}/new")
@@ -48,15 +35,6 @@ public class GestionProfesseurController {
                                           @ModelAttribute ProfesseurDto professeurDto) {
         professeurService.createProfesseur(professeurDto);
         return "redirect:/gestionnaire-edt/professeurs/promo/" + idPromo;
-    }
-
-    //POST : modifier un prof (sans promo)─
-    @PostMapping("/{id}/edit")
-    public String updateProfesseur(@PathVariable Integer id,
-                                   @ModelAttribute ProfesseurDto professeurDto) {
-        professeurDto.setIdProf(id);
-        professeurService.updateProfesseur(professeurDto);
-        return "redirect:/gestionnaire-edt/professeurs";
     }
 
     // POST : modifier un prof lié à une promo
@@ -67,13 +45,6 @@ public class GestionProfesseurController {
         professeurDto.setIdProf(id);
         professeurService.updateProfesseur(professeurDto);
         return "redirect:/gestionnaire-edt/professeurs/promo/" + idPromo;
-    }
-
-    // OST : supprimer un prof (sans promo)
-    @PostMapping("/{id}/delete")
-    public String deleteProfesseur(@PathVariable Integer id) {
-        professeurService.deleteProfesseurById(id);
-        return "redirect:/gestionnaire-edt/professeurs";
     }
 
     //  POST : supprimer un prof lié à une promo
