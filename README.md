@@ -31,6 +31,8 @@ Un navigateur web (Chrome, Firefox, Edge, etc.).
 
 Un système d’exploitation : Windows, macOS ou Linux.
 
+(à voir avec macOs ou Linux, car nous n'avons pu tester que sur windows)
+
 # Étapes d’Installation et de Lancement
 1. Cloner le Dépôt Git
 
