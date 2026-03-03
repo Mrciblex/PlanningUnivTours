@@ -74,7 +74,11 @@ public class PromoService {
 
         return PromoMapper.toDto(savedPromo);
     }
-
+    public Integer getnbetudiant(Integer idPromo){
+        PromoEntity promoEntity= promoRepository.findById(idPromo).orElseThrow(() -> new ResourceNotFoundException("Promo non trouvée avec l'id : " + idPromo));
+        PromoDto promoDto = PromoMapper.toDto(promoEntity);
+        return promoDto.getNbEtuPromo();
+    }
     public void deletePromoById(Integer id) {
         findPromoEntityById(id);
         promoRepository.deleteById(id);
