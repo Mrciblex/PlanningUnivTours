@@ -11,4 +11,7 @@ public interface ParticipeARepository extends JpaRepository<ParticipeAEntity, Pa
     @Modifying
     @Transactional
     void deleteAllByCoursIdCours(Integer idCours);
+    @Transactional
+    @Modifying
+    void deleteByCours_IdCours(Integer idCours);
 }

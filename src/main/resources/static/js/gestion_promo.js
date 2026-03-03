@@ -20,6 +20,7 @@ function editPromoPopUp(btn) {
     const id = btn.dataset.id;
     const nom = btn.dataset.nom;
     const annee = btn.dataset.annee;
+    const nbetu = btn.dataset.nbetu;
     const debutS1 = btn.dataset.debutS1;
     const finS1 = btn.dataset.finS1;
     const debutS2 = btn.dataset.debutS2;
@@ -28,12 +29,13 @@ function editPromoPopUp(btn) {
     document.getElementById("promoIdU").value = id;
     document.getElementById("nomU").value = nom;
     document.getElementById("anneeU").value = annee;
+    document.getElementById("nbetuU").value = nbetu;
     document.getElementById("dateDebutS1U").value = debutS1;
     document.getElementById("dateFinS1U").value = finS1;
     document.getElementById("dateDebutS2U").value = debutS2;
     document.getElementById("dateFinS2U").value = finS2;
 
-    document.getElementById("promoUpdate").style.display = "flex";
+    document.getElementById("promoUpdate").classList.add('active');
 }
 /**
  function editPromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
@@ -52,7 +54,7 @@ function deletePromoPopUp(btn) {
 
     document.getElementById("nomD").textContent = btn.dataset.nom;
 
-    document.getElementById("promoDelete").style.display = "flex";
+    document.getElementById("promoDelete").classList.add('active');
 }
 /**
  function deletePromoPopUp(id, nom, annee, dateDebutS1, dateFinS1, dateDebutS2, dateFinS2) {
@@ -77,12 +79,16 @@ function deletePromoPopUp(btn) {
  document.getElementById('promoDelete').classList.add('active');
  }
  */
-function closePopUp() {
+
+// Fermer les pop up
+function closePopUpAdd() {
     document.getElementById('promoAdd').classList.remove('active');
+}
+
+function closePopUpUpdate() {
     document.getElementById('promoUpdate').classList.remove('active');
+}
+
+function closePopUpDelete() {
     document.getElementById('promoDelete').classList.remove('active');
 }
-/**
- function closePopUp() {
- document.getElementById('promoAdd' || 'promoUpdate' || 'promoDelete').classList.remove('active');
- }*/

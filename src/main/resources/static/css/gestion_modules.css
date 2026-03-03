@@ -16,14 +16,18 @@
     background: rgba(0, 169, 155, 0.3);
 }
 
+.data-table thead tr {
+    text-align: center;
+}
+
 .data-table th {
     padding: 16px 20px;
+    text-align: center;
     font-size: 13px;
     font-weight: 600;
     color: #00A99B;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(120, 144, 156, 0.2);
-    text-align: center;
 }
 
 .data-table tbody tr {
@@ -103,7 +107,7 @@
     color: #ff6b6b;
 }
 
-.popUp {
+.modal {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -114,11 +118,11 @@
     justify-content: center;
 }
 
-.popUp.active {
+.modal.active {
     display: flex;
 }
 
-.popUp-content {
+.modal-content {
     background: rgba(45, 62, 80, 0.95);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(120, 144, 156, 0.3);
