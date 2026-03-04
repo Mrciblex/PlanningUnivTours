@@ -42,7 +42,7 @@ git clone https://github.com/Mrciblex/PlanningUnivTours.git
 
 2. Configurer le Serveur Local
 
-Accédez au dossier clonné et localisez le fichier luncher.sh (pour macOs et  linux) ou lunch.bat (pour windows).
+Accédez au dossier clonné et localisez le fichier launcher.sh (pour macOs et  linux) ou launch.bat (pour windows).
 Copiez ce raccourci et collez-le dans un dossier accessible (ex : Bureau).
 Double-cliquez sur univTime pour lancer le serveur local.
 
