@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/maquette.css}">
+    <script th:src="@{/js/maquette.js}" defer></script>
+    <title>UnivTime - Maquette Pédagogique</title>
+</head>
+
+<body class="bg-[#2F3E47]" th:data-nbsem="${nbsem}">
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+<script th:inline="javascript">
+    const currentPromo = /*[[${promo != null ? promo : null}]]*/ null;
+
+    const existingCms = /*[[${existingCms != null ? existingCms : '[]'}]]*/ [];
+    const existingTds = /*[[${existingTds != null ? existingTds : '[]'}]]*/ [];
+    const existingTps = /*[[${existingTps != null ? existingTps : '[]'}]]*/ [];
+
+    const baseUrl = /*[[@{/}]]*/ '/';
+
+    const availableData = {
+        modules: /*[[${modulesDispos != null ? modulesDispos : '[]'}]]*/ [],
+        composantes: /*[[${composantesDispos != null ? composantesDispos : '[]'}]]*/ [],
+        professeurs: /*[[${professeursDispos != null ? professeursDispos : '[]'}]]*/ [],
+        groupes: /*[[${groupesDispos != null ? groupesDispos : '[]'}]]*/ []
+    };
+</script>
+
+<div class="planning-container">
+    <div class="planning-header">
+        <div class="header-left">
+            <h1 class="text-xl font-bold text-white mb-2">Maquette Pédagogique (S<span th:text="${numSemestre}"></span>)</h1>
+            <div class="promo-recap" th:if="${promo != null}">
+                <div class="promo-recap-title">Promotion sélectionnée</div>
+                <div class="promo-recap-content">
+                    <div class="promo-stat">
+                        <span class="promo-stat-label">Nom</span>
+                        <span class="promo-stat-value" th:text="${promo.nomPromo}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-3">
+            <button onclick="resetMaquette()" class="btn-cancel bg-red-900/40 text-red-400 border border-red-500/30 hover:bg-red-900/60">Réinitialiser tout</button>
+            <button onclick="saveMaquette()" class="btn-add transform-gpu">Sauvegarder</button>
+            <button onclick="openMaquetteMatierePopUp()" class="btn-add transform-gpu">+ Configurer une matière</button>
+        </div>
+    </div>
+
+    <div class="dashboard-container scrollbar">
+        <table class="planning-table">
+            <thead>
+            <tr>
+                <th style="width: 150px;">Matière</th>
+                <th style="width: 250px;">Lignes d'enseignement</th>
+                <th class="week-header" th:each="sem : ${#numbers.sequence(1, nbsem)}" th:text="'S' + ${sem}"></th>
+                <th style="width: 100px;">Actions</th>
+            </tr>
+            </thead>
+            <tbody id="planningTableBody">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="selection-sidebar scrollbar">
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Modules</span>
+                <button class="btn-add-small transform-gpu">+ Créer</button>
+                <button onclick="openSelectionModal('modules')" class="btn-add-small transform-gpu">+ Importer</button>
+            </div>
+            <div class="selected-items" id="selectedModules"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Composantes</span>
+            </div>
+            <div class="selected-items" id="selectedComposantes"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Enseignants</span>
+                <button class="btn-add-small transform-gpu">+ Créer</button>
+                <button onclick="openSelectionModal('professeurs')" class="btn-add-small transform-gpu">+ Importer</button>
+            </div>
+            <div class="selected-items" id="selectedEnseignants"></div>
+        </div>
+
+        <div class="selection-block">
+            <div class="block-header">
+                <span class="block-title">Groupes de la Promo</span>
+            </div>
+            <div class="selected-items" id="selectedGroupes"></div>
+        </div>
+    </div>
+</div>
+
+<div id="selectionModal" class="modal transform-gpu">
+    <div class="modal-content selection-modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="selectionModalTitle">Sélectionner</h2>
+            <button class="modal-close" type="button" onclick="closeSelectionModal()">&times;</button>
+        </div>
+
+        <div class="checkbox-list scrollbar" id="checkboxList"></div>
+
+        <div class="modal-actions">
+            <button type="button" onclick="closeSelectionModal()" class="btn-cancel">Annuler</button>
+            <button type="button" onclick="confirmSelection()" class="btn-save">Valider</button>
+        </div>
+    </div>
+</div>
+
+<div id="matiereModal" class="modal transform-gpu">
+    <div class="modal-content" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Configurer une matière</h2>
+            <button class="modal-close" type="button" onclick="closeMaquetteMatierePopUp()">&times;</button>
+        </div>
+
+        <form id="matiereForm">
+            <div class="form-section">
+                <div class="form-section-title">1. Sélection de la composante</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <select class="form-select" id="matiereComposante" required></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title flex justify-between items-center">
+                    <span>2. Lignes d'enseignement (Professeur / Cible / Volumes)</span>
+                    <button type="button" onclick="addAssignationRow()" class="btn-add-small">+ Ajouter une ligne</button>
+                </div>
+
+                <div id="assignationsContainer" class="flex flex-col gap-4 mt-4">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" onclick="closeMaquetteMatierePopUp()" class="btn-cancel">Annuler</button>
+                <button type="submit" class="btn-save">Valider et Ajouter au tableau</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

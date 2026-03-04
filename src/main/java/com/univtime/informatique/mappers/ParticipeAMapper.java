@@ -1,0 +1,75 @@
+package com.univtime.informatique.mappers;
+
+import com.univtime.informatique.dto.idsDto.TPIdDto;
+import com.univtime.informatique.dto.participeADto.*;
+import com.univtime.informatique.entities.ParticipeAEntity;
+import com.univtime.informatique.entities.SousGroupeEntity;
+import com.univtime.informatique.entities.CoursEntity;
+import com.univtime.informatique.entities.ids.ParticipeAId;
+
+import java.util.stream.Collectors;
+
+public class ParticipeAMapper {
+
+    private ParticipeAMapper() {
+
+    }
+
+    public static ParticipeADto toDto(ParticipeAEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        ParticipeADto dto = new ParticipeADto();
+        dto.setSousGroupeDto(sousGroupeToDto(entity.getSousGroupe()));
+        dto.setCoursDto(coursToDto(entity.getCours()));
+
+        return dto;
+    }
+
+    public static ParticipeAEntity toEntity(ParticipeADto dto) {
+        if (dto == null) {
+            return null;
+        }
+        ParticipeAEntity entity = new ParticipeAEntity();
+
+        entity.setIdParticipeA(dto.getParticipeAId());
+
+        return entity;
+    }
+
+    private static SousGroupeParticipeADto sousGroupeToDto(SousGroupeEntity entity) {
+        SousGroupeParticipeADto sg = new SousGroupeParticipeADto();
+        if (entity != null) {
+            sg.setIdSousGroupe(entity.getIdSousGroupe());
+            sg.setNomSousGroupe(entity.getNomSousGroupe());
+            sg.setNbEtuSousGroupe(entity.getNbEtuSousGroupe());
+            sg.setGroupeId(entity.getGroupe().getIdGroupe());
+            sg.setTpIds(entity.getTpEntities()
+                    .stream()
+                    .map(tpEntity -> {
+                        return new TPIdDto(
+                                tpEntity.getIdTP().getIdProf(),
+                                tpEntity.getIdTP().getIdSousGroupe(),
+                                tpEntity.getIdTP().getIdComposante(),
+                                tpEntity.getIdTP().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+        }
+        return sg;
+    }
+
+    private static CoursParticipeADto coursToDto(CoursEntity entity) {
+        CoursParticipeADto cours = new CoursParticipeADto();
+        if (entity != null) {
+            cours.setIdCours(entity.getIdCours());
+            cours.setHeureDebutCours(entity.getHeureDebutCours());
+            cours.setHeureFinCours(entity.getHeureFinCours());
+            cours.setTypeCours(entity.getTypeCours());
+            cours.setComposanteId(entity.getComposante().getIdComposante());
+            cours.setProfesseurId(entity.getProfesseur().getIdProf());
+            cours.setSalleId(entity.getSalle().getIdSalle());
+        }
+        return cours;
+    }
+}

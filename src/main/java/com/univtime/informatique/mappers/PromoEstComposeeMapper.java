@@ -1,0 +1,80 @@
+package com.univtime.informatique.mappers;
+
+import com.univtime.informatique.dto.idsDto.CMIdDto;
+import com.univtime.informatique.dto.promoEstComposeeDto.*;
+import com.univtime.informatique.entities.*;
+import com.univtime.informatique.entities.ids.PromoEstComposeeId;
+
+import java.util.stream.Collectors;
+
+public class PromoEstComposeeMapper {
+
+    private PromoEstComposeeMapper() {
+
+    }
+
+    public static PromoEstComposeeDto toDto(PromoEstComposeeEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        PromoEstComposeeDto dto = new PromoEstComposeeDto();
+        dto.setPromoDto(promoToDto(entity.getPromo()));
+        dto.setModuleDto(moduleToDto(entity.getModule()));
+
+        return dto;
+    }
+
+    public static PromoEstComposeeEntity toEntity(PromoEstComposeeDto dto) {
+        if (dto == null) {
+            return null;
+        }
+        PromoEstComposeeEntity entity = new PromoEstComposeeEntity();
+
+        entity.setIdPromoEstComposee(dto.getPromoEstComposeeId());
+
+        return entity;
+    }
+
+    private static PromoPromoEstComposeeDto promoToDto(PromoEntity entity) {
+        PromoPromoEstComposeeDto promo = new PromoPromoEstComposeeDto();
+        if (entity != null) {
+            promo.setIdPromo(entity.getIdPromo());
+            promo.setNomPromo(entity.getNomPromo());
+            promo.setAnneePromo(entity.getAnneePromo());
+            promo.setNbEtuPromo(entity.getNbEtuPromo());
+            promo.setDebutS1Promo(entity.getDebutS1Promo());
+            promo.setFinS1Promo(entity.getFinS1Promo());
+            promo.setDebutS2Promo(entity.getDebutS2Promo());
+            promo.setFinS2Promo(entity.getFinS2Promo());
+            promo.setCmIds(entity.getCmEntities()
+                    .stream()
+                    .map(cmEntity -> {
+                        return new CMIdDto(
+                                cmEntity.getIdCM().getIdProf(),
+                                cmEntity.getIdCM().getIdPromo(),
+                                cmEntity.getIdCM().getIdComposante(),
+                                cmEntity.getIdCM().getIdRepartitionSemaine()
+                        );
+                    })
+                    .collect(Collectors.toSet()));
+            promo.setGroupeIds(entity.getGroupeEntities()
+                    .stream()
+                    .map(GroupeEntity::getIdGroupe)
+                    .collect(Collectors.toSet()));
+        }
+        return promo;
+    }
+
+    private static ModulePromoEstComposeeDto moduleToDto(ModuleEntity entity) {
+        ModulePromoEstComposeeDto module = new ModulePromoEstComposeeDto();
+        if (entity != null) {
+            module.setIdModule(entity.getIdModule());
+            module.setNomModule(entity.getNomModule());
+            module.setComposanteIds(entity.getComposanteEntities()
+                    .stream()
+                    .map(ComposanteEntity::getIdComposante)
+                    .collect(Collectors.toSet()));
+        }
+        return module;
+    }
+}

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/edt.css}">
+    <script th:src="@{/js/edt.js}" defer></script>
+    <title>UnivTime - EDT</title>
+</head>
+<body>
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+<div class="edt-container">
+    <div class="calendar-area">
+        <div class="edt-header">
+            <div class="flex flex-col">
+                <h1 class="text-2xl font-bold leading-[0.8]">
+                    UnivTime
+                </h1>
+                <span class="text-sm text-white font-bold text-right" th:text="${promo.nomPromo} + ' ' + ${promo.anneePromo} + ' - S' + ${numSemestre}">Promo</span>
+                <a th:href="@{/gestionnaire-edt/edt/{idPromo}/{numSemestre}(idPromo=${promo.idPromo}, numSemestre=${numSemestre == 1 ? 2 : 1})}" th:text="'Aller au S' + ${numSemestre == 1 ? 2 : 1}" class="text-sm text-gray-400 font-bold text-right cursor-pointer underline">Aller au S2</a>
+            </div>
+
+            <div class="week-nav">
+                <button onclick="previousWeek()">◄</button>
+                <span class="week-info" id="weekInfo">
+                    Semaine du 00 au 00 x 0000
+                </span>
+                <button onclick="nextWeek()">►</button>
+                <span class="text-sm text-slate-400 min-w-[6em] max-w-[6em] text-center">Semaine <span id="weekNumber">1</span></span>
+            </div>
+        </div>
+
+        <div class="calendar-scroll">
+            <table class="calendar-table">
+                <thead>
+                <tr>
+                    <th>Heures</th>
+                    <th class="th-day-1">Lundi</th>
+                    <th class="th-day-2">Mardi</th>
+                    <th class="th-day-3">Mercredi</th>
+                    <th class="th-day-4">Jeudi</th>
+                    <th class="th-day-5">Vendredi</th>
+                </tr>
+                </thead>
+                <tbody id="calendar-body">
+                <tr th:each="i : ${#numbers.sequence( 60 * 7, 60 * 20, 15)}"
+                    th:with="heure=${i/60 + ':' + (i%60 == 0 ? '00' : (i%60 < 10 ? '0' + i%60 : i%60))}">
+
+                    <th th:text="${heure}"></th>
+
+                    <td th:each="j : ${#numbers.sequence(1, 5, 1)}"
+                        th:data-day="${j}"
+                        th:data-time="${heure}"
+                        class="time-slot"
+                        onclick="addCourseAt(this)">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <button class="btn-primary" onclick="addCourse()">+ Ajouter un cours</button>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/modules/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Modules</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/composantes/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Composantes</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/professeurs/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Enseignants</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/groupes/promo/{idPromo}(idPromo=${promo.idPromo})}">+ Groupes</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/maquette/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">+ Maquette</a>
+        <a class="btn-primary text-center" th:href="@{/gestionnaire-edt/recapitulatif/{id}/{sem}(id=${promo.idPromo}, sem=${numSemestre})}">Récapitulatif</a>
+        <button class="btn-primary" onclick="openSettings()">Générateur</button>
+        <button class="btn-primary" onclick="exportEDT()">Exporter</button>
+
+        <div class="mini-calendar">
+            <div class="mini-calendar-header">
+                <button class="mini-calendar-nav" onclick="previousMonth()">‹</button>
+                <span class="mini-calendar-month" id="calendarMonth">Janvier 2025</span>
+                <button class="mini-calendar-nav" onclick="nextMonth()">›</button>
+            </div>
+
+            <table class="mini-calendar-table" id="miniCalendarTable">
+                <thead>
+                <tr>
+                    <th>L</th><th>M</th><th>M</th><th>J</th><th>V</th><th>S</th><th>D</th>
+                </tr>
+                </thead>
+                <tbody id="calendarDates">
+                </tbody>
+            </table>
+        </div>
+
+        <div id="exportPopUp" class="export-popup">
+            <div class="export-popup-content">
+                <div class="export-popup-header">
+                    <h2 class="export-popup-title">Exporter l'emploi du temps</h2>
+                    <button onclick="closeExportModal()" class="export-popup-close">&times;</button>
+                </div>
+
+                <p class="export-popup-description">Choisissez le format d'export pour l'emploi du temps</p>
+
+                <div class="export-options">
+                    <button onclick="exportToCSV()" class="export-option-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        <div class="export-option-text">
+                            <div class="export-option-title">CSV</div>
+                            <div class="export-option-desc">Format tableur universel (.csv)</div>
+                        </div>
+                    </button>
+
+                    <button onclick="exportToExcel()" class="export-option-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M9 15h6"></path>
+                            <path d="M12 12v6"></path>
+                        </svg>
+                        <div class="export-option-text">
+                            <div class="export-option-title">Excel</div>
+                            <div class="export-option-desc">Format Microsoft Excel (.xlsx)</div>
+                        </div>
+                    </button>
+
+                    <button onclick="exportToPDF()" class="export-option-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <path d="M10 12h4"></path>
+                            <path d="M10 16h4"></path>
+                        </svg>
+                        <div class="export-option-text">
+                            <div class="export-option-title">PDF</div>
+                            <div class="export-option-desc">Document imprimable (.pdf)</div>
+                        </div>
+                    </button>
+                </div>
+
+                <button onclick="closeExportModal()" class="export-cancel-btn">Annuler</button>
+            </div>
+        </div>
+
+        <div id="generatorPopUp" class="export-popup">
+            <div class="export-popup-content" style="max-width: 600px;">
+                <div class="export-popup-header">
+                    <h2 class="export-popup-title">Générateur d'Emploi du Temps</h2>
+                    <button onclick="closeGeneratorModal()" class="export-popup-close generator-cancel-btn">&times;</button>
+                </div>
+
+                <div class="generator-form" style="display: grid; gap: 15px; color: white;">
+                    <p class="export-popup-description">Ajustez l'importance des critères pour l'algorithme</p>
+                    <div class="weight-input">
+                        <label for="w_repetition" class="flex justify-between">Répétition dans la journée (0.5 : Neutre) <span id="val1">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_repetition" oninput="document.getElementById('val1').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_tot" class="flex justify-between">Placer le plus tôt possible (0.5 : Neutre) <span id="val2">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_tot" oninput="document.getElementById('val2').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_matin" class="flex justify-between">Priorité Matin (0.5 : Neutre) <span id="val3">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_matin" oninput="document.getElementById('val3').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_tard" class="flex justify-between">Éviter de finir tard (0 : Neutre) <span id="val4">0.0</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.0" class="w-full generator-weight-input" id="w_tard" oninput="document.getElementById('val4').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_trous" class="flex justify-between">Éviter les trous (0.5 : Neutre) <span id="val5">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_trous" oninput="document.getElementById('val5').innerText=this.value">
+                    </div>
+                    <div class="weight-input">
+                        <label for="w_regu" class="flex justify-between">Régularité (0.5 : Neutre) <span id="val6">0.5</span></label>
+                        <input type="range" min="0" max="1" step="0.1" value="0.5" class="w-full generator-weight-input" id="w_regu" oninput="document.getElementById('val6').innerText=this.value">
+                    </div>
+                </div>
+
+                <div class="generator-response" style="display: none; gap: 15px; color: white;">
+
+                </div>
+
+                <div style="margin-top: 25px; display: flex; gap: 10px;">
+                    <button onclick="runGenerator(this)" class="btn-primary" style="flex: 2; text-align: center;">Lancer la génération</button>
+                    <button onclick="closeGeneratorModal()" class="export-cancel-btn generator-cancel-btn" style="flex: 1; margin-top: 0;">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /* On stocke l'objet injecté par le serveur.
+       L'utilisation de /*[[...]]*\/ [] est la syntaxe recommandée par Thymeleaf
+       pour que ça fonctionne proprement en JavaScript et sans erreur dans l'IDE.
+    */
+    const coursData = /*[[${cours}]]*/ [];
+    const promoData = /*[[${promo}]]*/ [];
+    const numSemestre = /*[[${numSemestre}]]*/ [];
+    const baseUrl = /*[[@{/}]]*/ '/';
+</script>
+</body>
+</html>

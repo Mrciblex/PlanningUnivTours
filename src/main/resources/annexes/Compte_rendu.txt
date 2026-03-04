@@ -1,0 +1,97 @@
+// Création Promo
+fct creaPromo :
+	saisir NomPromo
+	saisir Année
+	sairsir nb étudiants
+	
+	est ce que on veut rajouter un groupe si oui :
+	fct creatGroup
+	
+// Création Groupe/sous Groupe	  -> 40 max
+fct creatGroupe :
+	demande le nombre le nombre de groupe que on veut faire -> x
+	demande le nombre le nombre de sous-groupe que on veut faire -> y
+	Pour tout i de 1 à x faire
+		assigne le nom du groupe : "Groupe " + i
+		demande le nombre étudiant dans le groupe
+	finpourtant
+	
+	Pour tout j de 1 à y faire
+		assigne le numéro de sous-groupe : "Groupe " + i
+		demande le nombre étudiant dans le sous-groupe
+	finpourtant
+	
+// Création des Composantes
+fct creatComp :
+	saisir un le nombre de module : k
+	Pour tout k de 1 à n faire
+		saisir le nom du module k : nom
+		saisir un le nombre de composante dedans : nbc
+		pour tout nbc de 1 à n faire
+			saisir les composantes
+				nom
+				volumetotal
+				on demande si il a des cm 
+				si oui
+					volume horaire CM
+					blocHoraire
+				on demande si il a des TD 
+				si oui
+					volume horaire TD
+					blocHoraire
+				on demande si il a des TP 
+				si oui
+					volume horaire TP
+					blocHoraire
+
+// Création d'un prof				
+fct ajout_prof :
+	saisir nom
+	saisir prenom
+	cocher si c'est un intervenant extérieur
+	
+// Assignations d'un prof
+fct assign_prof	
+	choisi CM,TD,TP
+	choisir les groupes
+	
+// Ajout des disponibilités
+fct ajout_dispo :
+	choisir le prof
+	le jour
+	les heures
+
+Ordre : CM -> TD -> TP
+Minimum 2 avant le premier TD et 1 TD avant le premier TP
+ 
+Le S3 est a éviter ++
+Eviter les cours le vendredi 
+
+
+VARIABLES éphémaires -> délimation semestre
+
+					 -> jours fériés -> calcul et coché
+					 -> jours de pauses -> rentre à la main
+
+
+Ajouter manuellement entre 12h15 et 13h30 mais pas générer automatiquement
+Ajouter x semaine le meme cours
+Essaie de garder le meme pattern
+Possibilité de déplacer/supprimer un cours manuellement occurence
+
+Fenetre nombre d'heures manquantes -> quand placement manuellement 
+Contrainte -> S3 tres chere
+contrainte souple
+ratio volumeHoraire/semaine pour chaque prof 
+algo Glouton -> pour la premiere génération + random //// GRASP (Greedy randomized Adaptative Search Procedure Recherche Locale
+Prof qui dit que sont premier cours -> cours
+	-> ainsi que le pattern semaine 1 CM CM / puis 2 TD CM / etc par cours
+Mieux ordre de progression 
+table semaine ???
+Premier temps pas plus de 6h de cours de la meme matiere dans la meme semaine
+Le vendredi plus du hasard car on comment par le début de la semaine
+Commerncer par les semaine le plus chargée ??? Prof les plus chargée ??
+Génére une solution et apres on bouge
+CM / TP / TD
+Faire un truc random
+Faire une vue heure manquante

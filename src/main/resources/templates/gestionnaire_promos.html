@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/gestionnaire_promos.css}">
+    <script th:src="@{/js/gestion_promo.js}" defer></script>
+    <title>UnivTime - Gestionnaire Promos</title>
+</head>
+
+<body class="bg-[#2F3E47]">
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+
+<div class="min-h-screen p-20">
+    <div class="container mx-auto max-w-8xl">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-white">Gestion des Promotions</h2>
+            <button onclick="openPromoPopUp()" class="btn-primary">+ Ajouter une promotion</button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Année</th>
+                    <th>Nombre d'étudiant</th>
+                    <th>Semestre 1</th>
+                    <th>Semestre 2</th>
+                    <th>EDT</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="promo : ${promos}" th:if="${promo != null}">
+                    <td class="font-semibold text-white" th:text="${promo.nomPromo}"></td>
+                    <td class="text-white" th:text="${promo.anneePromo}"></td>
+                    <td class="text-white" th:text="${promo.nbEtuPromo}"></td>
+                    <td>
+                        <span class="text-white" th:text="${promo.debutS1Promo != null ? #temporals.format(promo.debutS1Promo, 'dd/MM/yyyy') : '-'}"></span>
+                        <span class="text-slate-400"> - </span>
+                        <span class="text-white" th:text="${promo.finS1Promo != null ? #temporals.format(promo.finS1Promo, 'dd/MM/yyyy') : '-'}"></span>
+                    </td>
+                    <td>
+                        <span class="text-white" th:text="${promo.debutS2Promo != null ? #temporals.format(promo.debutS2Promo, 'dd/MM/yyyy') : '-'}"></span>
+                        <span class="text-slate-400"> - </span>
+                        <span class="text-white" th:text="${promo.finS2Promo != null ? #temporals.format(promo.finS2Promo, 'dd/MM/yyyy') : '-'}"></span>
+                    </td>
+                    <td>
+                        <a class="btn-semester mr-2" th:href="@{/gestionnaire-edt/edt/{idPromo}/1(idPromo=${promo.idPromo})}">S1</a>
+                        <a class="btn-semester mr-2" th:href="@{/gestionnaire-edt/edt/{idPromo}/2(idPromo=${promo.idPromo})}">S2</a>
+                    </td>
+                    <td>
+                        <button class="btn-edit mr-2" onclick="editPromoPopUp(this)"
+                                th:attr="data-id=${promo.idPromo}, data-nom=${promo.nomPromo}, data-annee=${promo.anneePromo}, data-nbetu=${promo.nbEtuPromo},
+                                                 data-debut-s1=${promo.debutS1Promo}, data-fin-s1=${promo.finS1Promo},
+                                                 data-debut-s2=${promo.debutS2Promo}, data-fin-s2=${promo.finS2Promo}">Modifier</button>
+                        <button class="btn-delete" onclick="deletePromoPopUp(this)"
+                                th:attr="data-id=${promo.idPromo}, data-nom=${promo.nomPromo}, data-annee=${promo.anneePromo}, data-nbetu=${promo.nbEtuPromo},
+                                                 data-date-debut-s1=${promo.debutS1Promo}, data-date-fin-s1=${promo.finS1Promo},
+                                                 data-date-debut-s2=${promo.debutS2Promo}, data-date-fin-s2=${promo.finS2Promo}">Supprimer</button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(promos)}"><td colspan="7" class="text-center text-red-700 font-bold">Aucune promotion</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="promoAdd" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Ajouter une promotion</p>
+        <form id="formAdd">
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="nomA" required>
+            </div>
+            <div class="form-group">
+                <label>Année *</label>
+                <input type="number" id="anneeA" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre étudiant *</label>
+                <input type="number" id="nbetuA" required>
+            </div>
+            <div class="form-group">
+                <label>Semestre 1</label>
+                <div class="date-group">
+                    <div><label class="text-xs text-slate-400">Début</label><input type="date" id="dateDebutS1A"></div>
+                    <div><label class="text-xs text-slate-400">Fin</label><input type="date" id="dateFinS1A"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Semestre 2</label>
+                <div class="date-group">
+                    <div><label class="text-xs text-slate-400">Début</label><input type="date" id="dateDebutS2A"></div>
+                    <div><label class="text-xs text-slate-400">Fin</label><input type="date" id="dateFinS2A"></div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpAdd()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="promoUpdate" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Modifier une promotion</p>
+        <form id="formUpdate">
+            <input type="hidden" id="promoIdU">
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="nomU" required>
+            </div>
+            <div class="form-group">
+                <label>Année *</label>
+                <input type="number" id="anneeU" required>
+            </div>
+            <div class="form-group">
+                <label>Nombre étudiant *</label>
+                <input type="number" id="nbetuU" required>
+            </div>
+            <div class="form-group">
+                <label>Semestre 1</label>
+                <div class="date-group">
+                    <div><label class="text-xs text-slate-400">Début</label><input type="date" id="dateDebutS1U"></div>
+                    <div><label class="text-xs text-slate-400">Fin</label><input type="date" id="dateFinS1U"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Semestre 2</label>
+                <div class="date-group">
+                    <div><label class="text-xs text-slate-400">Début</label><input type="date" id="dateDebutS2U"></div>
+                    <div><label class="text-xs text-slate-400">Fin</label><input type="date" id="dateFinS2U"></div>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpUpdate()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="promoDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer cette promotion ?</p>
+        <span style="display: none" id="idPromo"></span>
+        <div class="text-white space-y-1 mb-6">
+            <div>Nom : <span id="nomD">-</span></div>
+            <div>Année : <span id="anneeD">-</span></div>
+            <div>Nombre étudiant : <span id="nbetuD">-</span></div>
+            <div>S1 : <span id="dateDebutS1D">-</span></div>
+            <div>S2 : <span id="dateDebutS2D">-</span></div>
+        </div>
+        <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
+        <div class="flex gap-3">
+            <button type="button" onclick="closePopUpDelete()" class="btn-edit flex-1">Annuler</button>
+            <button type="button" class="btn-delete flex-1" onclick="deletePromo()">Supprimer</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">const baseUrl = /*[[@{/}]]*/ '/';</script>
+</body>
+</html>
