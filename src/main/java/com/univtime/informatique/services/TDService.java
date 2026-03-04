@@ -5,6 +5,7 @@ import com.univtime.informatique.entities.*;
 import com.univtime.informatique.entities.ids.TDId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.TDMapper;
+import com.univtime.informatique.repositories.RepartitionSemaineRepository;
 import com.univtime.informatique.repositories.TDRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -146,6 +147,10 @@ public class TDService {
 
     public void deleteTDById(TDId tdId) {
         findTDEntityById(tdId);
+
+        TDEntity td = findTDEntityById(tdId);
+        Integer idRepartition = td.getRepartitionSemaine().getIdRepartitionSemaine();
         tdRepository.deleteById(tdId);
+        repartitionSemaineService.deleteRepartitionSemaineById(idRepartition);
     }
 }

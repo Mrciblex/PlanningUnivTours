@@ -1,6 +1,6 @@
 .table-container {
     background: rgba(55, 71, 79, 0.4);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 16px;
     overflow: hidden;
@@ -27,7 +27,6 @@
 }
 
 .data-table tbody tr {
-    transition: background 0.2s;
 }
 
 .data-table tbody tr:hover {
@@ -47,7 +46,6 @@
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
 }
 
 .btn-primary:hover {
@@ -60,7 +58,6 @@
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
     background: rgba(0, 169, 155, 0.2);
     color: #00A99B;
     border: 1px solid rgba(0, 169, 155, 0.3);
@@ -78,7 +75,6 @@
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .btn-edit {
@@ -108,7 +104,7 @@
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(4px);
+    /*backdrop-filter: blur(4px);*/
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -120,7 +116,7 @@
 
 .popUp-content {
     background: rgba(45, 62, 80, 0.95);
-    backdrop-filter: blur(20px);
+    /*backdrop-filter: blur(20px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 20px;
     padding: 32px;

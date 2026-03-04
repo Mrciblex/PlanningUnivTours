@@ -19,13 +19,13 @@ public class RepartitionSemaineEntity {
     @Column(name = "qteTypeCours", nullable = false)
     private Integer qteTypeCours;
 
-    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CMEntity> cmEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TDEntity> tdEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "repartitionSemaine", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TPEntity> tpEntities = new HashSet<>();
 
     public Integer getIdRepartitionSemaine() {

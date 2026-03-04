@@ -23,10 +23,10 @@ public class GroupeEntity {
     @JoinColumn(name = "idPromo", nullable = false)
     private PromoEntity promo;
 
-    @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TDEntity> tdEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "groupe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SousGroupeEntity> sousGroupeEntities = new HashSet<>();
 
     public Integer getIdGroupe() {

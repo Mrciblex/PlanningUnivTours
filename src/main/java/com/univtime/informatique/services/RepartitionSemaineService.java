@@ -64,4 +64,13 @@ public class RepartitionSemaineService {
         findRepartitionSemaineEntityById(id);
         repartitionSemaineRepository.deleteById(id);
     }
+
+    @Transactional
+    public void forceDeleteRepartition(Integer id) {
+        repartitionSemaineRepository.deleteCMByRepartitionId(id);
+        repartitionSemaineRepository.deleteTDByRepartitionId(id);
+        repartitionSemaineRepository.deleteTPByRepartitionId(id);
+
+        repartitionSemaineRepository.deleteOnlyRepartition(id);
+    }
 }

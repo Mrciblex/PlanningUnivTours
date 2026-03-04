@@ -23,10 +23,10 @@ public class SousGroupeEntity {
     @JoinColumn(name = "idGroupe", nullable = false)
     private GroupeEntity groupe;
 
-    @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<TPEntity> tpEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sousGroupe", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ParticipeAEntity> participeAEntities = new HashSet<>();
 
     public Integer getIdSousGroupe() {

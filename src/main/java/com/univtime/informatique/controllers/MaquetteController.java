@@ -122,13 +122,25 @@ public class MaquetteController {
 
             // Nettoyage de la base pour cette promo (CM, TD, TP)
             List <CMDto> cms = cmService.findCMDtoByIdPromo(promo.getIdPromo());
-            cms.forEach(cm -> cmService.deleteCMById(cm.getCMId()));
+            cms.forEach(cm -> {
+                try {
+                    repartitionSemaineService.forceDeleteRepartition(cm.getRepartitionSemaineDto().getIdRepartitionSemaine());
+                }catch(Exception _){}
+            });
 
             List <TDDto> tds = tdService.findTDDtoByIdPromo(promo.getIdPromo());
-            tds.forEach(td -> tdService.deleteTDById(td.getTDId()));
+            tds.forEach(td -> {
+                try{
+                    repartitionSemaineService.forceDeleteRepartition(td.getRepartitionSemaineDto().getIdRepartitionSemaine());
+                }catch(Exception _){}
+            });
 
             List <TPDto> tps = tpService.findTPDtoByIdPromo(promo.getIdPromo());
-            tps.forEach(tp -> tpService.deleteTPById(tp.getTPId()));
+            tps.forEach(tp -> {
+                try{
+                    repartitionSemaineService.forceDeleteRepartition(tp.getRepartitionSemaineDto().getIdRepartitionSemaine());
+                }catch(Exception _){}
+            });
 
             // Injection des nouvelles données
             for (MaquetteLigneDto ligne : request.getLignes()) {

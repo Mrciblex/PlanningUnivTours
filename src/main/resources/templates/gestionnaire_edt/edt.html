@@ -17,6 +17,7 @@
                     UnivTime
                 </h1>
                 <span class="text-sm text-white font-bold text-right" th:text="${promo.nomPromo} + ' ' + ${promo.anneePromo} + ' - S' + ${numSemestre}">Promo</span>
+                <a th:href="@{/gestionnaire-edt/edt/{idPromo}/{numSemestre}(idPromo=${promo.idPromo}, numSemestre=${numSemestre == 1 ? 2 : 1})}" th:text="'Aller au S' + ${numSemestre == 1 ? 2 : 1}" class="text-sm text-gray-400 font-bold text-right cursor-pointer underline">Aller au S2</a>
             </div>
 
             <div class="week-nav">

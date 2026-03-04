@@ -705,7 +705,7 @@ function selectDate(year, month, day, el) {
     selectedDate = new Date(year, month, day);
     currentWeekStart = getWeekStart(selectedDate);
 
-    document.querySelector(".today").classList.remove("today");
+    document.querySelector(".today")?.classList.remove("today");
     el.classList.add("today");
     updateWeekInfo();
     loadCourses(); // Met à jour l'EDT sans rechargement de page

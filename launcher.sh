@@ -1,7 +1,16 @@
 #!/usr/bin/env bash
 
 # Se placer dans le dossier du script
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
+
+# ==========================================
+# CONFIGURATION JAVA (Equivalent Mac)
+# ==========================================
+# Tente de trouver Java 25 via l'utilitaire natif macOS, sinon garde la version par défaut
+if /usr/libexec/java_home -v 25 &> /dev/null; then
+    export JAVA_HOME=$(/usr/libexec/java_home -v 25)
+    export PATH="$JAVA_HOME/bin:$PATH"
+fi
 
 # ==========================================
 # CONFIGURATION
@@ -19,7 +28,12 @@ RESET_DB=0
 if [ ! -f "$CONFIG_FILE" ]; then
     NEED_CREATE=1
 else
-    while IFS='=' read -r key value; do
+    # || [ -n "$key" ] permet de lire la derniere ligne meme sans saut de ligne final
+    while IFS='=' read -r key value || [ -n "$key" ]; do
+        # Nettoyage des retours chariots Windows (\r) potentiels
+        key=$(echo "$key" | tr -d '\r')
+        value=$(echo "$value" | tr -d '\r')
+
         case "$key" in
             debug) DEBUG_MODE="$value" ;;
             debug-db) DEBUG_DB="$value" ;;
@@ -112,6 +126,7 @@ if ! command -v psql &> /dev/null; then
     echo "[AIDE] Installez-le via le terminal avec : brew install postgresql"
     echo ""
     read -n 1 -s -r -p "Appuyez sur une touche pour quitter..."
+    echo ""
     exit 1
 fi
 echo "[OK] psql trouve."
@@ -137,31 +152,29 @@ if ! nc -z localhost 5432; then
             brew services start "$PG_SERVICE"
 
             # Pause pour laisser le temps au moteur de démarrer
-            echo "[INFO] Attente du demarrage (5s)..."
             sleep 5
 
             # Revérification
             if ! nc -z localhost 5432; then
-                echo "[ERREUR] Le service n'a pas repondu apres le demarrage."
+                echo "[ERREUR] Le service ne repond pas."
                 MANUAL_CHECK=1
             else
-                echo "[OK] Service demarre avec succes !"
+                echo "[OK] Service demarre !"
             fi
         else
-            echo "[ERREUR] Aucun service PostgreSQL trouve via Homebrew."
             MANUAL_CHECK=1
         fi
     else
-        echo "[ERREUR] Homebrew n'est pas detecte, automatisation impossible."
         MANUAL_CHECK=1
     fi
 
-    # Fallback si l'automatisation a échoué
+    # Fallback si l'automatisation a échoué (Comportement strict du .bat : on quitte)
     if [ "$MANUAL_CHECK" -eq 1 ]; then
         echo ""
-        echo "[AIDE] Lancez PostgreSQL manuellement (ex: via Postgres.app ou brew services start postgresql)."
-        read -n 1 -s -r -p "Appuyez sur une touche une fois que le service est lance..."
+        echo "[AIDE] Lancez PostgreSQL manuellement (ex: Postgres.app ou brew services start postgresql)."
+        read -n 1 -s -r -p "Appuyez sur une touche pour quitter..."
         echo ""
+        exit 1
     fi
 else
     echo "[OK] Service en ligne."
@@ -175,20 +188,25 @@ ASK_CREDENTIALS=1
 
 if [ -f ".dbpassword" ]; then
     IFS=':' read -r PGUSER_FILE PGPASSWORD_FILE < ".dbpassword"
+
+    # Nettoyage des retours chariots Windows (\r)
+    PGUSER_FILE=$(echo "$PGUSER_FILE" | tr -d '\r')
+    PGPASSWORD_FILE=$(echo "$PGPASSWORD_FILE" | tr -d '\r')
+
     if [ -n "$PGUSER_FILE" ] && [ -n "$PGPASSWORD_FILE" ]; then
         PGUSER="$PGUSER_FILE"
         export PGPASSWORD="$PGPASSWORD_FILE"
 
         if psql -U "$PGUSER" -d postgres -c "SELECT 1" &> /dev/null; then
-            echo "[INFO] Identifiants recuperes avec succes."
+            echo "[INFO] Identifiants recuperes."
             ASK_CREDENTIALS=0
         else
             echo "[ERREUR] Identifiants incorrects."
-            rm ".dbpassword"
+            rm -f ".dbpassword"
         fi
     else
         echo "[ATTENTION] Fichier .dbpassword invalide."
-        rm ".dbpassword"
+        rm -f ".dbpassword"
     fi
 fi
 
@@ -204,7 +222,7 @@ while [ "$ASK_CREDENTIALS" -eq 1 ]; do
         echo "[INFO] Identifiants sauvegardes."
         ASK_CREDENTIALS=0
     else
-        echo "[ERREUR] Echec connexion. Reessayez."
+        echo "[ERREUR] Echec connexion."
     fi
 done
 
@@ -244,6 +262,7 @@ if [ -f "$SQL_FILE" ]; then
     else
         echo "[ERREUR] Erreur script SQL schema."
         read -n 1 -s -r -p "Appuyez sur une touche pour quitter..."
+        echo ""
         exit 1
     fi
 else
@@ -261,8 +280,12 @@ if [ "$DEBUG_MODE" -eq 1 ] && [ "$DEBUG_DB" -eq 1 ]; then
 
     DATA_FILE="src/main/resources/db/data.sql"
     if [ -f "$DATA_FILE" ]; then
+        echo "[INFO] Fichier trouve."
         echo "[INFO] Injection en cours..."
         export PGCLIENTENCODING=UTF8
+
+        # Le script bat utilisait pushd/popd pour se placer dans le dossier,
+        # on peut simplement l'appeler depuis la racine ici, c'est équivalent.
         if psql -q -U "$PGUSER" -d "$DBNAME" -f "$DATA_FILE"; then
             echo "[OK] Donnees injectees avec succes."
         else
@@ -284,19 +307,20 @@ echo ""
 
 # Choix dynamique de l'executable Maven (wrapper prioritaire)
 MAVEN_CMD="mvn"
-if [ -f "mvnw" ]; then
+if [ -x "./mvnw" ]; then
     MAVEN_CMD="./mvnw"
 fi
 
 # Compilation (remplace la creation du JAR)
 if [ "$BUILD" -eq 1 ]; then
     echo "[INFO] Compilation demandee (build=1)..."
-    $MAVEN_CMD clean compile
+    "$MAVEN_CMD" clean compile
 
     if [ $? -ne 0 ]; then
         echo ""
         echo "[ERREUR] Compilation echouee."
         read -n 1 -s -r -p "Appuyez sur une touche pour fermer le terminal et lire les logs ci-dessus..."
+        echo ""
         exit 1
     fi
 else
@@ -309,7 +333,7 @@ echo "[INFO] Modifiez un fichier HTML ou Java dans votre IDE pour actualiser la 
 echo ""
 
 # Lancement via le plugin Spring Boot avec transmission des identifiants
-$MAVEN_CMD spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.password=$PGPASSWORD --spring.datasource.username=$PGUSER --app.debug-db=$DEBUG_DB"
+"$MAVEN_CMD" spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.password=${PGPASSWORD} --spring.datasource.username=${PGUSER} --app.debug-db=${DEBUG_DB}"
 
 # On verifie s'il y a eu une erreur reconnue par Maven ou un crash
 if [ $? -ne 0 ]; then
@@ -320,7 +344,7 @@ if [ $? -ne 0 ]; then
 else
     echo ""
     echo "==================================================="
-    echo "[INFO] Le serveur s'est arrete normalement."
+    echo "[INFO] Le serveur s'est arrete."
     echo "==================================================="
 fi
 

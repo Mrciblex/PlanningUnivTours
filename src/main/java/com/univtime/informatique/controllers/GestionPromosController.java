@@ -1,19 +1,21 @@
 package com.univtime.informatique.controllers;
-import com.univtime.informatique.dto.groupeDto.GroupeDto;
+
 import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.services.PromoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/gestion-promos")
 public class GestionPromosController {
-    public final PromoService promoService;
+    private final PromoService promoService;
+
     public GestionPromosController(PromoService promoService) {
         this.promoService = promoService;
     }
@@ -21,34 +23,41 @@ public class GestionPromosController {
     @GetMapping
     public String listAllPromos(Model model) {
         List<PromoDto> promos = promoService.findAllPromos();
-        if (promos == null) {
-            promos = new ArrayList<>();
-        }
-        model.addAttribute("promos", promos);
-
-        model.addAttribute("newPromo", new PromoDto());
-
+        model.addAttribute("promos", promos != null ? promos : new ArrayList<>());
         return "gestionnaire_promos";
     }
+
     @PostMapping("/new")
-    public String createPromo(@ModelAttribute PromoDto promoDto) {
-        promoService.createPromo(promoDto);
-        // Redirige vers la méthode qui liste toutes les promos
-        return "redirect:/gestion-promos";
+    @ResponseBody
+    public ResponseEntity<?> createPromo(@RequestBody PromoDto promoDto) {
+        try {
+            promoService.createPromo(promoDto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @PostMapping("/{id}/edit")
-    public String updatepromo(@PathVariable Integer id, @ModelAttribute PromoDto promoDto) {
-
-        promoDto.setIdPromo(id);
-        promoService.updatePromo(new PromoDto());
-
-        return "redirect:/gestion-promos";
+    @ResponseBody
+    public ResponseEntity<?> updatePromo(@PathVariable Integer id, @RequestBody PromoDto promoDto) {
+        try {
+            promoDto.setIdPromo(id);
+            promoService.updatePromo(promoDto);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 
     @PostMapping("/{id}/delete")
-    public String deletePromo(@PathVariable Integer id) {
-        promoService.deletePromoById(id);;
-        return "redirect:/gestion-promos";
+    @ResponseBody
+    public ResponseEntity<?> deletePromo(@PathVariable Integer id) {
+        try {
+            promoService.deletePromoById(id);
+            return ResponseEntity.ok().body(Map.of("message", "Succès"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
     }
 }

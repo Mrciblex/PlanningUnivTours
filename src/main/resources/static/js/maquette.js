@@ -25,6 +25,40 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAll();
 });
 
+// --- Ajout des fonctions pour l'overlay de chargement ---
+function showLoadingOverlay() {
+    let overlay = document.getElementById('loadingOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'loadingOverlay';
+        // Style pour prendre tout l'écran, bloquer les clics, et mettre un fond noir transparent
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100vw';
+        overlay.style.height = '100vh';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = 'white';
+        overlay.style.fontSize = '1.5rem';
+        overlay.style.fontWeight = 'bold';
+        overlay.innerHTML = '<span>Sauvegarde en cours...</span>';
+        document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+// --------------------------------------------------------
+
 function getModuleIdFromComp(c) {
     if (c.idModule !== undefined && c.idModule !== null) return c.idModule;
     if (c.moduleDto && c.moduleDto.idModule !== undefined) return c.moduleDto.idModule;
@@ -565,6 +599,9 @@ function saveMaquette() {
         return;
     }
 
+    // Afficher l'overlay avant de démarrer la requête
+    showLoadingOverlay();
+
     // On formate les données pour le backend
     const payload = {
         idPromo: currentPromo.idPromo,
@@ -587,6 +624,7 @@ function saveMaquette() {
         body: JSON.stringify(payload)
     })
         .then(async response => {
+            hideLoadingOverlay(); // Cacher l'overlay à la fin
             if (response.ok) {
                 alert("Maquette sauvegardée avec succès !");
                 //window.location.reload();
@@ -596,6 +634,7 @@ function saveMaquette() {
             }
         })
         .catch(error => {
+            hideLoadingOverlay(); // Cacher l'overlay même en cas d'erreur réseau
             console.error("Erreur de communication :", error);
             alert("Erreur réseau lors de la sauvegarde.");
         });

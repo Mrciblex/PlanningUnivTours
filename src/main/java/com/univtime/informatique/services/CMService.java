@@ -6,6 +6,7 @@ import com.univtime.informatique.entities.ids.CMId;
 import com.univtime.informatique.exceptions.ResourceNotFoundException;
 import com.univtime.informatique.mappers.CMMapper;
 import com.univtime.informatique.repositories.CMRepository;
+import com.univtime.informatique.repositories.RepartitionSemaineRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -145,7 +146,9 @@ public class CMService {
     }
 
     public void deleteCMById(CMId cmId) {
-        findCMEntityById(cmId);
-        cmRepository.deleteById(cmId);
+        CMEntity cm = findCMEntityById(cmId);
+        Integer idRepartition = cm.getRepartitionSemaine().getIdRepartitionSemaine();
+        cmRepository.delete(cm);
+        repartitionSemaineService.deleteRepartitionSemaineById(idRepartition);
     }
 }

@@ -35,13 +35,13 @@ public class PromoEntity {
     @Column(name = "finS2Promo", nullable = false)
     private LocalDate finS2Promo;
 
-    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PromoEstComposeeEntity> promoEstComposeeEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CMEntity> cmEntities = new HashSet<>();
 
-    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "promo", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GroupeEntity> groupeEntities = new HashSet<>();
 
     public Integer getIdPromo() {
