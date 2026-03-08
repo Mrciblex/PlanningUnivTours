@@ -31,12 +31,6 @@ if '%errorlevel%' NEQ '0' (
     CD /D "%~dp0"
 
 :: ==========================================
-:: CONFIGURATION JAVA
-:: ==========================================
-set "JAVA_HOME=C:\Program Files\Java\jdk-25.0.2"
-set "PATH=%JAVA_HOME%\bin;%PATH%"
-
-:: ==========================================
 :: GESTION CONFIGURATION (.launcherConfig)
 :: ==========================================
 set "CONFIG_FILE=.launcherConfig"

@@ -15,11 +15,6 @@ cd "$(dirname "$0")" || exit 1
 # ==========================================
 # CONFIGURATION JAVA (Equivalent Mac)
 # ==========================================
-# Tente de trouver Java 25 via l'utilitaire natif macOS, sinon garde la version par défaut
-if /usr/libexec/java_home -v 25 &> /dev/null; then
-    export JAVA_HOME=$(/usr/libexec/java_home -v 25)
-    export PATH="$JAVA_HOME/bin:$PATH"
-fi
 
 # ==========================================
 # CONFIGURATION
