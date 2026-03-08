@@ -1,7 +1,7 @@
 # PlanningUnivTours
 Une application de gestion d'emplois du temps pour l'université de Tours.
 
-# Réaliser par :
+# Réaliser par
   - Musa
   - Evan
   - Fab
@@ -9,12 +9,12 @@ Une application de gestion d'emplois du temps pour l'université de Tours.
   - Léonie
 
 
-# LICENSE :
+# LICENSE
 Ce projet est distribué sous **Contrat de Licence Utilisateur Final (CLUF)**.
 Consultez le fichier [LICENSE.md](./LICENSE.md) pour plus de détails sur les droits d'usage et les restrictions.
 
 
-# Congi launcher :
+# Congi launcher
 debug : Si le mode debug est activé ou non
 
 debug-db : Efface toute la base et remet les données de test par défaut
@@ -24,7 +24,7 @@ build : Si le build doit se faire ou non (automatiquement oui si le .jar non tro
 reset-db : Reset la base et remet le schéma par défaut sans aucune donnée. Repasse automatiquement à ZÉRO après le lancement.
 
 
-# Fiche de Configuration :
+# Fiche de Configuration
 
 Pour exécuter PlanningUnivTours en local, assurez-vous d’avoir les éléments suivants installés sur votre machine :
 

@@ -29,16 +29,13 @@ public class GestionProfesseurController {
         this.professeurService = professeurService;
     }
 
-
-    // GET : liste les professeurs d'une promo
-    @GetMapping("/promo/{idPromo}")
-    public String listProfesseursByPromo(@PathVariable Integer idPromo, Model model) {
+    @GetMapping
+    public String index(@PathVariable Integer idPromo, Model model) {
         List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
         model.addAttribute("professeurs", professeurs);
         model.addAttribute("idPromo", idPromo);
         return "gestionnaire_edt/gestion_professeurs";
     }
-
 
     //POST : créer un prof lié à une promo
     @PostMapping("/{idPromo}/new")

@@ -11,299 +11,320 @@
 
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
-        <link rel="stylesheet" th:href="@{/css/gestion_groupes.css}">
-        <script th:src="@{/js/gestion_groupe.js}" defer></script>
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/gestion_groupes.css}">
+    <script th:src="@{/js/gestion_groupe.js}" defer></script>
 
-        <title>UnivTime - Gestionnaire Groupes</title>
-    </head>
+    <title>UnivTime - Gestionnaire Groupes</title>
+</head>
 
-    <body class="bg-[#2F3E47]">
-        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
+<body class="bg-[#2F3E47]">
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <div class="min-h-screen p-20">
-            <div class="container mx-auto max-w-3xl">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-4xl font-bold text-white">Gestion des Groupes</h2>
-                    <button onclick="openGroupePopUp()" class="btn-primary">+ Ajouter un groupe</button>
-                </div>
+<script th:inline="javascript">
+    const baseUrl = /*[[@{/}]]*/ '/';
+</script>
 
-                <!-- Table -->
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Nombre d'étudiant</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
+<div class="min-h-screen p-20">
+    <div class="container mx-auto max-w-5xl">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-white">Gestion des Groupes</h2>
+            <button onclick="openGroupePopUp()" class="btn-primary">+ Ajouter un groupe</button>
+        </div>
 
-                        <tbody>
-                            <!-- Affichage dynamique -->
-                            <tr th:each="groupe : ${groupes}" th:if="${groupe != null}">
-                                <td class="text-white"
-                                    th:text="${groupe.nomGroupe}">
-                                </td>
+        <!-- Table -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Nombre d'étudiant</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
 
-                                <td class="text-white"
-                                    th:text="${groupe.nbEtuGroupe}">
-                                </td>
+                <tbody>
+                <!-- Affichage dynamique -->
+                <tr th:each="groupe : ${groupes}" th:if="${groupe != null}">
+                    <td class="text-white"
+                        th:text="${groupe.nomGroupe}">
+                    </td>
 
-                                <td>
-                                    <button
-                                            class="btn-edit mr-2"
-                                            onclick="editGroupePopUp(this)"
-                                            th:attr="
-                                                                        data-id=${groupe.idGroupe},
-                                                                        data-nom=${groupe.nomGroupe},
-                                                                        data-nbetu=${groupe.nbEtuGroupe}">
-                                        Modifier
-                                    </button>
+                    <td class="text-white"
+                        th:text="${groupe.nbEtuGroupe}">
+                    </td>
 
-                                    <button
-                                            class="btn-delete"
-                                            onclick="deleteGroupePopUp(this)"
-                                            th:attr="
-                                                                        data-id=${groupe.idGroupe},
-                                                                        data-nom=${groupe.nomGroupe}">
-                                        Supprimer
-                                    </button>
-                                </td>
-                            </tr>
+                    <td>
+                        <button
+                                class="btn-edit mr-2"
+                                onclick="editGroupePopUp(this)"
+                                th:attr="
+                                data-id=${groupe.idGroupe},
+                                data-nom=${groupe.nomGroupe},
+                                data-nbetu=${groupe.nbEtuGroupe}
+                        ">
+                            Modifier
+                        </button>
 
-                            <!-- MESSAGE SI VIDE -->
-                            <tr th:if="${#lists.isEmpty(groupes)}">
-                                <td colspan="6" class="text-center text-red-700 font-bold">
-                                    Aucun groupe
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        <button class="btn-delete"
+                                onclick="deleteGroupePopUp(this)"
+                                th:attr="
+                                data-id=${groupe.idGroupe},
+                                data-nom=${groupe.nomGroupe},
+                                data-idpromo=${promo.idPromo}
+                        ">
+                            Supprimer
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- MESSAGE SI VIDE -->
+                <tr th:if="${#lists.isEmpty(groupes)}">
+                    <td colspan="6" class="text-center text-red-700 font-bold">
+                        Aucun groupe
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="container mx-auto max-w-5xl">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-white">Gestion des Sous-Groupes</h2>
+            <button onclick="openSousGroupePopUp()" class="btn-primary">+ Ajouter un Sous-Groupes</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Nombre d'étudiant</th>
+                    <th>Groupe</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <th:block th:each="groupe : ${groupes}" th:if="${groupes != null}">
+
+                    <tr th:each="sousgroupe : ${groupe.sousGroupeDto}">
+                        <td class="text-white"
+                            th:text="${sousgroupe.nomSousGroupe}">
+                        </td>
+
+                        <td class="text-white"
+                            th:text="${sousgroupe.nbEtuSousGroupe}">
+                        </td>
+
+                        <td class="text-white font-bold"
+                            th:text="${groupe.nomGroupe}">
+                        </td>
+
+                        <td>
+                            <button
+                                    class="btn-edit mr-2"
+                                    onclick="editSousGroupePopUp(this)"
+                                    th:attr="
+                                    data-id=${sousgroupe.idSousGroupe},
+                                    data-nom=${sousgroupe.nomSousGroupe},
+                                    data-nbetu=${sousgroupe.nbEtuSousGroupe}
+                                    ">
+                                Modifier
+                            </button>
+
+                            <button
+                                    class="btn-delete"
+                                    onclick="deleteSousGroupePopUp(this)"
+                                    th:attr="
+                                    data-id=${sousgroupe.idSousGroupe},
+                                    data-nom=${sousgroupe.nomSousGroupe}
+                                    ">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                </th:block>
+
+                <tr th:if="${#lists.isEmpty(sg)}">
+                    <td colspan="4" class="text-center text-red-700 font-bold">
+                        Aucun sous-groupe
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Les Pop Up Groupe -->
+<!-- Pop Up Ajouter Groupe -->
+<div id="groupeAdd" class="popUp">
+    <div class="popUp-content">
+        <p id="popUpTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un groupe</p>
+
+        <form id="formAdd" method="post" th:action="@{/gestionnaire-edt/groupes/new}">
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}">
+
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="addNom" name="nomGroupe" required placeholder="Ex: Gr1">
             </div>
 
-            <br>
+            <div class="form-group">
+                <label>Nombre étudiant *</label>
+                <input type="text" id="nbetuU" name="nbEtuGroupe" required placeholder="Ex: 30">
+            </div>
 
-            <div class="container mx-auto max-w-3xl">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-4xl font-bold text-white">Gestion des Sous-Groupes</h2>
-                    <button onclick="openSousGroupePopUp()" class="btn-primary">+ Ajouter un Sous-Groupes</button>
-                </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpAdd()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                <!-- Table -->
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Nombre d'étudiant</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
+<!-- Pop Up Modfier -->
+<div id="groupeUpdate" class="popUp">
+    <div class="popUp-content">
+        <p id="popUpTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un groupe</p>
 
-                        <tbody>
-                            <!-- Affichage dynamique -->
-                            <tr th:each="sousgroupe : ${sousgroupes}" th:if="${sousgroupe != null}">
-                                <td class="text-white"
-                                    th:text="${sousgroupe.nomSousGroupe}">
-                                </td>
+        <form th:action="@{/gestionnaire-edt/groupes/edit}" method="post">
+            <input type="hidden" name="_method" value="PUT"/>
+            <input type="hidden" id="groupeIdU" name="idGroupe">
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}">
 
-                                <td class="text-white"
-                                    th:text="${sousgroupe.nbEtuSousGroupe}">
-                                </td>
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="nomU" name="nomGroupe" required placeholder="Ex: Gr1">
+            </div>
 
-                                <td>
-                                    <button
-                                            class="btn-edit mr-2"
-                                            onclick="editSousGroupePopUp(this)"
-                                            th:attr="
-                                                                        data-id=${sousgroupe.idSousGroupe},
-                                                                        data-nom=${sousgroupe.nomSousGroupe},
-                                                                        data-nbetu=${sousgroupe.nbEtuSousGroupe}">
-                                        Modifier
-                                    </button>
+            <div class="form-group">
+                <label>Nombre d'étudiant *</label>
+                <input type="text" id="nbetuUpdate" name="nbEtuGroupe" required placeholder="Ex: 30">
+            </div>
 
-                                    <button
-                                            class="btn-delete"
-                                            onclick="deleteSousGroupePopUp(this)"
-                                            th:attr="
-                                                                        data-id=${sousgroupe.idSousGroupe},
-                                                                        data-nom=${sousgroupe.nomSousGroupe}">
-                                        Supprimer
-                                    </button>
-                                </td>
-                            </tr>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpUpdate()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                            <!-- MESSAGE SI VIDE -->
-                            <tr th:if="${#lists.isEmpty(sousgroupe)}">
-                                <td colspan="6" class="text-center text-red-700 font-bold">
-                                    Aucun sous-groupe
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+<!-- Pop Up Supprimer -->
+<div id="groupeDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce groupe ?</p>
+
+        <div>
+            <div>
+                <span class="text-white">Id : </span>
+                <span class="text-white" id="idD">-</span>
+            </div>
+
+            <div>
+                <span class="text-white">Nom : </span>
+                <span class="text-white" id="nomD">-</span>
             </div>
         </div>
 
-        <!-- Les Pop Up Groupe -->
-        <!-- Pop Up Ajouter Groupe -->
-        <div id="groupeAdd" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un groupe</p>
+        <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
 
-                <form id="formAdd" method="post"
-                      th:action="@{/gestionnaire-edt/groupes/{idPromo}/new(idPromo=${idPromo})}">
+        <form id="formDeleteGroupe" method="post" th:action="@{/gestionnaire-edt/groupes/delete}">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}"/>
+            <input type="hidden" id="idGroupe" name="idGroupe" value=""/>
+            <div class="flex gap-3">
+                <button type="button" onclick="closePopUpDelete()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-delete flex-1">Supprimer définitivement</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" id="addNom" name="nomGroupe" required placeholder="Ex: Gr1">
-                    </div>
+<!-- Les Pop Up Sous Groupe -->
+<!-- Pop Up Ajouter Groupe -->
+<div id="sousgroupeAdd" class="popUp">
+    <div class="popUp-content">
+        <p id="popUpSGTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un sous-groupe</p>
 
-                    <div class="form-group">
-                        <label>Nombre étudiant *</label>
-                        <input type="text" id="nbetuU" name="nbetu" required placeholder="Ex: 30">
-                    </div>
+        <form id="formSGAdd" method="post"
+              th:action="@{/gestionnaire-edt/sousgroupes/{idPromo}/new(idPromo=${promo.idPromo})}">
 
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpAdd()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="addNomSG" name="nomSousGroupe" required placeholder="Ex: A">
+            </div>
+
+            <div class="form-group">
+                <label>Nombre étudiant *</label>
+                <input type="text" id="nbetuSGU" name="nbeSGtu" required placeholder="Ex: 15">
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpSGAdd()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Pop Up Modfier -->
+<div id="sousgroupeUpdate" class="popUp">
+    <div class="popUp-content">
+        <p id="popUpSGTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un sous-groupe</p>
+
+        <form th:action="@{/sousgroupe/ajout}" method="post">
+            <input type="hidden" id="profSGIdU" name="id">
+
+            <div class="form-group">
+                <label>Nom *</label>
+                <input type="text" id="nomSGU" name="nom" required placeholder="Ex: A">
+            </div>
+
+            <div class="form-group">
+                <label>Prenom *</label>
+                <input type="text" id="prenomSGU" name="prenom" required placeholder="Ex: 15">
+            </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closePopUpSGUpdate()" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Pop Up Supprimer -->
+<div id="sousgroupeDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce sous-groupe ?</p>
+
+        <div>
+            <div>
+                <span class="text-white">Nom</span>
+                <span class="text-white" id="nomDGD">-</span>
+            </div>
+
+            <div>
+                <span class="text-white">Nombre étudiant</span>
+                <span class="text-white" id="nbetuDGD">-</span>
             </div>
         </div>
 
-        <!-- Pop Up Modfier -->
-        <div id="groupeUpdate" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un groupe</p>
+        <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
 
-                <form th:action="@{/groupe/ajout}" method="post">
-                    <input type="hidden" id="profIdU" name="id">
-
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" id="nomU" name="nom" required placeholder="Ex: Gr1">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Prenom *</label>
-                        <input type="text" id="prenomU" name="prenom" required placeholder="Ex: 30">
-                    </div>
-
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpUpdate()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
+        <div class="flex gap-3">
+            <button type="button" onclick="closePopUpSGDelete()" class="btn-edit flex-1">Annuler</button>
+            <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
         </div>
-
-        <!-- Pop Up Supprimer -->
-        <div id="groupeDelete" class="popUp">
-            <div class="popUp-content">
-                <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce groupe ?</p>
-
-                <div>
-                    <div>
-                        <span class="text-white">Nom</span>
-                        <span class="text-white" id="nomD">-</span>
-                    </div>
-
-                    <div>
-                        <span class="text-white">Nombre étudiant</span>
-                        <span class="text-white" id="nbetuD">-</span>
-                    </div>
-                </div>
-
-                <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
-
-                <div class="flex gap-3">
-                    <button type="button" onclick="closePopUpDelete()" class="btn-edit flex-1">Annuler</button>
-                    <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Les Pop Up Sous Groupe -->
-        <!-- Pop Up Ajouter Groupe -->
-        <div id="sousgroupeAdd" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpSGTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter un sous-groupe</p>
-
-                <form id="formSGAdd" method="post"
-                      th:action="@{/gestionnaire-edt/sousgroupes/{idPromo}/new(idPromo=${idPromo})}">
-
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" id="addNomSG" name="nomSousGroupe" required placeholder="Ex: A">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre étudiant *</label>
-                        <input type="text" id="nbetuSGU" name="nbeSGtu" required placeholder="Ex: 15">
-                    </div>
-
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpSGAdd()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Pop Up Modfier -->
-        <div id="sousgroupeUpdate" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpSGTitleU" class="text-2xl font-bold mb-6 text-white">Modifier un sous-groupe</p>
-
-                <form th:action="@{/sousgroupe/ajout}" method="post">
-                    <input type="hidden" id="profSGIdU" name="id">
-
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" id="nomSGU" name="nom" required placeholder="Ex: A">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Prenom *</label>
-                        <input type="text" id="prenomSGU" name="prenom" required placeholder="Ex: 15">
-                    </div>
-
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpSGUpdate()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Pop Up Supprimer -->
-        <div id="sousgroupeDelete" class="popUp">
-            <div class="popUp-content">
-                <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer ce sous-groupe ?</p>
-
-                <div>
-                    <div>
-                        <span class="text-white">Nom</span>
-                        <span class="text-white" id="nomDGD">-</span>
-                    </div>
-
-                    <div>
-                        <span class="text-white">Nombre étudiant</span>
-                        <span class="text-white" id="nbetuDGD">-</span>
-                    </div>
-                </div>
-
-                <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
-
-                <div class="flex gap-3">
-                    <button type="button" onclick="closePopUpSGDelete()" class="btn-edit flex-1">Annuler</button>
-                    <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
-                </div>
-            </div>
-        </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>

@@ -23,10 +23,27 @@ const AppState = {
 let currentEditingLigneId = null;
 let currentSelectionType = '';
 let assignationCounter = 0;
+let hasUnsavedChanges = false;
+
+window.addEventListener('beforeunload', function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = false;
+    }
+});
+// -----------------------------------------
 
 const typeConfig = {
-    modules: { title: 'Importer des Modules', displayProp: 'nomModule', idProp: 'idModule' },
-    professeurs: { title: 'Importer des Enseignants', displayProp: 'nomProf', idProp: 'idProf' }
+    modules: {
+        title: 'Importer des Modules',
+        displayProp: 'nomModule',
+        idProp: 'idModule'
+    },
+    professeurs: {
+        title: 'Importer des Enseignants',
+        displayProp: 'nomProf',
+        idProp: 'idProf'
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,13 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAll();
 });
 
-// --- Ajout des fonctions pour l'overlay de chargement ---
 function showLoadingOverlay() {
     let overlay = document.getElementById('loadingOverlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'loadingOverlay';
-        // Style pour prendre tout l'écran, bloquer les clics, et mettre un fond noir transparent
         overlay.style.position = 'fixed';
         overlay.style.top = '0';
         overlay.style.left = '0';
@@ -68,7 +83,6 @@ function hideLoadingOverlay() {
         overlay.style.display = 'none';
     }
 }
-// --------------------------------------------------------
 
 function getModuleIdFromComp(c) {
     if (c.idModule !== undefined && c.idModule !== null) return c.idModule;
@@ -307,6 +321,9 @@ function confirmSelection() {
     });
     AppState.selections[currentSelectionType] = newSelection;
     if (currentSelectionType === 'modules') updateAutoComposantes();
+
+    hasUnsavedChanges = true;
+
     renderAll();
     closeSelectionModal();
 }
@@ -316,11 +333,12 @@ function resetMaquette() {
         AppState.selections.modules = [];
         AppState.selections.composantes = [];
         AppState.selections.professeurs = [];
-        //AppState.selections.groupes = [];
         AppState.maquetteLignes = [];
         currentEditingLigneId = null;
         assignationCounter = 0;
-        //initializeAutoData();
+
+        hasUnsavedChanges = true;
+
         renderAll();
     }
 }
@@ -328,11 +346,17 @@ function resetMaquette() {
 function removeSelection(type, id) {
     AppState.selections[type] = AppState.selections[type].filter(item => item.id !== id);
     if (type === 'modules') updateAutoComposantes();
+
+    hasUnsavedChanges = true;
+
     renderAll();
 }
 
 function removeMaquetteLigne(id) {
     AppState.maquetteLignes = AppState.maquetteLignes.filter(ligne => ligne.id !== id);
+
+    hasUnsavedChanges = true;
+
     renderTableauMaquette();
 }
 
@@ -600,6 +624,9 @@ document.getElementById('matiereForm').addEventListener('submit', function(e) {
             });
         }
     }
+
+    hasUnsavedChanges = true;
+
     closeMaquetteMatierePopUp();
     renderTableauMaquette();
 });
@@ -607,27 +634,25 @@ document.getElementById('matiereForm').addEventListener('submit', function(e) {
 function saveMaquette() {
     if (!currentPromo || !currentPromo.idPromo) {
         alert("Erreur : Impossible d'identifier la promotion actuelle.");
-        return;
+        return Promise.reject("ID Promo manquant");
     }
 
-    // Afficher l'overlay avant de démarrer la requête
     showLoadingOverlay();
 
-    // On formate les données pour le backend
     const payload = {
         idPromo: currentPromo.idPromo,
         lignes: AppState.maquetteLignes.map(ligne => ({
             idComposante: ligne.composante.id,
             assignations: ligne.assignations.map(assign => ({
-                type: assign.type, // 'CM', 'TD', ou 'TP'
+                type: assign.type,
                 idProf: assign.profId,
-                cibleId: assign.cibleId, // ex: 'PROMO', 'GRP_1', 'SG_3'
-                volumes: assign.volumes // Objet { "1": 2, "2": 4, ... } (semaine -> volume)
+                cibleId: assign.cibleId,
+                volumes: assign.volumes
             }))
         }))
     };
 
-    fetch(`${baseUrl}gestionnaire-edt/maquette/save`, {
+    return fetch(`${baseUrl}gestionnaire-edt/maquette/save`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -635,18 +660,42 @@ function saveMaquette() {
         body: JSON.stringify(payload)
     })
         .then(async response => {
-            hideLoadingOverlay(); // Cacher l'overlay à la fin
+            hideLoadingOverlay();
             if (response.ok) {
+
+                hasUnsavedChanges = false;
+
                 alert("Maquette sauvegardée avec succès !");
-                //window.location.reload();
             } else {
                 const errText = await response.text();
                 alert("Erreur lors de la sauvegarde : " + errText);
+                throw new Error(errText);
             }
         })
         .catch(error => {
-            hideLoadingOverlay(); // Cacher l'overlay même en cas d'erreur réseau
+            hideLoadingOverlay();
             console.error("Erreur de communication :", error);
             alert("Erreur réseau lors de la sauvegarde.");
+            throw error;
         });
 }
+
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('create_btn')) {
+        event.preventDefault();
+        const destination = event.target.getAttribute('data-url');
+
+        if (hasUnsavedChanges) {
+            const confirmation = confirm("Sauvegarder vos modifications avant de quitter cette page ?");
+            if (confirmation) {
+                saveMaquette().then(() => {
+                    window.location.href = destination;
+                }).catch(() => {
+                    console.log("Redirection annulée car la sauvegarde a échoué.");
+                });
+            }
+        }else{
+            window.location.href = destination;
+        }
+    }
+});

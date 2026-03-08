@@ -299,7 +299,7 @@ function runGenerator(target) {
                     totalUnimplemented += data.unImplementedCours[week].length;
                 }
                 const responsePopUpText = document.createElement("p");
-                msg += `<br><br>TOTAL : ${totalUnimplemented} cours restant(s) | Voir <a style="text-align: center" href="${baseUrl}gestionnaire-edt/maquette/${promoData.idPromo}/${numSemestre}"><b><u>récapitulatif</u></b></a> pour plus de détails`;
+                msg += `<br><br>TOTAL : ${totalUnimplemented} cours restant(s) | Voir <a style="text-align: center" href="${baseUrl}gestionnaire-edt/recapitulatif/${promoData.idPromo}/${numSemestre}"><b><u>récapitulatif</u></b></a> pour plus de détails`;
                 responsePopUpText.innerHTML = `${msg}`;
                 responsePopUp.style.display = "flex";
                 responsePopUp.appendChild(responsePopUpText);

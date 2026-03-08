@@ -22,13 +22,14 @@ import java.util.List;
 @Controller
 @RequestMapping("/gestionnaire-edt/modules")
 public class GestionModuleController {
-    private ModuleService moduleService ;
+    private final ModuleService moduleService ;
 
     public GestionModuleController(ModuleService moduleService){
         this.moduleService = moduleService;
     }
+
     @GetMapping
-    public String listAllModules(Model model) {
+    public String index(Model model) {
         List<ModuleDto> modules = moduleService.findAllModules();
         model.addAttribute("modules", modules);
         return "gestionnaire_edt/gestion_modules";

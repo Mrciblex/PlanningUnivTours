@@ -16,22 +16,22 @@ function openGroupePopUp() {
 
 function editGroupePopUp(btn) {
 
-    const id = btn.dataset.id;
-    const nom = btn.dataset.nom;
-
-    document.getElementById("groupeIdU").value = id;
-    document.getElementById("nomU").value = nom;
-    document.getElementById("nbetuU").value = nbetu;
+    document.getElementById("groupeIdU").value = btn.dataset.id;
+    document.getElementById("nomU").value = btn.dataset.nom;
+    document.getElementById("nbetuUpdate").value = btn.dataset.nbetu;
 
     document.getElementById("groupeUpdate").classList.add('active');
 }
 
 function deleteGroupePopUp(btn) {
-
     document.getElementById("nomD").textContent = btn.dataset.nom;
+    document.getElementById("idD").textContent = btn.dataset.id;
+
+    document.getElementById("idGroupe").value = btn.dataset.id;
 
     document.getElementById("groupeDelete").classList.add('active');
 }
+
 
 // Fermer les pop up
 function closePopUpAdd() {

@@ -79,8 +79,10 @@
         <div class="selection-block">
             <div class="block-header">
                 <span class="block-title">Modules</span>
-                <button class="btn-add-small transform-gpu">+ Créer</button>
-                <button onclick="openSelectionModal('modules')" class="btn-add-small transform-gpu">+ Importer</button>
+                <div>
+                    <button class="btn-add-small transform-gpu create_btn" th:data-url="@{/gestionnaire-edt/modules}">Gestion</button>
+                    <button onclick="openSelectionModal('modules')" class="btn-add-small transform-gpu">+ Importer</button>
+                </div>
             </div>
             <div class="selected-items" id="selectedModules"></div>
         </div>
@@ -95,8 +97,10 @@
         <div class="selection-block">
             <div class="block-header">
                 <span class="block-title">Enseignants</span>
-                <button class="btn-add-small transform-gpu">+ Créer</button>
-                <button onclick="openSelectionModal('professeurs')" class="btn-add-small transform-gpu">+ Importer</button>
+                <div>
+                    <button class="btn-add-small transform-gpu create_btn" th:data-url="@{/gestionnaire-edt/professeurs}">Gestion</button>
+                    <button onclick="openSelectionModal('professeurs')" class="btn-add-small transform-gpu">+ Importer</button>
+                </div>
             </div>
             <div class="selected-items" id="selectedEnseignants"></div>
         </div>
@@ -104,6 +108,7 @@
         <div class="selection-block">
             <div class="block-header">
                 <span class="block-title">Groupes de la Promo</span>
+                <button class="btn-add-small transform-gpu create_btn" th:data-url="@{/gestionnaire-edt/groupes/promo/{idPromo}(idPromo=${promo.idPromo})}">Gestion</button>
             </div>
             <div class="selected-items" id="selectedGroupes"></div>
         </div>
