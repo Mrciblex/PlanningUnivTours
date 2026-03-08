@@ -1,16 +1,18 @@
+/*
+ * Copyright (c) 2026 Ademi Musa. Tous droits réservés.
+ * Projet : univTime - Logiciel de gestion d'emplois du temps.
+ *
+ * Ce code source et l'algorithme associé sont la propriété exclusive de l'auteur.
+ * Toute reproduction, modification ou distribution non autorisée, par quelque moyen que ce soit, est strictement interdite.
+ *
+ * Ce fichier fait partie du projet univTime, concédé sous licence d'usage
+ * restreinte à l'Université de Tours, 37000, en France.
+ */
+
 package com.univtime.informatique;
 
-import com.univtime.informatique.algorithme.AlgorithmeResponse;
-import com.univtime.informatique.algorithme.GenerationAlgorithme;
-import com.univtime.informatique.helpers.MomentBanalise;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class UnivTime {

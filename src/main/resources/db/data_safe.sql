@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2026 Ademi Musa. Tous droits réservés.
+ * Projet : univTime - Logiciel de gestion d'emplois du temps.
+ *
+ * Ce code source et l'algorithme associé sont la propriété exclusive de l'auteur.
+ * Toute reproduction, modification ou distribution non autorisée, par quelque moyen que ce soit, est strictement interdite.
+ *
+ * Ce fichier fait partie du projet univTime, concédé sous licence d'usage
+ * restreinte à l'Université de Tours, 37000, en France.
+ */
+
 INSERT INTO Professeurs (nomProf, prenomProf, intervenantExterieur)
 VALUES ('Brouard', 'Hélène', FALSE),
        ('Brouard', 'Thierry', FALSE),
@@ -292,7 +303,16 @@ VALUES
 (780, 960, 7),  -- 13:00-16:00
 -- Professeur Rousseau Céline (idJour=8, Mercredi)
 (480, 660, 8),  -- 08:00-11:00
-(840, 1020, 8); -- 14:00-17:00
+(840, 1020, 8); /*
+ * Copyright (c) 2026 Ademi Musa. Tous droits réservés.
+ * Projet : univTime - Logiciel de gestion d'emplois du temps.
+ *
+ * Ce code source et l'algorithme associé sont la propriété exclusive de l'auteur.
+ * Toute reproduction, modification ou distribution non autorisée, par quelque moyen que ce soit, est strictement interdite.
+ *
+ * Ce fichier fait partie du projet univTime, concédé sous licence d'usage
+ * restreinte à l'Université de Tours, 37000, en France.
+ */ -- 14:00-17:00
 
 INSERT INTO BesoinSalle (idSalle, idComposante, typeBesoin)
 VALUES

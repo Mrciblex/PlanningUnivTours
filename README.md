@@ -9,6 +9,10 @@ Une application de gestion d'emplois du temps pour l'université de Tours.
   - Léonie
 
 
+# LICENSE :
+Ce projet est distribué sous **Contrat de Licence Utilisateur Final (CLUF)**.
+Consultez le fichier [LICENSE.md](./LICENSE.md) pour plus de détails sur les droits d'usage et les restrictions.
+
 # Congi launcher :
 - *debug* : Si le mode debug est activé ou non
 - *debug-db* : Efface toute la base et remet les données de test par défaut
