@@ -30,7 +30,6 @@ public class PromoEstComposeeId implements Serializable {
     private Integer idModule;
 
     public PromoEstComposeeId() {
-
     }
 
     public PromoEstComposeeId(Integer idPromo, Integer idModule) {
@@ -61,10 +60,18 @@ public class PromoEstComposeeId implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof PromoEstComposeeId)) {
             return false;
         }
         PromoEstComposeeId other = (PromoEstComposeeId) obj;
         return Objects.equals(this.idPromo, other.idPromo) && Objects.equals(this.idModule, other.idModule);
+    }
+
+    @Override
+    public String toString() {
+        return "PromoEstComposeeId{idPromo=" + idPromo + ", idModule=" + idModule + "}";
     }
 }

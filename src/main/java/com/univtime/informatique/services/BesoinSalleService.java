@@ -124,4 +124,8 @@ public class BesoinSalleService {
         findBesoinSalleEntityById(besoinSalleId);
         besoinSalleRepository.deleteById(besoinSalleId);
     }
+
+    public void deleteBesoinSalleByComposanteId(Integer idComposante) {
+        besoinSalleRepository.deleteByComposante_IdComposante(idComposante);
+    }
 }

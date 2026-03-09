@@ -80,7 +80,7 @@ public class PromoEstComposeeService {
         return promoEstComposeeRepository.findById(promoEstComposeeId)
                 .orElseThrow(() -> new ResourceNotFoundException("La promo est composee avec l'id n'existe pas : " + promoEstComposeeId));
     }
-    
+
     public PromoEstComposeeDto createPromoEstComposee(PromoEstComposeeDto promoEstComposeeDto) {
         // Vérifie la clé étrangère de promo et module
         if (promoEstComposeeDto.getPromoDto() == null || promoEstComposeeDto.getPromoDto().getIdPromo() == null) {
@@ -117,8 +117,17 @@ public class PromoEstComposeeService {
         return newPromoEstComposeeDto;
     }
 
+    public void deletePromoEstComposeeByModuleId(Integer idModule) {
+        promoEstComposeeRepository.deleteByModule_IdModule(idModule);
+    }
+
     public void deletePromoEstComposeeById(PromoEstComposeeId promoEstComposeeId) {
         findPromoEstComposeeEntityById(promoEstComposeeId);
         promoEstComposeeRepository.deleteById(promoEstComposeeId);
+    }
+
+    public void deletePromoEstComposee(Integer idPromo, Integer idModule) {
+        PromoEstComposeeId id = new PromoEstComposeeId(idPromo, idModule);
+        promoEstComposeeRepository.deleteById(id);
     }
 }

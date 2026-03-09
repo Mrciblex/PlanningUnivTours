@@ -9,3 +9,101 @@
  * restreinte à l'Université de Tours, 37000, en France.
  */
 
+const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+function openModuleModal(mode, btn = null) {
+    const form = document.getElementById('moduleForm');
+    const title = document.getElementById('moduleModalTitle');
+    const methodInput = document.getElementById('moduleMethod');
+
+    if (mode === 'add') {
+        title.textContent = 'Ajouter un module';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/modules/new';
+        methodInput.value = 'POST';
+        document.getElementById('moduleIdInput').value = '';
+        document.getElementById('nomModuleInput').value = '';
+    } else {
+        title.textContent = 'Modifier un module';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/modules/edit';
+        methodInput.value = 'PUT';
+        document.getElementById('moduleIdInput').value = btn.dataset.id;
+        document.getElementById('nomModuleInput').value = btn.dataset.nom;
+    }
+    document.getElementById('moduleModal').classList.add('active');
+}
+
+function openModuleLinkModal(btn) {
+    document.getElementById('moduleLinkNomD').textContent = btn.dataset.nom;
+    document.getElementById('idModuleLinkInput').value = btn.dataset.id;
+    document.getElementById('moduleLinkModal').classList.add('active');
+}
+
+function openModuleUnlinkModal(btn) {
+    document.getElementById('moduleUnlinkNomD').textContent = btn.dataset.nom;
+    document.getElementById('idModuleUnlinkInput').value = btn.dataset.id;
+    document.getElementById('moduleUnlinkModal').classList.add('active');
+}
+
+function openModuleDeleteModal(btn) {
+    document.getElementById('moduleNomD').textContent = btn.dataset.nom;
+    document.getElementById('idModuleDeleteInput').value = btn.dataset.id;
+    document.getElementById('moduleDelete').classList.add('active');
+}
+
+function calculateTotalVH() {
+    const vhcm = parseFloat(document.getElementById('vhcmInput').value) || 0;
+    const vhtd = parseFloat(document.getElementById('vhtdInput').value) || 0;
+    const vhtp = parseFloat(document.getElementById('vhtpInput').value) || 0;
+    document.getElementById('vhtInput').value = parseFloat((vhcm + vhtd + vhtp).toFixed(2));
+}
+
+function openComposanteModal(mode, btn = null) {
+    const form = document.getElementById('composanteForm');
+    const title = document.getElementById('composanteModalTitle');
+    const methodInput = document.getElementById('composanteMethod');
+
+    if (mode === 'add') {
+        title.textContent = 'Ajouter une composante';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/modules/composante/new';
+        methodInput.value = 'POST';
+        document.getElementById('composanteIdInput').value = '';
+        document.getElementById('nomComposanteInput').value = '';
+        document.getElementById('vhtInput').value = '';
+        document.getElementById('vhcmInput').value = '';
+        document.getElementById('vhtdInput').value = '';
+        document.getElementById('vhtpInput').value = '';
+        document.getElementById('blcmInput').value = '';
+        document.getElementById('bltdInput').value = '';
+        document.getElementById('bltpInput').value = '';
+        if(document.getElementById('idModuleSelect').options.length > 0) {
+            document.getElementById('idModuleSelect').selectedIndex = 0;
+        }
+    } else {
+        title.textContent = 'Modifier une composante';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/modules/composante/edit';
+        methodInput.value = 'PUT';
+        document.getElementById('composanteIdInput').value = btn.dataset.id;
+        document.getElementById('nomComposanteInput').value = btn.dataset.nom;
+
+        document.getElementById('vhtInput').value = parseFloat((btn.dataset.vht / 60).toFixed(2)) || 0;
+        document.getElementById('vhcmInput').value = parseFloat((btn.dataset.vhcm / 60).toFixed(2)) || 0;
+        document.getElementById('vhtdInput').value = parseFloat((btn.dataset.vhtd / 60).toFixed(2)) || 0;
+        document.getElementById('vhtpInput').value = parseFloat((btn.dataset.vhtp / 60).toFixed(2)) || 0;
+        document.getElementById('blcmInput').value = parseFloat((btn.dataset.blcm / 60).toFixed(2)) || 0;
+        document.getElementById('bltdInput').value = parseFloat((btn.dataset.bltd / 60).toFixed(2)) || 0;
+        document.getElementById('bltpInput').value = parseFloat((btn.dataset.bltp / 60).toFixed(2)) || 0;
+
+        document.getElementById('idModuleSelect').value = btn.dataset.idmodule;
+    }
+    document.getElementById('composanteModal').classList.add('active');
+}
+
+function openComposanteDeleteModal(btn) {
+    document.getElementById('composanteNomD').textContent = btn.dataset.nom;
+    document.getElementById('idComposanteDeleteInput').value = btn.dataset.id;
+    document.getElementById('composanteDelete').classList.add('active');
+}

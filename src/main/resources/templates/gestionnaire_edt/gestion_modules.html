@@ -10,258 +10,300 @@
   -->
 
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-    <head>
-        <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="~{layout/head :: defaultHead}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/gestion_modules.css}">
+    <script th:src="@{/js/gestion_module.js}" defer></script>
+    <title>UnivTime - Gestionnaire Modules</title>
+</head>
 
-        <link rel="stylesheet" th:href="@{/css/gestionnaire_module.css}">
-        <script th:src="@{/js/gestion_module.js}" defer></script>
+<body class="bg-[#2F3E47]">
+<th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
 
-        <title>UnivTime - Gestionnaire Modules</title>
-    </head>
+<script th:inline="javascript">
+    const baseUrl = /*[[@{/}]]*/ '/';
+</script>
 
-    <body class="bg-[#2F3E47]">
-        <th:block th:replace="~{layout/header :: defaultHeader}"></th:block>
-
-        <div class="min-h-screen p-20">
-            <div class="container mx-auto max-w-7xl">
-                <div class="flex justify-between items-center mb-8">
-                    <h2 class="text-4xl font-bold text-white">Gestion des Promotions</h2>
-                    <button onclick="openPromoPopUp()" class="btn-primary">+ Ajouter une promotion</button>
-                </div>
-
-                <!-- Table -->
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Année</th>
-                            <th>Semestre 1</th>
-                            <th>Semestre 2</th>
-                            <th>EDT</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-
-                        <!-- Affichage dynamique -->
-                        <tr th:each="promo : ${promos}" th:if="${promo != null}">
-                            <td class="font-semibold text-white"
-                                th:text="${promo.nomPromo}">
-
-                            </td>
-
-                            <td class="text-white" th:text="${promo.anneePromo}"></td>
-
-                            <!-- Affichage condensé de la durée du S1 -->
-                            <td>
-                                        <span class="text-white"
-                                              th:text="${promo.debutS1Promo != null ? #temporals.format(promo.debutS1Promo, 'dd/MM/yyyy') : '-'}">
-                                        </span>
-                                <span class="text-slate-400"> - </span>
-                                <span class="text-white"
-                                      th:text="${promo.finS1Promo != null ? #temporals.format(promo.finS1Promo, 'dd/MM/yyyy') : '-'}">
-                                        </span>
-                            </td>
-
-                            <!-- Affichage condensé de la durée du S2 -->
-                            <td>
-                                        <span class="text-white"
-                                              th:text="${promo.debutS2Promo != null ? #temporals.format(promo.debutS2Promo, 'dd/MM/yyyy') : '-'}">
-                                        </span>
-                                <span class="text-slate-400"> - </span>
-                                <span class="text-white"
-                                      th:text="${promo.finS2Promo != null ? #temporals.format(promo.finS2Promo, 'dd/MM/yyyy') : '-'}">
-                                        </span>
-                            </td>
-
-                            <td>
-                                <button class="btn-semester mr-2">S1</button>
-                                <button class="btn-semester mr-2">S2</button>
-                            </td>
-
-                            <td>
-                                <button
-                                        class="btn-edit mr-2"
-                                        onclick="editPromoPopUp(this)"
-                                        th:attr="
-                                                                    data-id=${promo.idPromo},
-                                                                    data-nom=${promo.nomPromo},
-                                                                    data-annee=${promo.anneePromo},
-                                                                    data-debut-s1=${promo.debutS1Promo},
-                                                                    data-fin-s1=${promo.finS1Promo},
-                                                                    data-debut-s2=${promo.debutS2Promo},
-                                                                    data-fin-s2=${promo.finS2Promo}">
-                                    Modifier
-                                </button>
-
-                                <button
-                                        class="btn-delete"
-                                        onclick="deletePromoPopUp(this)"
-                                        th:attr="
-                                                                    data-id=${promo.idPromo},
-                                                                    data-nom=${promo.nomPromo}">
-                                    Supprimer
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- MESSAGE SI VIDE -->
-                        <tr th:if="${#lists.isEmpty(promos)}">
-                            <td colspan="6" class="text-center text-red-700 font-bold">
-                                Aucune promotion
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div class="min-h-screen p-20">
+    <div class="container mx-auto max-w-7xl">
+        <div th:if="${errorMessage}" class="bg-red-500 bg-opacity-20 border border-red-500 text-red-100 p-4 rounded-lg mb-6 flex justify-between items-center shadow-lg">
+            <span class="font-semibold" th:text="${errorMessage}"></span>
+            <button onclick="this.parentElement.style.display='none'" class="text-red-200 hover:text-white font-bold text-xl px-2">&times;</button>
+        </div>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-white">Gestion Globale des Modules</h2>
+            <button onclick="openModuleModal('add')" class="btn-primary">+ Créer un module</button>
         </div>
 
-        <!-- Pop Up Ajouter -->
-        <div id="promoAdd" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpTitleA" class="text-2xl font-bold mb-6 text-white">Ajouter une promotion</p>
+        <div class="table-container mb-12">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nom du Module</th>
+                    <th>Statut Promo Actuelle</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="module : ${modules}" th:if="${module != null}">
+                    <td class="text-white font-semibold" th:text="${module.nomModule}"></td>
+                    <td class="font-semibold">
+                        <span th:if="${#lists.contains(linkedModuleIds, module.idModule)}" class="text-green-500">Lié à la promo</span>
+                        <span th:unless="${#lists.contains(linkedModuleIds, module.idModule)}" class="text-gray-400">Non lié</span>
+                    </td>
+                    <td>
+                        <button th:if="${!#lists.contains(linkedModuleIds, module.idModule)}"
+                                class="btn-primary mr-2"
+                                onclick="openModuleLinkModal(this)"
+                                th:attr="data-id=${module.idModule}, data-nom=${module.nomModule}">
+                            Lier
+                        </button>
+                        <button th:if="${#lists.contains(linkedModuleIds, module.idModule)}"
+                                class="btn-edit mr-2 bg-orange-600 hover:bg-orange-700 border-none text-white"
+                                onclick="openModuleUnlinkModal(this)"
+                                th:attr="data-id=${module.idModule}, data-nom=${module.nomModule}">
+                            Détacher
+                        </button>
 
-                <form th:action="@{/gestion-promos/new}" method="post" th:object="${newPromo}">
-                    <input type="hidden" th:field="*{idPromo}">
-
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" th:field="*{nomPromo}" required placeholder="Ex: Licence 3 Informatique">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Année *</label>
-                        <input type="number" th:field="*{anneePromo}" required placeholder="Ex: 2024-2025">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Semestre 1</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" th:field="*{debutS1Promo}">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" th:field="*{finS1Promo}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Semestre 2</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" th:field="*{debutS2Promo}">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" th:field="*{finS2Promo}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUp()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
+                        <button class="btn-edit mr-2"
+                                onclick="openModuleModal('edit', this)"
+                                th:attr="data-id=${module.idModule}, data-nom=${module.nomModule}">
+                            Modifier
+                        </button>
+                        <button class="btn-delete"
+                                onclick="openModuleDeleteModal(this)"
+                                th:attr="data-id=${module.idModule}, data-nom=${module.nomModule}">
+                            Supprimer
+                        </button>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(modules)}">
+                    <td colspan="3" class="text-center text-red-700 font-bold">Aucun module</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Pop Up Modfier -->
-        <div id="promoUpdate" class="popUp">
-            <div class="popUp-content">
-                <p id="popUpTitleU" class="text-2xl font-bold mb-6 text-white">Modifier une promotion</p>
-
-                <form th:action="@{/promo/ajout}" method="post">
-                    <input type="hidden" id="promoIdU" name="id">
-
-                    <div class="form-group">
-                        <label>Nom *</label>
-                        <input type="text" id="nomU" name="nom" required placeholder="Ex: Licence 3 Informatique">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Année *</label>
-                        <input type="text" id="anneeU" name="annee" required placeholder="Ex: 2024-2025">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Semestre 1</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS1U" name="dateDebutS1">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS1U" name="dateFinS1">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Semestre 2</label>
-                        <div class="date-group">
-                            <div>
-                                <label class="text-xs text-slate-400">Début</label>
-                                <input type="date" id="dateDebutS2U" name="dateDebutS2">
-                            </div>
-                            <div>
-                                <label class="text-xs text-slate-400">Fin</label>
-                                <input type="date" id="dateFinS2U" name="dateFinS2">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-3 mt-6">
-                        <button type="button" onclick="closePopUpUpdate()" class="btn-edit flex-1">Annuler</button>
-                        <button type="submit" class="btn-primary flex-1">Enregistrer</button>
-                    </div>
-                </form>
-            </div>
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-4xl font-bold text-white">Gestion des Composantes</h2>
+            <button onclick="openComposanteModal('add')" class="btn-primary">+ Ajouter une composante</button>
         </div>
 
-        <!-- Pop Up Supprimer -->
-        <div id="promoDelete" class="popUp">
-            <div class="popUp-content">
-                <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer cette promotion ?</p>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>V.H. (Total/CM/TD/TP) en min</th>
+                    <th>Blocs (CM/TD/TP) en min</th>
+                    <th>Module</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="module : ${modules}" th:if="${modules != null}">
+                    <tr th:each="composante : ${module.composanteDto}">
+                        <td class="text-white" th:text="${composante.nomComposante}"></td>
+                        <td class="text-white">
+                            <span th:text="${composante.volumeHoraireTotal}"></span> /
+                            <span th:text="${composante.volumeHoraireCM}"></span> /
+                            <span th:text="${composante.volumeHoraireTD}"></span> /
+                            <span th:text="${composante.volumeHoraireTP}"></span>
+                        </td>
+                        <td class="text-white">
+                            <span th:text="${composante.blocHoraireCM}"></span> /
+                            <span th:text="${composante.blocHoraireTD}"></span> /
+                            <span th:text="${composante.blocHoraireTP}"></span>
+                        </td>
+                        <td class="text-white font-bold" th:text="${module.nomModule}"></td>
+                        <td>
+                            <button class="btn-edit mr-2"
+                                    onclick="openComposanteModal('edit', this)"
+                                    th:attr="data-id=${composante.idComposante}, data-nom=${composante.nomComposante},
+                                    data-vht=${composante.volumeHoraireTotal}, data-vhcm=${composante.volumeHoraireCM},
+                                    data-vhtd=${composante.volumeHoraireTD}, data-vhtp=${composante.volumeHoraireTP},
+                                    data-blcm=${composante.blocHoraireCM}, data-bltd=${composante.blocHoraireTD},
+                                    data-bltp=${composante.blocHoraireTP}, data-idmodule=${module.idModule}">
+                                Modifier
+                            </button>
+                            <button class="btn-delete"
+                                    onclick="openComposanteDeleteModal(this)"
+                                    th:attr="data-id=${composante.idComposante}, data-nom=${composante.nomComposante}">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                </th:block>
+                <tr th:if="${#lists.isEmpty(modules)}">
+                    <td colspan="5" class="text-center text-red-700 font-bold">Aucune composante</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-                <div class="">
-                    <div>
-                        <span class="text-white">Nom</span>
-                        <span class="delete-recap-value" id="nomD">-</span>
-                    </div>
+<div id="moduleModal" class="popUp">
+    <div class="popUp-content">
+        <p id="moduleModalTitle" class="text-2xl font-bold mb-6 text-white"></p>
+        <form id="moduleForm" method="post">
+            <input type="hidden" name="_method" id="moduleMethod" value="POST">
+            <input type="hidden" name="idPromo" th:value="${idPromo}">
+            <input type="hidden" id="moduleIdInput" name="idModule">
 
-                    <div>
-                        <span class="text-white">Année</span>
-                        <span class="delete-recap-value" id="anneeD">-</span>
-                    </div>
+            <div class="form-group">
+                <label for="nomModuleInput">Nom du Module *</label>
+                <input type="text" id="nomModuleInput" name="nomModule" required placeholder="Ex: Mathématiques">
+            </div>
 
-                    <div>
-                        <span class="text-white">Semestre 1</span>
-                        <span class="delete-recap-value" id="dateDebutS1D">-</span>
-                    </div>
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closeModal('moduleModal')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                    <div>
-                        <span class="text-white">Semestre 2</span>
-                        <span class="delete-recap-value" id="dateDebutS2D">-</span>
+<div id="moduleLinkModal" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Lier à la promotion</p>
+        <p class="text-white mb-6">Voulez-vous lier le module <strong id="moduleLinkNomD"></strong> à cette promotion ?</p>
+        <form method="post" th:action="@{/gestionnaire-edt/modules/link}">
+            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" id="idModuleLinkInput" name="idModule"/>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('moduleLinkModal')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Lier le module</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="moduleUnlinkModal" class="popUp">
+    <div class="popUp-content">
+        <p class="text-2xl font-bold mb-6 text-white">Détacher de la promotion</p>
+        <p class="text-white mb-6">Voulez-vous détacher le module <strong id="moduleUnlinkNomD"></strong> de cette promotion ?</p>
+        <form method="post" th:action="@{/gestionnaire-edt/modules/unlink}">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" id="idModuleUnlinkInput" name="idModule"/>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('moduleUnlinkModal')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-delete flex-1 bg-orange-600 hover:bg-orange-700">Détacher le module</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="moduleDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer définitivement ce module du système ?</p>
+        <div>
+            <div><span class="text-white">Nom : </span><span class="text-white" id="moduleNomD">-</span></div>
+        </div>
+        <p class="text-semibold text-red-600 mb-6 mt-4">Cette action supprimera également ses composantes pour TOUTES les promotions.</p>
+
+        <form method="post" th:action="@{/gestionnaire-edt/modules/delete}">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" id="idModuleDeleteInput" name="idModule"/>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('moduleDelete')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-delete flex-1">Supprimer définitivement</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="composanteModal" class="popUp">
+    <div class="popUp-content" style="max-width: 600px;">
+        <p id="composanteModalTitle" class="text-2xl font-bold mb-6 text-white"></p>
+        <form id="composanteForm" method="post">
+            <input type="hidden" name="_method" id="composanteMethod" value="POST">
+            <input type="hidden" name="idPromo" th:value="${idPromo}">
+            <input type="hidden" id="composanteIdInput" name="idComposante">
+
+            <div class="form-group">
+                <label for="nomComposanteInput">Nom de la composante *</label>
+                <input type="text" id="nomComposanteInput" name="nomComposante" required placeholder="Ex: Algèbre Linéaire">
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+                <br>
+                <div class="form-group flex-1">
+                    <label for="vhtInput">Volume Horaire Total (h)</label>
+                    <input type="number" step="any" id="vhtInput" name="vhTotal" required readonly class="bg-gray-600 cursor-not-allowed text-gray-400">
+                </div>
+                <br>
+                <br>
+                <div class="form-group">
+                    <label for="vhcmInput">Volume Horaire CM * (h)</label>
+                    <input type="number" step="any" id="vhcmInput" name="vhCM" required oninput="calculateTotalVH()">
+                </div>
+                <div class="form-group">
+                    <label for="vhtdInput">Volume Horaire TD * (h)</label>
+                    <input type="number" step="any" id="vhtdInput" name="vhTD" required oninput="calculateTotalVH()">
+                </div>
+                <div class="form-group">
+                    <label for="vhtpInput">Volume Horaire TP * (h)</label>
+                    <input type="number" step="any" id="vhtpInput" name="vhTP" required oninput="calculateTotalVH()">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+                <div class="form-group">
+                    <label for="blcmInput">Bloc CM * (h)</label>
+                    <input type="number" step="any" id="blcmInput" name="blCM" required>
+                </div>
+                <div class="form-group">
+                    <label for="bltdInput">Bloc TD * (h)</label>
+                    <input type="number" step="any" id="bltdInput" name="blTD" required>
+                </div>
+                <div class="form-group">
+                    <label for="bltpInput">Bloc TP * (h)</label>
+                    <input type="number" step="any" id="bltpInput" name="blTP" required>
+                </div>
+            </div>
+
+            <div class="form-group mt-2">
+                <label for="idModuleSelect" class="block text-sm font-medium text-gray-300 mb-2">Module</label>
+                <div class="relative">
+                    <select id="idModuleSelect" name="idModule" class="w-full bg-[#3D4E57] border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 appearance-none cursor-pointer">
+                        <option th:each="modl : ${modules}" th:value="${modl.idModule}" th:text="${modl.nomModule}" class="bg-[#2F3E47]"></option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
                 </div>
-
-                <p class="text-semibold text-red-600 mb-6">Cette action est irréversible</p>
-
-                <div class="flex gap-3">
-                    <button type="button" onclick="closePopUpDelete()" class="btn-edit flex-1">Annuler</button>
-                    <button type="button" class="btn-delete flex-1">Supprimer définitivement</button>
-                </div>
             </div>
+
+            <div class="flex gap-3 mt-6">
+                <button type="button" onclick="closeModal('composanteModal')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-primary flex-1">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="composanteDelete" class="popUp">
+    <div class="popUp-content">
+        <p class="text-white mb-4">Êtes-vous sûr de vouloir supprimer cette composante ?</p>
+        <div>
+            <div><span class="text-white">Nom : </span><span class="text-white" id="composanteNomD">-</span></div>
         </div>
-    </body>
+        <p class="text-semibold text-red-600 mb-6 mt-4">Cette action est irréversible</p>
+
+        <form method="post" th:action="@{/gestionnaire-edt/modules/composante/delete}">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" id="idComposanteDeleteInput" name="idComposante"/>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeModal('composanteDelete')" class="btn-edit flex-1">Annuler</button>
+                <button type="submit" class="btn-delete flex-1">Supprimer définitivement</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
 </html>

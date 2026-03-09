@@ -14,7 +14,12 @@ package com.univtime.informatique.repositories;
 import com.univtime.informatique.entities.BesoinSalleEntity;
 import com.univtime.informatique.entities.ids.BesoinSalleId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface BesoinSalleRepository extends JpaRepository<BesoinSalleEntity, BesoinSalleId> {
 
+    @Transactional
+    @Modifying
+    void deleteByComposante_IdComposante(Integer idComposante);
 }

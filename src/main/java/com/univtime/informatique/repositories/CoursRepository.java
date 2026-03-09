@@ -35,9 +35,10 @@ public interface CoursRepository extends JpaRepository<CoursEntity, Integer> {
             ")",
            nativeQuery = true)
     public List<CoursEntity> findByIdPromoBySemestre(@Param("idPromo") Integer idPromo, @Param("numSemestre") Integer numSemestre);
+
     @Transactional
     @Modifying
-    void deleteByComposante_IdComposante(Integer id);
+    void deleteByComposante_IdComposante(@Param("idComposante") Integer idComposante);
 
     List<CoursEntity> findByComposante_IdComposante(Integer id);
 }

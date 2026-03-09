@@ -17,4 +17,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PromoEstComposeeRepository extends JpaRepository<PromoEstComposeeEntity, PromoEstComposeeId> {
 
+    void deleteByModule_IdModule(Integer idModule);
 }

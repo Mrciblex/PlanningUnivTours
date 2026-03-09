@@ -1,84 +1,69 @@
-/*
- * Copyright (c) 2026 Ademi Musa. Tous droits réservés.
- * Projet : univTime - Logiciel de gestion d'emplois du temps.
- *
- * Ce code source et l'algorithme associé sont la propriété exclusive de l'auteur.
- * Toute reproduction, modification ou distribution non autorisée, par quelque moyen que ce soit, est strictement interdite.
- *
- * Ce fichier fait partie du projet univTime, concédé sous licence d'usage
- * restreinte à l'Université de Tours, 37000, en France.
- */
+const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
 
-/* Gestionnaire des groupes */
-function openGroupePopUp() {
-    document.getElementById('groupeAdd').classList.add('active');
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
 }
 
-function editGroupePopUp(btn) {
+function openGroupeModal(mode, btn = null) {
+    const form = document.getElementById('groupeForm');
+    const title = document.getElementById('groupeModalTitle');
+    const methodInput = document.getElementById('groupeMethod');
 
-    document.getElementById("groupeIdU").value = btn.dataset.id;
-    document.getElementById("nomU").value = btn.dataset.nom;
-    document.getElementById("nbetuUpdate").value = btn.dataset.nbetu;
-
-    document.getElementById("groupeUpdate").classList.add('active');
+    if (mode === 'add') {
+        title.textContent = 'Ajouter un groupe';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/groupes/new';
+        methodInput.value = 'POST';
+        document.getElementById('groupeIdInput').value = '';
+        document.getElementById('nomGroupeInput').value = '';
+        document.getElementById('nbEtuGroupeInput').value = '';
+    } else {
+        title.textContent = 'Modifier un groupe';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/groupes/edit';
+        methodInput.value = 'PUT';
+        document.getElementById('groupeIdInput').value = btn.dataset.id;
+        document.getElementById('nomGroupeInput').value = btn.dataset.nom;
+        document.getElementById('nbEtuGroupeInput').value = btn.dataset.nbetu;
+    }
+    document.getElementById('groupeModal').classList.add('active');
 }
 
-function deleteGroupePopUp(btn) {
-    document.getElementById("nomD").textContent = btn.dataset.nom;
-    document.getElementById("idD").textContent = btn.dataset.id;
-
-    document.getElementById("idGroupe").value = btn.dataset.id;
-
-    document.getElementById("groupeDelete").classList.add('active');
+function openGroupeDeleteModal(btn) {
+    document.getElementById('groupeIdD').textContent = btn.dataset.id;
+    document.getElementById('groupeNomD').textContent = btn.dataset.nom;
+    document.getElementById('idGroupeDeleteInput').value = btn.dataset.id;
+    document.getElementById('groupeDelete').classList.add('active');
 }
 
+function openSgModal(mode, btn = null) {
+    const form = document.getElementById('sgForm');
+    const title = document.getElementById('sgModalTitle');
+    const methodInput = document.getElementById('sgMethod');
 
-// Fermer les pop up
-function closePopUpAdd() {
-    document.getElementById('groupeAdd').classList.remove('active');
+    if (mode === 'add') {
+        title.textContent = 'Ajouter un sous-groupe';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/groupes/sg/new';
+        methodInput.value = 'POST';
+        document.getElementById('sgIdInput').value = '';
+        document.getElementById('nomSgInput').value = '';
+        document.getElementById('nbEtuSgInput').value = '';
+        if(document.getElementById('idGroupeSelect').options.length > 0) {
+            document.getElementById('idGroupeSelect').selectedIndex = 0;
+        }
+    } else {
+        title.textContent = 'Modifier un sous-groupe';
+        form.action = cleanBaseUrl + 'gestionnaire-edt/groupes/sg/edit';
+        methodInput.value = 'PUT';
+        document.getElementById('sgIdInput').value = btn.dataset.id;
+        document.getElementById('nomSgInput').value = btn.dataset.nom;
+        document.getElementById('nbEtuSgInput').value = btn.dataset.nbetu;
+        document.getElementById('idGroupeSelect').value = btn.dataset.idgroupe;
+    }
+    document.getElementById('sgModal').classList.add('active');
 }
 
-function closePopUpUpdate() {
-    document.getElementById('groupeUpdate').classList.remove('active');
-}
-
-function closePopUpDelete() {
-    document.getElementById('groupeDelete').classList.remove('active');
-}
-
-/* Gestionnaire des sous-groupes */
-function openSousGroupePopUp() {
-    document.getElementById('sousgroupeAdd').classList.add('active');
-}
-
-function editSousGroupePopUp(btn) {
-
-    const id = btn.dataset.id;
-    const nom = btn.dataset.nom;
-
-    document.getElementById("groupeSGIdU").value = id;
-    document.getElementById("nomSGU").value = nom;
-    document.getElementById("nbetuSGU").value = nbetu;
-
-    document.getElementById("sousgroupeUpdate").classList.add('active');
-}
-
-function deleteSousGroupePopUp(btn) {
-
-    document.getElementById("nomSGD").textContent = btn.dataset.nom;
-
-    document.getElementById("sousgroupeDelete").classList.add('active');
-}
-
-// Fermer les pop up
-function closePopUpSGAdd() {
-    document.getElementById('sousgroupeAdd').classList.remove('active');
-}
-
-function closePopUpSGUpdate() {
-    document.getElementById('sousgroupeUpdate').classList.remove('active');
-}
-
-function closePopUpSGDelete() {
-    document.getElementById('sousgroupeDelete').classList.remove('active');
+function openSgDeleteModal(btn) {
+    document.getElementById('sgNomD').textContent = btn.dataset.nom;
+    document.getElementById('sgNbEtuD').textContent = btn.dataset.nbetu;
+    document.getElementById('idSgDeleteInput').value = btn.dataset.id;
+    document.getElementById('sgDelete').classList.add('active');
 }

@@ -116,7 +116,10 @@ public class ComposanteService {
         return ComposanteMapper.toDto(updatedComposante);
     }
 
-    @Transactional
+    public void deleteComposanteByModuleId(Integer idModule) {
+        composanteRepository.deleteByModule_IdModule(idModule);
+    }
+
     public void deleteComposanteById(Integer id) {
 
         List<CoursEntity> coursList = coursRepository.findByComposante_IdComposante(id);
@@ -129,4 +132,5 @@ public class ComposanteService {
 
         composanteRepository.deleteById(id);
     }
+
 }

@@ -11,82 +11,177 @@
 
 package com.univtime.informatique.controllers;
 
+import com.univtime.informatique.dto.idsDto.PromoEstComposeeIdDto;
 import com.univtime.informatique.dto.moduleDto.ModuleDto;
+import com.univtime.informatique.dto.composanteDto.ComposanteDto;
+import com.univtime.informatique.dto.composanteDto.ModuleComposanteDto;
+import com.univtime.informatique.dto.promoEstComposeeDto.ModulePromoEstComposeeDto;
+import com.univtime.informatique.dto.promoEstComposeeDto.PromoEstComposeeDto;
+import com.univtime.informatique.dto.promoEstComposeeDto.PromoPromoEstComposeeDto;
+import com.univtime.informatique.entities.ids.PromoEstComposeeId;
+import com.univtime.informatique.services.BesoinSalleService;
 import com.univtime.informatique.services.ModuleService;
+import com.univtime.informatique.services.ComposanteService;
+import com.univtime.informatique.services.PromoEstComposeeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/modules")
 public class GestionModuleController {
-    private final ModuleService moduleService ;
 
-    public GestionModuleController(ModuleService moduleService){
+    private final ModuleService moduleService;
+    private final ComposanteService composanteService;
+    private final PromoEstComposeeService promoEstComposeeService;
+    private final BesoinSalleService besoinSalleService;
+
+    public GestionModuleController(ModuleService moduleService, ComposanteService composanteService, PromoEstComposeeService promoEstComposeeService,
+                                   BesoinSalleService besoinSalleService){
         this.moduleService = moduleService;
+        this.composanteService = composanteService;
+        this.promoEstComposeeService = promoEstComposeeService;
+        this.besoinSalleService = besoinSalleService;
     }
 
-    @GetMapping
-    public String index(Model model) {
-        List<ModuleDto> modules = moduleService.findAllModules();
-        model.addAttribute("modules", modules);
-        return "gestionnaire_edt/gestion_modules";
-    }
     @GetMapping("/promo/{idPromo}")
     public String listModulesByPromo(@PathVariable Integer idPromo, Model model) {
+        List<ModuleDto> allModules = moduleService.findAllModules();
+        List<ModuleDto> promoModules = moduleService.findModuleDtoByIdPromo(idPromo);
 
-        List<ModuleDto> modules;
-        modules = moduleService.findModuleDtoByIdPromo(idPromo);
+        List<Integer> linkedModuleIds = promoModules.stream()
+                .map(ModuleDto::getIdModule)
+                .toList();
 
-        model.addAttribute("modules", modules);
+        model.addAttribute("modules", allModules);
+        model.addAttribute("linkedModuleIds", linkedModuleIds);
         model.addAttribute("idPromo", idPromo);
 
         return "gestionnaire_edt/gestion_modules";
     }
 
-    /**
-     * URL : /gestionnaire-edt/modules/{id}
-     */
-    @GetMapping("/{id}")
-    public String getModuleById(@PathVariable Integer id, Model model) {
-        ModuleDto module = moduleService.findModuleDtoById(id);
-        model.addAttribute("module", module);
-        return "gestionnaire_edt/moduleDetail";
-    }
-
     @PostMapping("/new")
-    public String createModule(@ModelAttribute ModuleDto moduleDto) {
-        ModuleDto saved = moduleService.createModule(moduleDto);
-        return "redirect:/gestionnaire-edt/modules/" + saved.getIdModule();
+    public String createModule(@ModelAttribute ModuleDto moduleDto, @RequestParam Integer idPromo) {
+        ModuleDto created = moduleService.createModule(moduleDto);
+
+        PromoPromoEstComposeeDto promo = new PromoPromoEstComposeeDto();
+        promo.setIdPromo(idPromo);
+
+        ModulePromoEstComposeeDto module = new ModulePromoEstComposeeDto();
+        module.setIdModule(created.getIdModule());
+
+        promoEstComposeeService.createPromoEstComposee(new PromoEstComposeeDto(promo, module));
+
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
     }
 
-    @PostMapping("/{id}/edit")
-    public String updateModule(@PathVariable Integer id, @ModelAttribute ModuleDto moduleDto) {
+    @PostMapping("/link")
+    public String linkModuleToPromo(@RequestParam Integer idModule, @RequestParam Integer idPromo) {
+        PromoPromoEstComposeeDto promo = new PromoPromoEstComposeeDto();
+        promo.setIdPromo(idPromo);
 
-        moduleDto.setIdModule(id);
+        ModulePromoEstComposeeDto module = new ModulePromoEstComposeeDto();
+        module.setIdModule(idModule);
+
+        promoEstComposeeService.createPromoEstComposee(new PromoEstComposeeDto(promo, module));
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+    }
+
+    @DeleteMapping("/unlink")
+    public String unlinkModuleFromPromo(@RequestParam Integer idModule, @RequestParam Integer idPromo) {
+        promoEstComposeeService.deletePromoEstComposee(idPromo, idModule);
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+    }
+
+    @PutMapping("/edit")
+    public String updateModule(@ModelAttribute ModuleDto moduleDto, @RequestParam Integer idPromo) {
         moduleService.updateModule(moduleDto);
-
-        return "redirect:/gestionnaire-edt/modules/" + id;
-    }
-    @PostMapping("/{idpromo}/{id}/edit")
-    public String updateModule(@PathVariable Integer idpromo,@PathVariable Integer id, @ModelAttribute ModuleDto moduleDto) {
-
-        moduleDto.setIdModule(id);
-        moduleService.updateModule(moduleDto);
-
-        return "redirect:/gestionnaire-edt/modules/" + idpromo;
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
     }
 
-    @GetMapping("/{id}/delete")
-    public String deleteModule(@PathVariable Integer id) {
-        moduleService.deleteModuleById(id);
-        return "redirect:/gestionnaire-edt/modules";
+    @DeleteMapping("/delete")
+    public String deleteModule(@RequestParam("idModule") Integer idModule,
+                               @RequestParam("idPromo") Integer idPromo,
+                               RedirectAttributes redirectAttributes) {
+        try{
+            composanteService.deleteComposanteByModuleId(idModule);
+            promoEstComposeeService.deletePromoEstComposeeByModuleId(idModule);
+            moduleService.deleteModuleById(idModule);
+            return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Impossible de supprimer ce module car il possède des cours planifiés.");
+            return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+        }
     }
-    @PostMapping("/{idpromo}/{id}/delete")
-    public String deleteModule(@PathVariable Integer idpromo,@PathVariable Integer id) {
-        moduleService.deleteModuleById(id);
-        return "redirect:/gestionnaire-edt/modules"+idpromo;
+
+    @PostMapping("/composante/new")
+    public String createComposante(@ModelAttribute ComposanteDto composanteDto,
+                                   @RequestParam Double vhTotal,
+                                   @RequestParam Double vhCM,
+                                   @RequestParam Double vhTD,
+                                   @RequestParam Double vhTP,
+                                   @RequestParam Double blCM,
+                                   @RequestParam Double blTD,
+                                   @RequestParam Double blTP,
+                                   @RequestParam Integer idModule,
+                                   @RequestParam Integer idPromo) {
+
+        composanteDto.setVolumeHoraireTotal((int) Math.round(vhTotal * 60));
+        composanteDto.setVolumeHoraireCM((int) Math.round(vhCM * 60));
+        composanteDto.setVolumeHoraireTD((int) Math.round(vhTD * 60));
+        composanteDto.setVolumeHoraireTP((int) Math.round(vhTP * 60));
+        composanteDto.setBlocHoraireCM((int) Math.round(blCM * 60));
+        composanteDto.setBlocHoraireTD((int) Math.round(blTD * 60));
+        composanteDto.setBlocHoraireTP((int) Math.round(blTP * 60));
+
+        ModuleComposanteDto module = new ModuleComposanteDto();
+        module.setIdModule(idModule);
+        composanteDto.setModuleDto(module);
+        composanteService.createComposante(composanteDto);
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+    }
+
+    @PutMapping("/composante/edit")
+    public String updateComposante(@ModelAttribute ComposanteDto composanteDto,
+                                   @RequestParam Double vhTotal,
+                                   @RequestParam Double vhCM,
+                                   @RequestParam Double vhTD,
+                                   @RequestParam Double vhTP,
+                                   @RequestParam Double blCM,
+                                   @RequestParam Double blTD,
+                                   @RequestParam Double blTP,
+                                   @RequestParam Integer idModule,
+                                   @RequestParam Integer idPromo) {
+
+        composanteDto.setVolumeHoraireTotal((int) Math.round(vhTotal * 60));
+        composanteDto.setVolumeHoraireCM((int) Math.round(vhCM * 60));
+        composanteDto.setVolumeHoraireTD((int) Math.round(vhTD * 60));
+        composanteDto.setVolumeHoraireTP((int) Math.round(vhTP * 60));
+        composanteDto.setBlocHoraireCM((int) Math.round(blCM * 60));
+        composanteDto.setBlocHoraireTD((int) Math.round(blTD * 60));
+        composanteDto.setBlocHoraireTP((int) Math.round(blTP * 60));
+
+        ModuleComposanteDto module = new ModuleComposanteDto();
+        module.setIdModule(idModule);
+        composanteDto.setModuleDto(module);
+        composanteService.updateComposante(composanteDto);
+        return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+    }
+
+    @DeleteMapping("/composante/delete")
+    public String deleteComposante(@RequestParam("idComposante") Integer idComposante,
+                                   @RequestParam("idPromo") Integer idPromo,
+                                   RedirectAttributes redirectAttributes) {
+        try{
+            besoinSalleService.deleteBesoinSalleByComposanteId(idComposante);
+            composanteService.deleteComposanteById(idComposante);
+            return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+        }catch(Exception e){
+            redirectAttributes.addFlashAttribute("errorMessage", "Impossible de supprimer cette composante.");
+            return "redirect:/gestionnaire-edt/modules/promo/" + idPromo;
+        }
     }
 }

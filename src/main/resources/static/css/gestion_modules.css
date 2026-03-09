@@ -11,7 +11,6 @@
 
 .table-container {
     background: rgba(55, 71, 79, 0.4);
-    /*backdrop-filter: blur(10px);*/
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 16px;
     overflow: hidden;
@@ -66,7 +65,8 @@
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
 }
 
 .btn-semester {
@@ -118,24 +118,22 @@
     color: #ff6b6b;
 }
 
-.modal {
+.popUp {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(15, 23, 42, 0.8);
-    /*backdrop-filter: blur(4px);*/
     z-index: 1000;
     align-items: center;
     justify-content: center;
 }
 
-.modal.active {
+.popUp.active {
     display: flex;
 }
 
-.modal-content {
+.popUp-content {
     background: rgba(45, 62, 80, 0.95);
-    /*backdrop-filter: blur(20px);*/
     border: 1px solid rgba(120, 144, 156, 0.3);
     border-radius: 20px;
     padding: 32px;
@@ -166,8 +164,8 @@
 }
 
 .form-group input:focus {
-    outline: #00A99B;
-    border-color: #2e7d32;
+    outline: none;
+    border-color: #00A99B;
     background: rgba(55, 71, 79, 0.6);
 }
 
