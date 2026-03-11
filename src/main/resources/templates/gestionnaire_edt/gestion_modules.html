@@ -31,23 +31,28 @@
             <span class="font-semibold" th:text="${errorMessage}"></span>
             <button onclick="this.parentElement.style.display='none'" class="text-red-200 hover:text-white font-bold text-xl px-2">&times;</button>
         </div>
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-4xl font-bold text-white">Gestion Globale des Modules</h2>
-            <button onclick="openModuleModal('add')" class="btn-primary">+ Créer un module</button>
+        <h2 class="text-white font-bold text-center mb-8" th:text="${promo.nomPromo} + ' ' + ${promo.anneePromo}">Promo</h2>
+
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-3xl font-bold text-white">Gestion Globale des Modules <button class="btn-edit" id="show-module-btn">SHOW</button></p>
+            <div class="flex gap-4">
+                <input type="text" id="searchModule" placeholder="Rechercher un module..." class="search-bar" onkeyup="filterModules()">
+                <button onclick="openModuleModal('add')" class="btn-primary">+ Créer un module</button>
+            </div>
         </div>
 
         <div class="table-container mb-12">
-            <table class="data-table">
+            <table class="data-table" id="moduleTable">
                 <thead>
                 <tr>
                     <th>Nom du Module</th>
                     <th>Statut Promo Actuelle</th>
-                    <th>Actions</th>
+                    <th class="px-5">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="module : ${modules}" th:if="${module != null}">
-                    <td class="text-white font-semibold" th:text="${module.nomModule}"></td>
+                <tr style="display: none" th:each="module : ${modules}" th:if="${module != null}">
+                    <td class="text-white font-semibold module-name" th:text="${module.nomModule}"></td>
                     <td class="font-semibold">
                         <span th:if="${#lists.contains(linkedModuleIds, module.idModule)}" class="text-green-500">Lié à la promo</span>
                         <span th:unless="${#lists.contains(linkedModuleIds, module.idModule)}" class="text-gray-400">Non lié</span>
@@ -78,6 +83,9 @@
                         </button>
                     </td>
                 </tr>
+                <tr id="noModuleFound" style="display: none;">
+                    <td colspan="3" class="text-center text-red-700 font-bold py-4">Aucun module trouvé</td>
+                </tr>
                 <tr th:if="${#lists.isEmpty(modules)}">
                     <td colspan="3" class="text-center text-red-700 font-bold">Aucun module</td>
                 </tr>
@@ -85,13 +93,16 @@
             </table>
         </div>
 
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-4xl font-bold text-white">Gestion des Composantes</h2>
-            <button onclick="openComposanteModal('add')" class="btn-primary">+ Ajouter une composante</button>
+        <div class="flex justify-between items-center mb-4">
+            <p class="text-3xl font-bold text-white">Gestion des Composantes <button class="btn-edit" id="show-comp-btn">SHOW</button></p>
+            <div class="flex gap-4">
+                <input type="text" id="searchComposante" placeholder="Rechercher (Nom ou Module)..." class="search-bar" onkeyup="filterComposantes()">
+                <button onclick="openComposanteModal('add')" class="btn-primary">+ Ajouter une composante</button>
+            </div>
         </div>
 
         <div class="table-container">
-            <table class="data-table">
+            <table class="data-table" id="composanteTable">
                 <thead>
                 <tr>
                     <th>Nom</th>
@@ -103,8 +114,8 @@
                 </thead>
                 <tbody>
                 <th:block th:each="module : ${modules}" th:if="${modules != null}">
-                    <tr th:each="composante : ${module.composanteDto}">
-                        <td class="text-white" th:text="${composante.nomComposante}"></td>
+                    <tr style="display: none" th:each="composante : ${module.composanteDto}">
+                        <td class="text-white composante-name" th:text="${composante.nomComposante}"></td>
                         <td class="text-white">
                             <span th:text="${composante.volumeHoraireTotal}"></span> /
                             <span th:text="${composante.volumeHoraireCM}"></span> /
@@ -116,7 +127,7 @@
                             <span th:text="${composante.blocHoraireTD}"></span> /
                             <span th:text="${composante.blocHoraireTP}"></span>
                         </td>
-                        <td class="text-white font-bold" th:text="${module.nomModule}"></td>
+                        <td class="text-white font-bold composante-module" th:text="${module.nomModule}"></td>
                         <td>
                             <button class="btn-edit mr-2"
                                     onclick="openComposanteModal('edit', this)"
@@ -135,6 +146,9 @@
                         </td>
                     </tr>
                 </th:block>
+                <tr id="noComposanteFound" style="display: none;">
+                    <td colspan="5" class="text-center text-red-700 font-bold py-4">Aucune composante trouvée</td>
+                </tr>
                 <tr th:if="${#lists.isEmpty(modules)}">
                     <td colspan="5" class="text-center text-red-700 font-bold">Aucune composante</td>
                 </tr>
@@ -149,7 +163,7 @@
         <p id="moduleModalTitle" class="text-2xl font-bold mb-6 text-white"></p>
         <form id="moduleForm" method="post">
             <input type="hidden" name="_method" id="moduleMethod" value="POST">
-            <input type="hidden" name="idPromo" th:value="${idPromo}">
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}">
             <input type="hidden" id="moduleIdInput" name="idModule">
 
             <div class="form-group">
@@ -170,7 +184,7 @@
         <p class="text-2xl font-bold mb-6 text-white">Lier à la promotion</p>
         <p class="text-white mb-6">Voulez-vous lier le module <strong id="moduleLinkNomD"></strong> à cette promotion ?</p>
         <form method="post" th:action="@{/gestionnaire-edt/modules/link}">
-            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}"/>
             <input type="hidden" id="idModuleLinkInput" name="idModule"/>
             <div class="flex gap-3">
                 <button type="button" onclick="closeModal('moduleLinkModal')" class="btn-edit flex-1">Annuler</button>
@@ -186,7 +200,7 @@
         <p class="text-white mb-6">Voulez-vous détacher le module <strong id="moduleUnlinkNomD"></strong> de cette promotion ?</p>
         <form method="post" th:action="@{/gestionnaire-edt/modules/unlink}">
             <input type="hidden" name="_method" value="DELETE"/>
-            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}"/>
             <input type="hidden" id="idModuleUnlinkInput" name="idModule"/>
             <div class="flex gap-3">
                 <button type="button" onclick="closeModal('moduleUnlinkModal')" class="btn-edit flex-1">Annuler</button>
@@ -206,7 +220,7 @@
 
         <form method="post" th:action="@{/gestionnaire-edt/modules/delete}">
             <input type="hidden" name="_method" value="DELETE"/>
-            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}"/>
             <input type="hidden" id="idModuleDeleteInput" name="idModule"/>
             <div class="flex gap-3">
                 <button type="button" onclick="closeModal('moduleDelete')" class="btn-edit flex-1">Annuler</button>
@@ -221,7 +235,7 @@
         <p id="composanteModalTitle" class="text-2xl font-bold mb-6 text-white"></p>
         <form id="composanteForm" method="post">
             <input type="hidden" name="_method" id="composanteMethod" value="POST">
-            <input type="hidden" name="idPromo" th:value="${idPromo}">
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}">
             <input type="hidden" id="composanteIdInput" name="idComposante">
 
             <div class="form-group">
@@ -296,7 +310,7 @@
 
         <form method="post" th:action="@{/gestionnaire-edt/modules/composante/delete}">
             <input type="hidden" name="_method" value="DELETE"/>
-            <input type="hidden" name="idPromo" th:value="${idPromo}"/>
+            <input type="hidden" name="idPromo" th:value="${promo.idPromo}"/>
             <input type="hidden" id="idComposanteDeleteInput" name="idComposante"/>
             <div class="flex gap-3">
                 <button type="button" onclick="closeModal('composanteDelete')" class="btn-edit flex-1">Annuler</button>

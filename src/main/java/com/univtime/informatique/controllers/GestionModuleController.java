@@ -15,14 +15,12 @@ import com.univtime.informatique.dto.idsDto.PromoEstComposeeIdDto;
 import com.univtime.informatique.dto.moduleDto.ModuleDto;
 import com.univtime.informatique.dto.composanteDto.ComposanteDto;
 import com.univtime.informatique.dto.composanteDto.ModuleComposanteDto;
+import com.univtime.informatique.dto.promoDto.PromoDto;
 import com.univtime.informatique.dto.promoEstComposeeDto.ModulePromoEstComposeeDto;
 import com.univtime.informatique.dto.promoEstComposeeDto.PromoEstComposeeDto;
 import com.univtime.informatique.dto.promoEstComposeeDto.PromoPromoEstComposeeDto;
 import com.univtime.informatique.entities.ids.PromoEstComposeeId;
-import com.univtime.informatique.services.BesoinSalleService;
-import com.univtime.informatique.services.ModuleService;
-import com.univtime.informatique.services.ComposanteService;
-import com.univtime.informatique.services.PromoEstComposeeService;
+import com.univtime.informatique.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +36,16 @@ public class GestionModuleController {
     private final ComposanteService composanteService;
     private final PromoEstComposeeService promoEstComposeeService;
     private final BesoinSalleService besoinSalleService;
+    private final PromoService promoService;
 
     public GestionModuleController(ModuleService moduleService, ComposanteService composanteService, PromoEstComposeeService promoEstComposeeService,
-                                   BesoinSalleService besoinSalleService){
+                                   BesoinSalleService besoinSalleService,
+                                   PromoService promoService){
         this.moduleService = moduleService;
         this.composanteService = composanteService;
         this.promoEstComposeeService = promoEstComposeeService;
         this.besoinSalleService = besoinSalleService;
+        this.promoService = promoService;
     }
 
     @GetMapping("/promo/{idPromo}")
@@ -56,9 +57,11 @@ public class GestionModuleController {
                 .map(ModuleDto::getIdModule)
                 .toList();
 
+        PromoDto promo = promoService.findPromoDtoById(idPromo);
+
         model.addAttribute("modules", allModules);
         model.addAttribute("linkedModuleIds", linkedModuleIds);
-        model.addAttribute("idPromo", idPromo);
+        model.addAttribute("promo", promo);
 
         return "gestionnaire_edt/gestion_modules";
     }

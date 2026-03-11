@@ -483,7 +483,7 @@ public class GenerationAlgorithme {
                 INNER JOIN Promos p USING (idPromo)
                 WHERE p.idPromo = 1;
              */
-        List<ComposanteDto> composantes = composanteService.findComposantesDtoByIdPromo(idPromo);
+        //List<ComposanteDto> composantes = composanteService.findComposantesDtoByIdPromo(idPromo);
 
         // Tout les professeurs avec leurs jours et leurs disponibilités concerné par cette promo
             /*
@@ -496,8 +496,9 @@ public class GenerationAlgorithme {
 
              */
         List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
-        java.util.Map<Integer, List<JourDto>> disposParProf = new java.util.HashMap<>();
+        Map<Integer, List<JourDto>> disposParProf = new HashMap<>();
         for (ProfesseurDto prof : professeurs) {
+            // Trop long de récupérer comme ça, il faut tout récupérer d'un coup et mapper côté serveur
             disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));
         }
 
@@ -822,8 +823,6 @@ public class GenerationAlgorithme {
                 List<Slot> slotsPotentiels = new ArrayList<>();
                 List<CoursDto> coursBloquantsPotentiels = new ArrayList<>();
 
-                boolean isProfDispoForBlock = true;
-
                 for (int k = 0; k < nbSlotNecessaire; k++) {
                     int indexActuel = j + k;
                     Slot slot = jour.getSlots().get(indexActuel);
@@ -832,7 +831,10 @@ public class GenerationAlgorithme {
                     if (k == 0) {
                         boolean isValid2h = blocNecessaire == 2 * 60 && (slot.getDebut().equals(60 * 8) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60));
                         boolean isValid1h30 = blocNecessaire == 60 + 30 && (slot.getDebut().equals(60 * 8 + 30) || slot.getDebut().equals(60 * 10 + 15) || slot.getDebut().equals(13 * 60 + 30) || slot.getDebut().equals(60 * 14) || slot.getDebut().equals(15 * 60 + 45) || slot.getDebut().equals(18 * 60));
-                        if (!(isValid2h || isValid1h30)) { j = indexActuel; continue outerloop; }
+                        if (!(isValid2h || isValid1h30)) {
+                            j = indexActuel;
+                            continue outerloop;
+                        }
                     }
 
                     // Le prof du cours impossible doit être dispo
@@ -844,9 +846,10 @@ public class GenerationAlgorithme {
                             break;
                         }
                     }
+
                     if (!dispoTheorique) {
-                        isProfDispoForBlock = false;
-                        break;
+                        j = indexActuel;
+                        continue outerloop;
                     }
 
                     // On collecte tous les cours qui utilisent ce slot (les bloquants potentiels)
@@ -854,14 +857,11 @@ public class GenerationAlgorithme {
                     slotsPotentiels.add(slot);
                 }
 
-                if (!isProfDispoForBlock) continue;
-
                 // On enlève les doublons des cours bloquants (un bloc de 2h a les mêmes cours sur 8 slots)
                 List<CoursDto> coursBloquantsUniques = coursBloquantsPotentiels.stream().distinct().toList();
 
                 // TENTATIVE DE DÉPLACEMENT
                 // Pour simplifier ce premier test, on ne tente le déplacement que s'il n'y a qu'un seul cours bloquant.
-                // Déplacer plus d'un cours ou plus créerait un arbre de possibilités trop complexe et ralentirait l'algo
                 if (coursBloquantsUniques.size() == 1) {
                     CoursDto coursADeplacer = coursBloquantsUniques.getFirst();
 
@@ -878,7 +878,7 @@ public class GenerationAlgorithme {
                         // On met à jour le jour dans notre semaine actuelle
                         currentSemaine.getJours().get(nouvelEmplacementPourBloquant.getNumJour().getValue() - 1).setSlots(nouvelEmplacementPourBloquant.getSlots());
 
-                        // On place le cours dans le créneau qu'on vient de libérer !
+                        // On place le cours dans le créneau qu'on vient de libérer
                         Jour emplacementPourImpossible = getRandomBestPlacement(semestre, currentSemaine, coursImpossible, joursDuProf, occurrence);
 
                         if (emplacementPourImpossible != null) {

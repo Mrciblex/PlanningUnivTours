@@ -65,8 +65,7 @@
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
+    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
 }
 
 .btn-semester {
@@ -173,4 +172,25 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+}
+
+.search-bar {
+    padding: 10px 16px;
+    background: rgba(55, 71, 79, 0.4);
+    border: 1px solid rgba(120, 144, 156, 0.3);
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    width: 300px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.search-bar:focus {
+    border-color: #00A99B;
+    background: rgba(55, 71, 79, 0.6);
+}
+
+.search-bar::placeholder {
+    color: #78909c;
 }

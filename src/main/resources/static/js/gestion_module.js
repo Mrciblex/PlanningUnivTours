@@ -107,3 +107,99 @@ function openComposanteDeleteModal(btn) {
     document.getElementById('idComposanteDeleteInput').value = btn.dataset.id;
     document.getElementById('composanteDelete').classList.add('active');
 }
+
+function filterModules() {
+    const input = document.getElementById("searchModule").value.toLowerCase();
+    const table = document.getElementById("moduleTable");
+    const tr = table.getElementsByTagName("tr");
+    let visibleCount = 0;
+
+    for (let i = 1; i < tr.length; i++) {
+        if (tr[i].id === "noModuleFound") continue;
+
+        const tdName = tr[i].querySelector(".module-name");
+
+        if (tdName) {
+            const txtValue = tdName.textContent || tdName.innerText;
+            if (txtValue.toLowerCase().indexOf(input) > -1) {
+                tr[i].style.display = "";
+                visibleCount++;
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+    document.getElementById("noModuleFound").style.display = visibleCount === 0 && tr.length > 2 ? "" : "none";
+}
+
+function filterComposantes() {
+    const input = document.getElementById("searchComposante").value.toLowerCase();
+    const table = document.getElementById("composanteTable");
+    const tr = table.getElementsByTagName("tr");
+    let visibleCount = 0;
+
+    for (let i = 1; i < tr.length; i++) {
+        if (tr[i].id === "noComposanteFound") continue;
+
+        const tdName = tr[i].querySelector(".composante-name");
+        const tdModule = tr[i].querySelector(".composante-module");
+
+        if (tdName && tdModule) {
+            const txtName = tdName.textContent || tdName.innerText;
+            const txtModule = tdModule.textContent || tdModule.innerText;
+
+            if (txtName.toLowerCase().indexOf(input) > -1 || txtModule.toLowerCase().indexOf(input) > -1) {
+                tr[i].style.display = "";
+                visibleCount++;
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+    document.getElementById("noComposanteFound").style.display = visibleCount === 0 && tr.length > 2 ? "" : "none";
+}
+
+function displayThings(table, state, el){
+    const tr = table.getElementsByTagName("tr");
+    const display = state ? 'none' : '';
+
+    for(let i= 1; i < tr.length; i++){
+        tr[i].style.display = display;
+    }
+    if (state){
+        el.innerText = "SHOW";
+    }else{
+        el.innerText = "HIDE";
+    }
+
+    return !state;
+}
+
+let stateModule = false;
+const showModuleBtn = document.getElementById("show-module-btn");
+const tableModule = document.getElementById("moduleTable");
+
+let stateComposante = false;
+const showComposanteBtn = document.getElementById("show-comp-btn");
+const tableComp = document.getElementById("composanteTable");
+
+showModuleBtn.addEventListener("click", () => {
+    stateModule = displayThings(
+        tableModule,
+        stateModule,
+        showModuleBtn
+    );
+});
+
+showComposanteBtn.addEventListener("click", () => {
+    stateComposante = displayThings(
+        tableComp,
+        stateComposante,
+        showComposanteBtn
+    )
+});
+
+
+

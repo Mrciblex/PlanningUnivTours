@@ -11,55 +11,71 @@
 
 package com.univtime.informatique.controllers;
 
+import com.univtime.informatique.dto.jourDto.JourDto;
 import com.univtime.informatique.dto.professeurDto.ProfesseurDto;
+import com.univtime.informatique.services.JourService;
 import com.univtime.informatique.services.ProfesseurService;
+import com.univtime.informatique.services.PromoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/professeurs")
 public class GestionProfesseurController {
 
     private final ProfesseurService professeurService;
+    private final PromoService promoService;
+    private final JourService jourService;
 
-    public GestionProfesseurController(ProfesseurService professeurService) {
+    public GestionProfesseurController(ProfesseurService professeurService,
+                                       PromoService promoService,
+                                       JourService jourService) {
         this.professeurService = professeurService;
+        this.promoService = promoService;
+        this.jourService = jourService;
     }
 
-    @GetMapping
-    public String index(@PathVariable Integer idPromo, Model model) {
-        List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
+    @GetMapping("/promo/{idPromo}")
+    public String list(Model model, @PathVariable Integer idPromo) {
+        List<ProfesseurDto> professeurs = professeurService.findAllProfesseurs();
+
+        Map<Integer, List<JourDto>> disposParProf = new HashMap<>();
+        for (ProfesseurDto prof : professeurs) {
+            // requête unique à la BD c'est trop long, il vaut mieux calculer tout côté serveur et tout récupérer en une requête
+            disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));
+        }
+
         model.addAttribute("professeurs", professeurs);
-        model.addAttribute("idPromo", idPromo);
+        model.addAttribute("jourParProf", disposParProf);
+        model.addAttribute("promo", promoService.findPromoDtoById(idPromo));
         return "gestionnaire_edt/gestion_professeurs";
     }
 
-    //POST : créer un prof lié à une promo
-    @PostMapping("/{idPromo}/new")
-    public String createProfesseurByPromo(@PathVariable Integer idPromo,
-                                          @ModelAttribute ProfesseurDto professeurDto) {
-        professeurService.createProfesseur(professeurDto);
-        return "redirect:/gestionnaire-edt/professeurs/promo/" + idPromo;
+    @PostMapping("/new")
+    public String create(@ModelAttribute ProfesseurDto profDto) {
+        professeurService.createProfesseur(profDto);
+        return "redirect:/gestionnaire-edt/professeurs";
     }
 
-    // POST : modifier un prof lié à une promo
-    @PostMapping("/{idPromo}/{id}/edit")
-    public String updateProfesseurByPromo(@PathVariable Integer idPromo,
-                                          @PathVariable Integer id,
-                                          @ModelAttribute ProfesseurDto professeurDto) {
-        professeurDto.setIdProf(id);
-        professeurService.updateProfesseur(professeurDto);
-        return "redirect:/gestionnaire-edt/professeurs/promo/" + idPromo;
+    @PutMapping("/edit")
+    public String update(@ModelAttribute ProfesseurDto profDto) {
+        professeurService.updateProfesseur(profDto);
+        return "redirect:/gestionnaire-edt/professeurs";
     }
 
-    //  POST : supprimer un prof lié à une promo
-    @PostMapping("/{idPromo}/{id}/delete")
-    public String deleteProfesseurByPromo(@PathVariable Integer idPromo,
-                                          @PathVariable Integer id) {
-        professeurService.deleteProfesseurById(id);
-        return "redirect:/gestionnaire-edt/professeurs/promo/" + idPromo;
+    @DeleteMapping("/delete")
+    public String delete(@RequestParam Integer idProfesseur, RedirectAttributes ra) {
+        try {
+            professeurService.deleteProfesseurById(idProfesseur);
+        } catch (Exception e) {
+            ra.addFlashAttribute("errorMessage", "Impossible de supprimer ce professeur car il est lié à des éléments d'emploi du temps.");
+        }
+        return "redirect:/gestionnaire-edt/professeurs";
     }
 }

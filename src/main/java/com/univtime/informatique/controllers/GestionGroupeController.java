@@ -42,20 +42,6 @@ public class GestionGroupeController {
         this.promoService = promoService;
     }
 
-    @GetMapping
-    public String listAllGroupes(Model model) {
-        List<GroupeDto> groupes = groupeService.findAllGroupe();
-        model.addAttribute("groupes", groupes);
-        return "gestionnaire_edt/gestion_groupes";
-    }
-
-    @GetMapping("/{id}")
-    public String getGroupeById(@PathVariable Integer id, Model model) {
-        GroupeDto groupe = groupeService.findGroupeDtoById(id);
-        model.addAttribute("groupe", groupe);
-        return "gestionnaire_edt/groupeDetail";
-    }
-
     @GetMapping("/promo/{idPromo}")
     public String listGroupesByPromo(@PathVariable Integer idPromo, Model model) {
         PromoDto promo = promoService.findPromoDtoById(idPromo);
