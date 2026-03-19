@@ -164,8 +164,9 @@ function filterComposantes() {
 function displayThings(table, state, el){
     const tr = table.getElementsByTagName("tr");
     const display = state ? 'none' : '';
+    const listLength = tr.length > 1 ? tr.length - 1 : 1;
 
-    for(let i= 1; i < tr.length; i++){
+    for(let i= 1; i < listLength; i++){
         tr[i].style.display = display;
     }
     if (state){

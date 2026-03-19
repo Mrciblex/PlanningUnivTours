@@ -417,11 +417,11 @@ function renderTableauMaquette() {
     }
     AppState.maquetteLignes.forEach(ligne => {
         const tr = document.createElement('tr');
-        let html = `<td class="matiere-cell">${ligne.composante.displayName}</td>`;
-        html += `<td class="prof-cell">`;
+        let html = `<td class="matiere-cell p-4">${ligne.composante.displayName}</td>`;
+        html += `<td class="prof-cell pt-4 pb-4">`;
         ligne.assignations.forEach(assign => {
             let colorClass = assign.type === 'CM' ? 'type-cm' : (assign.type === 'TD' ? 'type-td' : 'type-tp');
-            html += `<div class="mb-1"><span class="type-badge ${colorClass}">${assign.type}</span> <b>${assign.profNom}</b> <span class="text-[10px] opacity-70">(${assign.cibleNom})</span></div>`;
+            html += `<div class="mb-1 min-h-6 flex items-center"><span class="type-badge ${colorClass}">${assign.type}</span> <b>${assign.profNom}</b> <span class="text-[10px] opacity-70">(${assign.cibleNom})</span></div>`;
         });
         html += `</td>`;
         for(let s = 1; s <= AppState.nbSemaines; s++) {
@@ -430,11 +430,13 @@ function renderTableauMaquette() {
                 const vol = assign.volumes[s] || 0;
                 if(vol > 0) {
                     let colorClass = assign.type === 'CM' ? 'type-cm' : (assign.type === 'TD' ? 'type-td' : 'type-tp');
-                    cellContent += `<div class="mb-1"><span class="type-badge ${colorClass}">${vol}</span></div>`;
+                    cellContent += `<div class="mb-1 min-h-6 flex justify-center items-center"><span class="type-badge ${colorClass}">${vol}</span></div>`;
+                }else{
+                    cellContent += `<div class="mb-1 min-h-6 flex justify-center items-center"><span class="type-badge">-</span></div>`;
                 }
             });
             if(!cellContent) cellContent = '-';
-            html += `<td class="text-center text-xs align-top pt-4">${cellContent}</td>`;
+            html += `<td class="text-center text-xs align-top pt-4 pb-4">${cellContent}</td>`;
         }
         html += `
             <td style="vertical-align: top; padding-top: 14px;">

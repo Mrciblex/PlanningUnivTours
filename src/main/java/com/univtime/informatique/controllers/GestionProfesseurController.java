@@ -24,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/gestionnaire-edt/professeurs")
@@ -44,12 +46,22 @@ public class GestionProfesseurController {
     @GetMapping("/promo/{idPromo}")
     public String list(Model model, @PathVariable Integer idPromo) {
         List<ProfesseurDto> professeurs = professeurService.findAllProfesseurs();
+        Set<Integer> profIds = professeurs.stream().map(ProfesseurDto::getIdProf).collect(Collectors.toSet());
 
+        List<JourDto> jourDtos = jourService.findAllJours();
         Map<Integer, List<JourDto>> disposParProf = new HashMap<>();
+
+        jourDtos.forEach(jourDto -> {
+            Integer idProf = jourDto.getProfesseurDto().getIdProf();
+            disposParProf.computeIfAbsent(idProf, _ -> new java.util.ArrayList<>()).add(jourDto);
+        });
+
+        /*
         for (ProfesseurDto prof : professeurs) {
             // requête unique à la BD c'est trop long, il vaut mieux calculer tout côté serveur et tout récupérer en une requête
-            disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));
+            // disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));
         }
+         */
 
         model.addAttribute("professeurs", professeurs);
         model.addAttribute("jourParProf", disposParProf);

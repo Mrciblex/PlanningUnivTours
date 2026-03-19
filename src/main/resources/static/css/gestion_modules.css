@@ -1,19 +1,9 @@
-/*
- * Copyright (c) 2026 Ademi Musa. Tous droits réservés.
- * Projet : univTime - Logiciel de gestion d'emplois du temps.
- *
- * Ce code source et l'algorithme associé sont la propriété exclusive de l'auteur.
- * Toute reproduction, modification ou distribution non autorisée, par quelque moyen que ce soit, est strictement interdite.
- *
- * Ce fichier fait partie du projet univTime, concédé sous licence d'usage
- * restreinte à l'Université de Tours, 37000, en France.
- */
-
 .table-container {
     background: rgba(55, 71, 79, 0.4);
     border: 1px solid rgba(120, 144, 156, 0.2);
     border-radius: 16px;
-    overflow: hidden;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
 .data-table {
@@ -23,7 +13,7 @@
 }
 
 .data-table thead {
-    background: rgba(0, 169, 155, 0.3);
+    background: #274044;
 }
 
 .data-table thead tr {
@@ -38,6 +28,10 @@
     color: #00A99B;
     text-transform: uppercase;
     border-bottom: 1px solid rgba(120, 144, 156, 0.2);
+    position: sticky;
+    top: 0;
+    background: #274044;
+    z-index: 10;
 }
 
 .data-table tbody tr {
@@ -65,7 +59,8 @@
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 169, 155, 0.9);
 }
 
 .btn-semester {

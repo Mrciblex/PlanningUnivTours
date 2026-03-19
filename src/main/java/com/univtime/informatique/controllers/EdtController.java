@@ -120,6 +120,7 @@ public class EdtController {
 
         // Supprimer les cours existants pour cette promo et ce semestre
         if (request.existingCourseIds() != null && !request.existingCourseIds().isEmpty()) {
+            // Ralentissement, il faut une liste d'ID qui est envoyé directement en requête et pas en Java
             request.existingCourseIds().forEach(coursService::deleteCoursByIdWithRelations);
         }
 

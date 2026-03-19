@@ -496,11 +496,13 @@ public class GenerationAlgorithme {
 
              */
         List<ProfesseurDto> professeurs = professeurService.findProfesseurDtoByIdPromo(idPromo);
+
+        List<JourDto> jourDtos = jourService.findAllJours();
         Map<Integer, List<JourDto>> disposParProf = new HashMap<>();
-        for (ProfesseurDto prof : professeurs) {
-            // Trop long de récupérer comme ça, il faut tout récupérer d'un coup et mapper côté serveur
-            disposParProf.put(prof.getIdProf(), jourService.findJoursDtoByIdProf(prof.getIdProf()));
-        }
+        jourDtos.forEach(jourDto -> {
+            Integer idProf = jourDto.getProfesseurDto().getIdProf();
+            disposParProf.computeIfAbsent(idProf, _ -> new java.util.ArrayList<>()).add(jourDto);
+        });
 
             /*
                 SELECT * FROM CM WHERE idPromo = 1;
@@ -766,7 +768,7 @@ public class GenerationAlgorithme {
             List<CoursDto> coursARePlacer = coursImpossibles.getOrDefault(currentWeek, new ArrayList<>());
 
             if (!coursARePlacer.isEmpty()) {
-                System.out.println("\n--- TENTATIVE DE RELOCALISATION POUR SEMAINE " + currentWeek + " ---");
+                //System.out.println("\n--- TENTATIVE DE RELOCALISATION POUR SEMAINE " + currentWeek + " ---");
 
                 // Suppression dans la liste pendant qu'on la parcourt
                 Iterator<CoursDto> iterator = coursARePlacer.iterator();
@@ -779,11 +781,11 @@ public class GenerationAlgorithme {
                     boolean success = tryRelocation(semestre, currentSemaine, coursImpossible, disposProf, occurrence, disposParProf);
 
                     if (success) {
-                        System.out.println("SUCCÈS : Relocalisation réussie pour un cours " + coursImpossible.getTypeCoursEnum());
+                        //System.out.println("SUCCÈS : Relocalisation réussie pour un cours " + coursImpossible.getTypeCoursEnum());
                         coursPossibles.add(coursImpossible);
                         iterator.remove(); // On enlève de la liste des impossibles
                     } else {
-                        System.out.println("ÉCHEC : Relocalisation impossible pour le cours " + coursImpossible.getTypeCoursEnum());
+                        //System.out.println("ÉCHEC : Relocalisation impossible pour le cours " + coursImpossible.getTypeCoursEnum());
                     }
                 }
             }
