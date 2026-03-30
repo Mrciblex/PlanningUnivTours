@@ -38,6 +38,16 @@ public class ProfesseurJourDto {
     public ProfesseurJourDto(Integer idProf,
                              String nomProf,
                              String prenomProf,
+                             boolean intervenantExterieur) {
+        this.idProf = idProf;
+        this.nomProf = nomProf;
+        this.prenomProf = prenomProf;
+        this.intervenantExterieur = intervenantExterieur;
+    }
+
+    public ProfesseurJourDto(Integer idProf,
+                             String nomProf,
+                             String prenomProf,
                              boolean intervenantExterieur,
                              Set<CMIdDto> cmIds,
                              Set<Integer> coursIds,
